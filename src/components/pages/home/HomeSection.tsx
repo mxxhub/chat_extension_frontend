@@ -1,6 +1,5 @@
 "use client";
 import {
-  ChevronDownIcon,
   ExternalLinkIcon,
   HeartIcon,
   MenuIcon,
@@ -9,20 +8,19 @@ import {
   RepeatIcon,
   SearchIcon,
   SendIcon,
-  XIcon,
   Copy,
   Check,
   CirclePlus,
   UserCircle,
-  FileUp,
 } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { chattingHistory } from "@/components/ui/chatting";
 import { Message } from "@/@types/global";
+import SignupPage from "../sign/Signup";
 
 interface MenuItemProps {
   icon: string;
@@ -39,10 +37,14 @@ const MenuItem = ({ icon, text }: MenuItemProps) => {
 };
 
 const HomeSection = () => {
+  const [pageState, setPageState] = useState(false);
   const [plusBtn, setPlusBtn] = useState(false);
   const [copied, setCopied] = useState(false);
   const [searchBtn, setSearchBtn] = useState(true);
   const [msg, setMsg] = useState("");
+  const [textToCopy, setTextToCopy] = useState(
+    "0xDd0892a70aB28B2B3fac1E6FAa7a4B2121dDd5e4"
+  );
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -101,21 +103,6 @@ const HomeSection = () => {
       time: "2:28 AM",
     },
   ]);
-
-  const textToCopy = "0xDd0892a70aB28B2B3fac1E6FAa7a4B2121dDd5e4";
-  useEffect(() => {}, [messages]);
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(textToCopy);
-      setCopied(true);
-      setTimeout(() => {
-        setCopied(false);
-      }, 2000);
-    } catch (err) {
-      console.log("Copy failed: ", err);
-    }
-  };
-
   // Sidebar channels data
   const sidebarChannels = [
     { id: 1, image: "/assets/image-11.png" },
@@ -130,12 +117,25 @@ const HomeSection = () => {
     { id: 10, image: "/assets/image-19.png" },
   ];
 
+  useEffect(() => {}, [messages]);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(textToCopy);
+      setCopied(true);
+      setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+    } catch (err) {
+      console.log("Copy failed: ", err);
+    }
+  };
+
   const searchButtonHandle = () => {
-    searchBtn ? setSearchBtn(false) : setSearchBtn(true);
+    setSearchBtn(!searchBtn);
   };
 
   const sendMsgHandle = () => {
-    console.log("add message");
     const newMessage: Message = {
       id: messages.length + 1,
       user: "ShockedJS",
@@ -145,7 +145,6 @@ const HomeSection = () => {
     };
     messages.push(newMessage);
     setMsg("");
-    console.log(messages);
   };
 
   const openFileDialog = () => {
@@ -156,7 +155,11 @@ const HomeSection = () => {
   };
 
   const plusBtnHandle = () => {
-    plusBtn ? setPlusBtn(false) : setPlusBtn(true);
+    setPlusBtn(!plusBtn);
+  };
+
+  const channelClick = () => {
+    setPageState(!pageState);
   };
 
   return (
@@ -184,7 +187,11 @@ const HomeSection = () => {
                 <div className="mt-2 flex flex-col items-center gap-2">
                   {sidebarChannels.slice(0, 3).map((channel) => (
                     <Avatar key={channel.id} className="w-[46px] h-[46px]">
-                      <AvatarImage src={channel.image} alt="Channel" />
+                      <AvatarImage
+                        src={channel.image}
+                        alt="Channel"
+                        onClick={() => channelClick()}
+                      />
                     </Avatar>
                   ))}
                 </div>
@@ -267,167 +274,173 @@ const HomeSection = () => {
                 />
               </div>
             </div>
-
-            {/* Main content area */}
-            <div className="flex-1 flex flex-col overflow-hidden">
-              {/* Banner */}
-              <div className="w-full">
-                <img
-                  className="w-full max-h-[129px] object-cover"
-                  alt="Banner"
-                  src="/assets/image-1.png"
-                />
-              </div>
-
-              {/* Twitter/Website tabs */}
-              <div className="w-full h-[31px] bg-[#101114] border border-solid border-[#22242d] flex items-center justify-evenly">
-                <div className="flex items-center">
+            {pageState ? (
+              <div className="flex-1 flex flex-col overflow-hidden">
+                {/* Banner */}
+                <div className="w-full">
                   <img
-                    className="w-4 h-3.5"
-                    alt="Twitter icon"
-                    src="/assets/vector.svg"
+                    className="w-full max-h-[129px] object-cover"
+                    alt="Banner"
+                    src="/assets/image-1.png"
                   />
-                  <span className="ml-1 font-medium text-white text-[13px]">
-                    Twitter
-                  </span>
                 </div>
-                <Separator
-                  orientation="vertical"
-                  className="h-[30px] mx-4 bg-[#5B5E69]"
-                />
-                <div className="flex items-center">
-                  <ExternalLinkIcon className="w-4 h-4 text-white" />
-                  <span className="ml-1 font-medium text-white text-[13px]">
-                    Website
-                  </span>
+
+                {/* Twitter/Website tabs */}
+                <div className="w-full h-[31px] bg-[#101114] border border-solid border-[#22242d] flex items-center justify-evenly">
+                  <div className="flex items-center">
+                    <img
+                      className="w-4 h-3.5"
+                      alt="Twitter icon"
+                      src="/assets/vector.svg"
+                    />
+                    <span className="ml-1 font-medium text-white text-[13px]">
+                      Twitter
+                    </span>
+                  </div>
+                  <Separator
+                    orientation="vertical"
+                    className="h-[30px] mx-4 bg-[#5B5E69]"
+                  />
+                  <div className="flex items-center">
+                    <ExternalLinkIcon className="w-4 h-4 text-white" />
+                    <span className="ml-1 font-medium text-white text-[13px]">
+                      Website
+                    </span>
+                  </div>
                 </div>
-              </div>
 
-              {/* Chat messages container with scrolling */}
-              <div className="flex-1 overflow-y-auto bg-[#191a21] p-4">
-                {/* Chat messages */}
-                <div className="space-y-4">
-                  {messages
-                    .slice(0, 4)
-                    .map((message) => chattingHistory(message))}
+                {/* Chat messages container with scrolling */}
+                <div className="flex-1 overflow-y-auto bg-[#191a21] p-4">
+                  {/* Chat messages */}
+                  <div className="space-y-4">
+                    {messages
+                      .slice(0, 4)
+                      .map((message) => chattingHistory(message))}
 
-                  {/* Twitter Raid section */}
-                  <div className="mt-4">
-                    <div className="flex items-center mb-2">
-                      <img
-                        className="w-[13px] h-[11px]"
-                        alt="Twitter icon"
-                        src="/assets/vector.svg"
-                      />
-                      <span className="ml-2 font-bold text-white text-[13px]">
-                        Twitter Raid
-                      </span>
-                    </div>
+                    {/* Twitter Raid section */}
+                    <div className="mt-4">
+                      <div className="flex items-center mb-2">
+                        <img
+                          className="w-[13px] h-[11px]"
+                          alt="Twitter icon"
+                          src="/assets/vector.svg"
+                        />
+                        <span className="ml-2 font-bold text-white text-[13px]">
+                          Twitter Raid
+                        </span>
+                      </div>
 
-                    <Card className="w-full max-w-full bg-[#15202b] rounded-lg border-none">
-                      <CardContent className="p-4">
-                        <div className="flex items-start">
-                          <Avatar className="w-8 h-8">
-                            <AvatarImage
-                              src="/assets/image-28.png"
-                              alt="Andy Ayrey"
-                            />
-                            <AvatarFallback>AA</AvatarFallback>
-                          </Avatar>
-                          <div className="ml-2 flex-1">
-                            <div className="font-normal text-white text-[13px]">
-                              Andy Ayrey
-                              <img
-                                className="inline-block w-3.5 h-3.5 ml-1"
-                                alt="Verified"
-                                src="/assets/image-10.png"
+                      <Card className="w-full max-w-full bg-[#15202b] rounded-lg border-none">
+                        <CardContent className="p-4">
+                          <div className="flex items-start">
+                            <Avatar className="w-8 h-8">
+                              <AvatarImage
+                                src="/assets/image-28.png"
+                                alt="Andy Ayrey"
                               />
-                              <br />
-                              <span className="text-[#5a5d69]">@AndyAyrey</span>
+                              <AvatarFallback>AA</AvatarFallback>
+                            </Avatar>
+                            <div className="ml-2 flex-1">
+                              <div className="font-normal text-white text-[13px]">
+                                Andy Ayrey
+                                <img
+                                  className="inline-block w-3.5 h-3.5 ml-1"
+                                  alt="Verified"
+                                  src="/assets/image-10.png"
+                                />
+                                <br />
+                                <span className="text-[#5a5d69]">
+                                  @AndyAyrey
+                                </span>
+                              </div>
+                              <div className="mt-4 font-normal text-white text-[13px]">
+                                timeline cleanse
+                              </div>
                             </div>
-                            <div className="mt-4 font-normal text-white text-[13px]">
-                              timeline cleanse
+                            <img
+                              className="w-[137px] h-[126px] ml-auto"
+                              alt="Tweet image"
+                              src="/assets/image-27.png"
+                            />
+                          </div>
+
+                          {/* Tweet engagement metrics */}
+                          <div className="flex items-center justify-evenly mt-8">
+                            <div className="flex items-center">
+                              <HeartIcon className="w-4 h-4 text-red-500 fill-red-500" />
+                              <span className="ml-2 font-normal text-white text-[13px]">
+                                597
+                              </span>
+                            </div>
+                            <Separator
+                              orientation="vertical"
+                              className="h-[23px] bg-[#5B5E69]"
+                            />
+                            <div className="flex items-center">
+                              <MessageCircleIcon className="w-4 h-3.5 text-white" />
+                              <span className="ml-2 font-normal text-white text-[13px]">
+                                64
+                              </span>
+                            </div>
+                            <Separator
+                              orientation="vertical"
+                              className="h-[23px] bg-[#5B5E69]"
+                            />
+                            <div className="flex items-center">
+                              <RepeatIcon className="w-4 h-3.5 text-white" />
+                              <span className="ml-2 font-normal text-white text-[13px]">
+                                199
+                              </span>
                             </div>
                           </div>
-                          <img
-                            className="w-[137px] h-[126px] ml-auto"
-                            alt="Tweet image"
-                            src="/assets/image-27.png"
-                          />
-                        </div>
-
-                        {/* Tweet engagement metrics */}
-                        <div className="flex items-center justify-evenly mt-8">
-                          <div className="flex items-center">
-                            <HeartIcon className="w-4 h-4 text-red-500 fill-red-500" />
-                            <span className="ml-2 font-normal text-white text-[13px]">
-                              597
-                            </span>
-                          </div>
-                          <Separator
-                            orientation="vertical"
-                            className="h-[23px] bg-[#5B5E69]"
-                          />
-                          <div className="flex items-center">
-                            <MessageCircleIcon className="w-4 h-3.5 text-white" />
-                            <span className="ml-2 font-normal text-white text-[13px]">
-                              64
-                            </span>
-                          </div>
-                          <Separator
-                            orientation="vertical"
-                            className="h-[23px] bg-[#5B5E69]"
-                          />
-                          <div className="flex items-center">
-                            <RepeatIcon className="w-4 h-3.5 text-white" />
-                            <span className="ml-2 font-normal text-white text-[13px]">
-                              199
-                            </span>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-
-                  {/* Remaining messages */}
-                  {messages.slice(4).map((message) => chattingHistory(message))}
-                </div>
-              </div>
-
-              {/* Message input */}
-              <div className="max-w-full bg-[#22242D] p-2">
-                <div className="relative w-full h-[45px] bg-[url(/rectangle-3.svg)] bg-[100%_100%] flex items-center px-3 rounded-md">
-                  <CirclePlus
-                    className="w-5 h-5 text-[#777a8c] cursor-pointer"
-                    onClick={plusBtnHandle}
-                  />
-                  {plusBtn && (
-                    <div className="absolute bottom-full mb-2 left-0 w-48 bg-[#22242D] rounded-md shadow-lg py-1 z-50">
-                      <MenuItem icon="📤" text="Upload a File" />
-                      <MenuItem icon="📊" text="Create Poll" />
-                      <MenuItem icon="🛠️" text="Use Apps" />
-                      <MenuItem icon="💬" text="Message" />
+                        </CardContent>
+                      </Card>
                     </div>
-                  )}
-                  <Input
-                    className="border-none bg-transparent text-[#777a8c] text-xs h-full focus:outline-none flex-1"
-                    placeholder="Write a message..."
-                    value={msg}
-                    onChange={(e) => setMsg(e.target.value)}
-                  />
-                  <div className="flex items-center gap-2 ml-auto">
-                    <PaperclipIcon
-                      className="w-5 h-5 text-[#777a8c] hidden sm:block cursor-pointer"
-                      onClick={openFileDialog}
+
+                    {/* Remaining messages */}
+                    {messages
+                      .slice(4)
+                      .map((message) => chattingHistory(message))}
+                  </div>
+                </div>
+
+                {/* Message input */}
+                <div className="max-w-full bg-[#22242D] p-2">
+                  <div className="relative w-full h-[45px] bg-[url(/rectangle-3.svg)] bg-[100%_100%] flex items-center px-3 rounded-md">
+                    <CirclePlus
+                      className="w-5 h-5 text-[#777a8c] cursor-pointer"
+                      onClick={plusBtnHandle}
                     />
-                    <SendIcon
-                      className="w-[18px] h-[18px] text-[#777a8c] cursor-pointer"
-                      onClick={sendMsgHandle}
+                    {plusBtn && (
+                      <div className="absolute bottom-full mb-2 left-0 w-48 bg-[#22242D] rounded-md shadow-lg py-1 z-50">
+                        <MenuItem icon="📤" text="Upload a File" />
+                        <MenuItem icon="📊" text="Create Poll" />
+                        <MenuItem icon="🛠️" text="Use Apps" />
+                        <MenuItem icon="💬" text="Message" />
+                      </div>
+                    )}
+                    <Input
+                      className="border-none bg-transparent text-[#777a8c] text-xs h-full focus:outline-none flex-1"
+                      placeholder="Write a message..."
+                      value={msg}
+                      onChange={(e) => setMsg(e.target.value)}
                     />
+                    <div className="flex items-center gap-2 ml-auto">
+                      <PaperclipIcon
+                        className="w-5 h-5 text-[#777a8c] hidden sm:block cursor-pointer"
+                        onClick={openFileDialog}
+                      />
+                      <SendIcon
+                        className="w-[18px] h-[18px] text-[#777a8c] cursor-pointer"
+                        onClick={sendMsgHandle}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <SignupPage />
+            )}
           </div>
         </div>
       </div>

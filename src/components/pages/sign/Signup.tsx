@@ -1,11 +1,33 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
+import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function SignupPage() {
+  const { login } = useLogin();
+  const { logout } = useLogout();
+  const { ready, authenticated, user } = usePrivy();
+  console.log("authenticated: ", authenticated);
+  console.log("user: ", user);
+
+  const signupWithTwitter = async () => {
+    if (!ready) return console.log("Waiting for Privy to be ready...");
+    try {
+      console.log("react");
+      await login();
+      if (authenticated && user) {
+        await logout();
+        console.log("User signed up with Twitter");
+        console.log("Username:", user.twitter?.username);
+        console.log("Wallet address:", user.wallet?.address);
+      }
+    } catch (err) {
+      console.log("Signup failed: ", err);
+    }
+  };
   return (
     <div className="min-h-screen bg-[#0d0d0d] flex items-center justify-center text-white">
       <Card className="bg-[#1a1a1a] border border-[#2a2a2a] shadow-lg rounded-2xl w-full max-w-sm">
@@ -15,7 +37,10 @@ export default function SignupPage() {
           </h2>
 
           <div className="flex flex-col gap-3 mb-6">
-            <Button className="bg-[#1DA1F2] hover:bg-[#0d8ddf] text-white w-full">
+            <Button
+              className="bg-[#1DA1F2] hover:bg-[#0d8ddf] text-white w-full"
+              onClick={signupWithTwitter}
+            >
               Sign up with Twitter
             </Button>
           </div>
