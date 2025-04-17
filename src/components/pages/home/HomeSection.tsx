@@ -22,13 +22,14 @@ import {
 import React, { useEffect, useState } from "react";
 import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import TokenInfo from "@/components/ui/tokenInfo";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { chattingHistory } from "@/components/ui/chatting";
 import { Message } from "@/@types/global";
 import { toShortAddress } from "@/utils/utils";
-import { Logout } from "@/components/ui/logout";
+import { Profile } from "@/components/ui/profile";
 
 interface MenuItemProps {
   Icon: LucideIcon;
@@ -128,15 +129,21 @@ const HomeSection = () => {
   const { login } = useLogin();
   const { logout } = useLogout();
   const { ready, authenticated, user } = usePrivy();
-  console.log("user: ", user);
+  console.log(user);
+  const logoutuser = () => {
+    try {
+      logout();
+      setOpenProfile(false);
+    } catch (err) {
+      console.log("Logout error: ", err);
+    }
+  };
 
   const signupWithTwitter = async () => {
     if (!ready) return console.log("Waiting for Privy to be ready...");
     try {
       await login();
       if (authenticated && user) {
-        console.log("logout");
-        await logout();
         console.log("User signed up with Twitter");
         console.log("Username:", user.twitter?.username);
         console.log("Wallet address:", user.wallet?.address);
@@ -188,11 +195,11 @@ const HomeSection = () => {
   };
 
   const channelClick = () => {
-    authenticated ? logout() : signupWithTwitter();
+    !authenticated && signupWithTwitter();
   };
 
   return (
-    <div className="bg-transparent flex flex-row justify-center w-full min-w-[500px]">
+    <div className="bg-transparent flex flex-row justify-center w-full min-w-[500px] border-r border-r-[#3f414e]">
       <div className="overflow-hidden w-full max-w-6xl h-screen">
         <div className="relative w-full h-full flex">
           {/* Sidebar */}
@@ -311,9 +318,9 @@ const HomeSection = () => {
                     onClick={() => setOpenProfile(!openProfile)}
                   />
                   {openProfile && (
-                    <Logout
+                    <Profile
                       myProfile={() => console.log("my profile is consoled")}
-                      logout={logout}
+                      logout={logoutuser}
                     />
                   )}
                 </div>
@@ -323,7 +330,7 @@ const HomeSection = () => {
                 />
               </div>
             </div>
-            {authenticated && (
+            {authenticated ? (
               <div className="flex-1 flex flex-col overflow-hidden">
                 {/* Banner */}
                 <div className="w-full">
@@ -486,6 +493,8 @@ const HomeSection = () => {
                   </div>
                 </div>
               </div>
+            ) : (
+              <TokenInfo />
             )}
           </div>
         </div>
