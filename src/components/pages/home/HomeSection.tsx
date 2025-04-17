@@ -1,17 +1,23 @@
 "use client";
+import { LucideIcon } from "lucide-react";
 import {
   ExternalLinkIcon,
   HeartIcon,
   MenuIcon,
   MessageCircleIcon,
-  PaperclipIcon,
+  FileUp,
   RepeatIcon,
   SearchIcon,
-  SendIcon,
+  Smile,
   Copy,
   Check,
   CirclePlus,
   UserCircle,
+  Pin,
+  HandCoins,
+  Vote,
+  Hammer,
+  MessageCircle,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
@@ -22,16 +28,17 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { chattingHistory } from "@/components/ui/chatting";
 import { Message } from "@/@types/global";
+import { toShortAddress } from "@/utils/utils";
 
 interface MenuItemProps {
-  icon: string;
+  Icon: LucideIcon;
   text: string;
 }
 
-const MenuItem = ({ icon, text }: MenuItemProps) => {
+const MenuItem = ({ Icon, text }: MenuItemProps) => {
   return (
     <div className="flex items-center px-4 py-2 text-sm text-white hover:bg-[#22242D] cursor-pointer">
-      <span className="mr-3">{icon}</span>
+      <Icon className="mr-3 size-4" />
       <span>{text}</span>
     </div>
   );
@@ -249,18 +256,28 @@ const HomeSection = () => {
                   <AvatarFallback>DB</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
-                  <div className="font-bold text-white text-base">DB</div>
-                  <div className="font-medium text-white text-[13px]">
-                    DICK BUTT
+                  <div className="flex items-center space-x-2">
+                    <b className="text-white text-base font-bold">memecoin</b>
+                    <b className="text-white text-[13px] font-medium">
+                      memecoin
+                    </b>
+                    <Pin
+                      size={12}
+                      className="text-[red] fill-[red] rotate-45"
+                    />
                   </div>
                   <div className="font-normal text-[#526fff] text-[13px] flex flex-row">
-                    0xDd0892a70aB28B2B3fac1E6FAa7a4B2121dDd5e4
+                    <div>{toShortAddress(textToCopy)}</div>
                     <button
                       onClick={handleCopy}
                       className="px-3 py-1 text-white mt-[-1vh]"
                     >
                       <span>
-                        {copied ? <Check size={13} /> : <Copy size={13} />}
+                        {copied ? (
+                          <Check size={13} className="mt-1" />
+                        ) : (
+                          <Copy size={13} className="mt-1" />
+                        )}
                       </span>
                     </button>
                   </div>
@@ -295,7 +312,7 @@ const HomeSection = () => {
                 />
               </div>
             </div>
-            {pageState ? (
+            {authenticated ? (
               <div className="flex-1 flex flex-col overflow-hidden">
                 {/* Banner */}
                 <div className="w-full">
@@ -388,7 +405,7 @@ const HomeSection = () => {
                           {/* Tweet engagement metrics */}
                           <div className="flex items-center justify-evenly mt-8">
                             <div className="flex items-center">
-                              <HeartIcon className="w-4 h-4 text-red-500 fill-red-500" />
+                              <HeartIcon className="w-4 h-4 text-[red] fill-[red]" />
                               <span className="ml-2 font-normal text-white text-[13px]">
                                 597
                               </span>
@@ -427,17 +444,17 @@ const HomeSection = () => {
 
                 {/* Message input */}
                 <div className="max-w-full bg-[#22242D] p-2">
-                  <div className="relative w-full h-[45px] bg-[url(/rectangle-3.svg)] bg-[100%_100%] flex items-center px-3 rounded-md">
+                  <div className="relative w-full h-[45px] bg-[url(/assets/rectangle-3.svg)] bg-[100%_100%] flex items-center px-3 rounded-md">
                     <CirclePlus
                       className="w-5 h-5 text-[#777a8c] cursor-pointer"
                       onClick={plusBtnHandle}
                     />
                     {plusBtn && (
                       <div className="absolute bottom-full mb-2 left-0 w-48 bg-[#22242D] rounded-md shadow-lg py-1 z-50">
-                        <MenuItem icon="📤" text="Upload a File" />
-                        <MenuItem icon="📊" text="Create Poll" />
-                        <MenuItem icon="🛠️" text="Use Apps" />
-                        <MenuItem icon="💬" text="Message" />
+                        <MenuItem Icon={FileUp} text="Upload a File" />
+                        <MenuItem Icon={Vote} text="Create Poll" />
+                        <MenuItem Icon={Hammer} text="Use Apps" />
+                        <MenuItem Icon={MessageCircle} text="Message" />
                       </div>
                     )}
                     <Input
@@ -447,11 +464,11 @@ const HomeSection = () => {
                       onChange={(e) => setMsg(e.target.value)}
                     />
                     <div className="flex items-center gap-2 ml-auto">
-                      <PaperclipIcon
-                        className="w-5 h-5 text-[#777a8c] hidden sm:block cursor-pointer"
+                      <HandCoins
+                        className="w-5 h-5 text-[green] hidden sm:block cursor-pointer"
                         onClick={openFileDialog}
                       />
-                      <SendIcon
+                      <Smile
                         className="w-[18px] h-[18px] text-[#777a8c] cursor-pointer"
                         onClick={sendMsgHandle}
                       />
