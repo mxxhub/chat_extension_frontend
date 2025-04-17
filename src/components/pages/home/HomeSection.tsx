@@ -14,13 +14,14 @@ import {
   UserCircle,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
+import SignupPage from "../sign/Signup";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { chattingHistory } from "@/components/ui/chatting";
 import { Message } from "@/@types/global";
-import SignupPage from "../sign/Signup";
 
 interface MenuItemProps {
   icon: string;
@@ -37,7 +38,7 @@ const MenuItem = ({ icon, text }: MenuItemProps) => {
 };
 
 const HomeSection = () => {
-  const [pageState, setPageState] = useState(false);
+  const [pageState, setPageState] = useState(true);
   const [plusBtn, setPlusBtn] = useState(false);
   const [copied, setCopied] = useState(false);
   const [searchBtn, setSearchBtn] = useState(true);
@@ -116,6 +117,25 @@ const HomeSection = () => {
     { id: 9, image: "/assets/image-18.png" },
     { id: 10, image: "/assets/image-19.png" },
   ];
+  const { login } = useLogin();
+  const { logout } = useLogout();
+  const { ready, authenticated, user } = usePrivy();
+
+  const signupWithTwitter = async () => {
+    if (!ready) return console.log("Waiting for Privy to be ready...");
+    try {
+      console.log("react");
+      await login();
+      if (authenticated && user) {
+        await logout();
+        console.log("User signed up with Twitter");
+        console.log("Username:", user.twitter?.username);
+        console.log("Wallet address:", user.wallet?.address);
+      }
+    } catch (err) {
+      console.log("Signup failed: ", err);
+    }
+  };
 
   useEffect(() => {}, [messages]);
 
@@ -159,7 +179,8 @@ const HomeSection = () => {
   };
 
   const channelClick = () => {
-    setPageState(!pageState);
+    signupWithTwitter();
+    // setPageState(!pageState);
   };
 
   return (
