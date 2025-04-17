@@ -5,7 +5,6 @@
 .sqs-ui-font-family {
   font-family: "squarespace-ui-font";
   font-style: normal;
-  speak: none;
   font-weight: normal;
   -webkit-font-smoothing: antialiased;
 }
@@ -77,4 +76,8 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+* {
+  scrollbar-width: none;
 }

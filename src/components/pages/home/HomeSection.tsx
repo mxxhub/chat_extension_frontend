@@ -5,7 +5,6 @@ import {
   HeartIcon,
   MenuIcon,
   MessageCircleIcon,
-  FileUp,
   RepeatIcon,
   SearchIcon,
   Smile,
@@ -15,13 +14,13 @@ import {
   UserCircle,
   Pin,
   HandCoins,
-  Vote,
-  Hammer,
-  MessageCircle,
+  Play,
+  ThumbsUp,
+  ImagePlus,
+  TicketCheck,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
-import SignupPage from "../sign/Signup";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -29,6 +28,7 @@ import { Separator } from "@/components/ui/separator";
 import { chattingHistory } from "@/components/ui/chatting";
 import { Message } from "@/@types/global";
 import { toShortAddress } from "@/utils/utils";
+import { Logout } from "@/components/ui/logout";
 
 interface MenuItemProps {
   Icon: LucideIcon;
@@ -37,7 +37,7 @@ interface MenuItemProps {
 
 const MenuItem = ({ Icon, text }: MenuItemProps) => {
   return (
-    <div className="flex items-center px-4 py-2 text-sm text-white hover:bg-[#22242D] cursor-pointer">
+    <div className="flex items-center px-4 py-2 text-sm text-white hover:bg-[#373b49] cursor-pointer">
       <Icon className="mr-3 size-4" />
       <span>{text}</span>
     </div>
@@ -45,6 +45,7 @@ const MenuItem = ({ Icon, text }: MenuItemProps) => {
 };
 
 const HomeSection = () => {
+  const [openProfile, setOpenProfile] = useState(false);
   const [pageState, setPageState] = useState(true);
   const [plusBtn, setPlusBtn] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -127,13 +128,14 @@ const HomeSection = () => {
   const { login } = useLogin();
   const { logout } = useLogout();
   const { ready, authenticated, user } = usePrivy();
+  console.log("user: ", user);
 
   const signupWithTwitter = async () => {
     if (!ready) return console.log("Waiting for Privy to be ready...");
     try {
-      console.log("react");
       await login();
       if (authenticated && user) {
+        console.log("logout");
         await logout();
         console.log("User signed up with Twitter");
         console.log("Username:", user.twitter?.username);
@@ -186,22 +188,20 @@ const HomeSection = () => {
   };
 
   const channelClick = () => {
-    signupWithTwitter();
-    // setPageState(!pageState);
+    authenticated ? logout() : signupWithTwitter();
   };
 
   return (
-    <div className="bg-transparent flex flex-row justify-center w-full">
+    <div className="bg-transparent flex flex-row justify-center w-full min-w-[500px]">
       <div className="overflow-hidden w-full max-w-6xl h-screen">
         <div className="relative w-full h-full flex">
           {/* Sidebar */}
-          <div className="h-full block md:block md:relative">
+          <div className="h-full block md:block md:relative bg-[#22242D] border-[#22242d]">
             <div className="relative h-full">
-              <div className="w-[63px] h-full bg-[#22242D] border border-solid border-[#22242d] flex flex-col items-center">
-                <div>
-                  <MenuIcon className="w-7 h-7 text-white mt-4 cursor-pointer" />
-                </div>
-
+              <div className="border-r border-r-[#3f414e] justify-items-center py-3">
+                <MenuIcon className="w-7 h-7 text-white cursor-pointer" />
+              </div>
+              <div className="w-[63px] h-full border-r border-r-[#3f414e] flex flex-col items-center overflow-y-scroll">
                 <div className="mt-4 relative">
                   <div className="text-[#777a8c] text-[10px] ml-4">Pinned</div>
                   <img
@@ -285,7 +285,7 @@ const HomeSection = () => {
               </div>
 
               <div className="ml-auto flex items-center gap-2">
-                <div className="hidden sm:flex items-center gap-2">
+                <div className="flex items-center gap-2">
                   <Avatar className="w-4 h-4">
                     <AvatarImage src="/assets/image-5-1.png" alt="Photon" />
                   </Avatar>
@@ -305,14 +305,25 @@ const HomeSection = () => {
                     <AvatarImage src="/assets/layer-1.png" alt="Dexscreener" />
                   </Avatar>
                 </div>
-                <UserCircle className="w-5 h-5 text-white cursor-pointer" />
+                <div className="relative group ml-2">
+                  <UserCircle
+                    className="w-5 h-5 text-white cursor-pointer"
+                    onClick={() => setOpenProfile(!openProfile)}
+                  />
+                  {openProfile && (
+                    <Logout
+                      myProfile={() => console.log("my profile is consoled")}
+                      logout={logout}
+                    />
+                  )}
+                </div>
                 <SearchIcon
                   className="w-5 h-5 text-white cursor-pointer"
                   onClick={searchButtonHandle}
                 />
               </div>
             </div>
-            {authenticated ? (
+            {authenticated && (
               <div className="flex-1 flex flex-col overflow-hidden">
                 {/* Banner */}
                 <div className="w-full">
@@ -444,40 +455,37 @@ const HomeSection = () => {
 
                 {/* Message input */}
                 <div className="max-w-full bg-[#22242D] p-2">
-                  <div className="relative w-full h-[45px] bg-[url(/assets/rectangle-3.svg)] bg-[100%_100%] flex items-center px-3 rounded-md">
+                  <div className="relative w-full h-[45px] bg-[100%_100%] flex items-center px-3 rounded-md">
                     <CirclePlus
                       className="w-5 h-5 text-[#777a8c] cursor-pointer"
                       onClick={plusBtnHandle}
                     />
                     {plusBtn && (
                       <div className="absolute bottom-full mb-2 left-0 w-48 bg-[#22242D] rounded-md shadow-lg py-1 z-50">
-                        <MenuItem Icon={FileUp} text="Upload a File" />
-                        <MenuItem Icon={Vote} text="Create Poll" />
-                        <MenuItem Icon={Hammer} text="Use Apps" />
-                        <MenuItem Icon={MessageCircle} text="Message" />
+                        <MenuItem Icon={ImagePlus} text="Add Image" />
+                        <MenuItem Icon={Play} text="Start Raid" />
+                        <MenuItem Icon={ThumbsUp} text="Top Holders" />
+                        <MenuItem Icon={TicketCheck} text="Bundle Checker" />
                       </div>
                     )}
                     <Input
-                      className="border-none bg-transparent text-[#777a8c] text-xs h-full focus:outline-none flex-1"
+                      className="border-none bg-transparent text-[#dbd6d6] text-sm h-full focus:outline-none focus:ring-0 focus:border-none focus-visible:ring-0 focus-visible:ring-offset-0"
                       placeholder="Write a message..."
                       value={msg}
                       onChange={(e) => setMsg(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          sendMsgHandle();
+                        }
+                      }}
                     />
                     <div className="flex items-center gap-2 ml-auto">
-                      <HandCoins
-                        className="w-5 h-5 text-[green] hidden sm:block cursor-pointer"
-                        onClick={openFileDialog}
-                      />
-                      <Smile
-                        className="w-[18px] h-[18px] text-[#777a8c] cursor-pointer"
-                        onClick={sendMsgHandle}
-                      />
+                      <HandCoins className="w-5 h-5 text-[green] hidden sm:block cursor-pointer" />
+                      <Smile className="w-[18px] h-[18px] text-[#777a8c] cursor-pointer" />
                     </div>
                   </div>
                 </div>
               </div>
-            ) : (
-              <SignupPage />
             )}
           </div>
         </div>
