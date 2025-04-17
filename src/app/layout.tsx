@@ -1,5 +1,7 @@
 import "./globals.css";
 import { Providers } from "@/components/pages/sign/provider";
+import store from "@/redux/store";
+import { Provider } from "react-redux";
 
 export const metadata = {
   title: "Chatting Extension App",
@@ -14,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <Providers>{children}</Providers>
+        <Provider store={store}>
+          <Providers>{children}</Providers>
+        </Provider>
       </body>
     </html>
   );
