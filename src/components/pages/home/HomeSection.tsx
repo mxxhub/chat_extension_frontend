@@ -18,6 +18,7 @@ import {
   ImagePlus,
   TicketCheck,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
@@ -32,6 +33,7 @@ import { ProfileModal } from "../../profileModal";
 import FirstPage from "./FirstPage";
 
 const HomeSection = () => {
+  const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [menu, setMenu] = useState(false);
   const [profileModal, setProfileModal] = useState(false);
@@ -134,7 +136,7 @@ const HomeSection = () => {
 
   useEffect(() => {
     if (authenticated) {
-      window.location.href = "https://chat-extension-frontend.onrender.com/";
+      navigate("/");
     } else {
       return;
     }
