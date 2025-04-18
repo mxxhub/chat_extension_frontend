@@ -133,8 +133,11 @@ const HomeSection = () => {
   console.log(user);
 
   useEffect(() => {
-    if (!authenticated) return;
-    window.location.href = "https://chat-extension-frontend.onrender.com/";
+    if (authenticated) {
+      window.location.href = "https://chat-extension-frontend.onrender.com/";
+    } else {
+      return;
+    }
   }, [authenticated]);
 
   interface MenuItemProps {
