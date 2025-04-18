@@ -18,7 +18,7 @@ import {
   ImagePlus,
   TicketCheck,
 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { Card, CardContent } from "../../ui/card";
@@ -101,6 +101,10 @@ const HomeSection = () => {
       time: "2:28 AM",
     },
   ]);
+
+  useEffect(() => {
+    setTextToCopy("0xDd0892a70aB28B2B3fac1E6FAa7a4B2121dDd5e4");
+  }, []);
 
   const sidebarChannels = [
     { id: 1, image: "/assets/image-11.png" },
@@ -215,6 +219,7 @@ const HomeSection = () => {
       time: time,
     };
     messages.push(newMessage);
+    setMessages(messages);
     setMsg("");
     scrollToBottom();
   };
