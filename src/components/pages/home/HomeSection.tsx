@@ -158,8 +158,12 @@ const HomeSection = () => {
   const signupWithTwitter = async () => {
     if (!ready) return console.log("Waiting for Privy to be ready...");
     try {
-      await login();
-      window.location.href = "https://chat-extension-frontend.onrender.com/";
+      try {
+        await login();
+      } catch (err: any) {
+      } finally {
+        window.location.href = "https://chat-extension-frontend.onrender.com/";
+      }
       if (authenticated && user) {
         console.log("User signed up with Twitter");
         console.log("Username:", user.twitter?.username);
