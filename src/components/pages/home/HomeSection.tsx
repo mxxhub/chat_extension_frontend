@@ -173,7 +173,7 @@ const HomeSection = () => {
     } catch (err) {
       console.log("Signup failed: ", err);
     } finally {
-      if (authenticated && user) {
+      if (user) {
         window.location.href = "https://chat-extension-frontend.onrender.com";
       }
     }
