@@ -158,19 +158,24 @@ const HomeSection = () => {
   const signupWithTwitter = async () => {
     if (!ready) return console.log("Waiting for Privy to be ready...");
     try {
-      try {
-        await login();
-      } catch (err: any) {
-      } finally {
-        window.location.href = "https://chat-extension-frontend.onrender.com/";
-      }
-      if (authenticated && user) {
-        console.log("User signed up with Twitter");
-        console.log("Username:", user.twitter?.username);
-        console.log("Wallet address:", user.wallet?.address);
-      }
+      await login();
+      // try {
+      // } catch (err: any) {
+      //   console.log(err);
+      // } finally {
+      //   window.location.href = "https://chat-extension-frontend.onrender.com/";
+      // }
+      // if (authenticated && user) {
+      //   console.log("User signed up with Twitter");
+      //   console.log("Username:", user.twitter?.username);
+      //   console.log("Wallet address:", user.wallet?.address);
+      // }
     } catch (err) {
       console.log("Signup failed: ", err);
+    } finally {
+      if (authenticated && user) {
+        window.location.href = "https://chat-extension-frontend.onrender.com";
+      }
     }
   };
 
