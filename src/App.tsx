@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Providers } from "./components/pages/sign/provider";
 import { Provider } from "react-redux";
 import Home from "./components/pages/home/HomeSection";

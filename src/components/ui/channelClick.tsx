@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
+import { Avatar, AvatarImage } from "./avatar";
 
 type Channel = {
   id: string;

@@ -1,4 +1,3 @@
-import React from "react";
 import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";

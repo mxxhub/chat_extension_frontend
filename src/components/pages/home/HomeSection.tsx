@@ -18,10 +18,9 @@ import {
   ImagePlus,
   TicketCheck,
 } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
-import TokenInfo from "../../ui/tokenInfo";
 import { Card, CardContent } from "../../ui/card";
 import { Input } from "../../ui/input";
 import { Separator } from "../../ui/separator";
@@ -35,7 +34,6 @@ const HomeSection = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [menu, setMenu] = useState(false);
   const [profileModal, setProfileModal] = useState(false);
-  const [image, setImage] = useState<File | null>(null);
   const [openProfile, setOpenProfile] = useState(false);
   const [plusBtn, setPlusBtn] = useState(false);
   const [copied, setCopied] = useState(false);

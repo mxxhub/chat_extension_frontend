@@ -1,7 +1,4 @@
-import React from "react";
-import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
 import { Card, CardContent } from "./ui/card";
 import { X } from "lucide-react";
 
