@@ -19,7 +19,12 @@ import {
   TicketCheck,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
+import {
+  useLogin,
+  usePrivy,
+  useLogout,
+  useLoginWithOAuth,
+} from "@privy-io/react-auth";
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { Card, CardContent } from "../../ui/card";
 import { Input } from "../../ui/input";
@@ -102,6 +107,8 @@ const HomeSection = () => {
     },
   ]);
 
+  const { initOAuth } = useLoginWithOAuth();
+
   useEffect(() => {
     setTextToCopy("0xDd0892a70aB28B2B3fac1E6FAa7a4B2121dDd5e4");
   }, []);
@@ -131,6 +138,11 @@ const HomeSection = () => {
   const { logout } = useLogout();
   const { ready, authenticated, user } = usePrivy();
   console.log(user);
+
+  useEffect(() => {
+    if (!user) return;
+    window.location.href = "https://chat-extension-frontend.onrender.com/";
+  }, [user]);
 
   interface MenuItemProps {
     Icon: LucideIcon;
