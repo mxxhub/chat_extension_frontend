@@ -31,10 +31,12 @@ import { SettingModal } from "../../settingModal";
 import { ProfileMenu } from "../../ui/profile";
 import { ProfileModal } from "../../profileModal";
 import FirstPage from "./FirstPage";
+import ProfileCard from "../../ui/profileCard";
 
 const HomeSection = () => {
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [userProfile, setUserProfile] = useState(false);
   const [menu, setMenu] = useState(false);
   const [profileModal, setProfileModal] = useState(false);
   const [openProfile, setOpenProfile] = useState(false);
@@ -164,12 +166,6 @@ const HomeSection = () => {
     if (!ready) return console.log("Waiting for Privy to be ready...");
     try {
       await login();
-      // try {
-      // } catch (err: any) {
-      //   console.log(err);
-      // } finally {
-      //   window.location.href = "https://chat-extension-frontend.onrender.com/";
-      // }
       if (authenticated && user) {
         console.log("User signed up with Twitter");
         console.log("Username:", user.twitter?.username);
@@ -192,16 +188,15 @@ const HomeSection = () => {
   const handleFileChange = () => {
     const input = document.createElement("input");
     input.type = "file";
-    input.accept = ".png,.jpg,.jpeg"; // Or specify: ".png,.jpg,.jpeg,.pdf"
+    input.accept = ".png,.jpg,.jpeg";
     input.onchange = (event: Event) => {
       const target = event.target as HTMLInputElement;
       if (target.files && target.files.length > 0) {
         const file = target.files[0];
         console.log("Selected file:", file);
-        // handle your file here
       }
     };
-    input.click(); // Open the file dialog
+    input.click();
   };
 
   const handleCopy = async () => {
@@ -260,6 +255,10 @@ const HomeSection = () => {
   const handleProfileModalClose = () => {
     setProfileModal(false);
     setOpenProfile(false);
+  };
+
+  const clickAvatar = () => {
+    setUserProfile(!userProfile);
   };
 
   return (
@@ -444,96 +443,99 @@ const HomeSection = () => {
                   ref={scrollRef}
                   className="flex-1 overflow-y-scroll bg-[#191a21] p-4"
                 >
-                  {/* Chat messages */}
-                  <div className="space-y-4">
-                    {messages
-                      .slice(0, 4)
-                      .map((message) => chattingHistory(message))}
-
-                    {/* Twitter Raid section */}
-                    <div className="mt-4">
-                      <div className="flex items-center mb-2">
-                        <img
-                          className="w-[13px] h-[11px]"
-                          alt="Twitter icon"
-                          src="/assets/vector.svg"
-                        />
-                        <span className="ml-2 font-bold text-white text-[13px]">
-                          Twitter Raid
-                        </span>
-                      </div>
-
-                      <Card className="w-full max-w-full bg-[#15202b] rounded-lg border-none">
-                        <CardContent className="p-4">
-                          <div className="flex items-start">
-                            <Avatar className="w-8 h-8">
-                              <AvatarImage
-                                src="/assets/image-28.png"
-                                alt="Andy Ayrey"
-                              />
-                              <AvatarFallback>AA</AvatarFallback>
-                            </Avatar>
-                            <div className="ml-2 flex-1">
-                              <div className="font-normal text-white text-[13px]">
-                                Andy Ayrey
-                                <img
-                                  className="inline-block w-3.5 h-3.5 ml-1"
-                                  alt="Verified"
-                                  src="/assets/image-10.png"
-                                />
-                                <br />
-                                <span className="text-[#5a5d69]">
-                                  @AndyAyrey
-                                </span>
-                              </div>
-                              <div className="mt-4 font-normal text-white text-[13px]">
-                                timeline cleanse
-                              </div>
-                            </div>
-                            <img
-                              className="w-[137px] h-[126px] ml-auto"
-                              alt="Tweet image"
-                              src="/assets/image-27.png"
-                            />
-                          </div>
-
-                          {/* Tweet engagement metrics */}
-                          <div className="flex items-center justify-evenly mt-8">
-                            <div className="flex items-center">
-                              <HeartIcon className="w-4 h-4 text-[red] fill-[red]" />
-                              <span className="ml-2 font-normal text-white text-[13px]">
-                                597
-                              </span>
-                            </div>
-                            <Separator
-                              orientation="vertical"
-                              className="h-[23px] bg-[#5B5E69]"
-                            />
-                            <div className="flex items-center">
-                              <MessageCircleIcon className="w-4 h-3.5 text-white" />
-                              <span className="ml-2 font-normal text-white text-[13px]">
-                                64
-                              </span>
-                            </div>
-                            <Separator
-                              orientation="vertical"
-                              className="h-[23px] bg-[#5B5E69]"
-                            />
-                            <div className="flex items-center">
-                              <RepeatIcon className="w-4 h-3.5 text-white" />
-                              <span className="ml-2 font-normal text-white text-[13px]">
-                                199
-                              </span>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
+                  {/* Twitter Raid section */}
+                  <div className="mt-4">
+                    <div className="flex items-center mb-2">
+                      <img
+                        className="w-[13px] h-[11px]"
+                        alt="Twitter icon"
+                        src="/assets/vector.svg"
+                      />
+                      <span className="ml-2 font-bold text-white text-[13px]">
+                        Twitter Raid
+                      </span>
                     </div>
 
-                    {/* Remaining messages */}
-                    {messages
-                      .slice(4)
-                      .map((message) => chattingHistory(message))}
+                    <Card className="w-full max-w-full bg-[#15202b] rounded-lg border-none">
+                      <CardContent className="p-4">
+                        <div className="flex items-start">
+                          <Avatar className="w-8 h-8">
+                            <AvatarImage
+                              src="/assets/image-28.png"
+                              alt="Andy Ayrey"
+                            />
+                            <AvatarFallback>AA</AvatarFallback>
+                          </Avatar>
+                          <div className="ml-2 flex-1">
+                            <div className="font-normal text-white text-[13px]">
+                              Andy Ayrey
+                              <img
+                                className="inline-block w-3.5 h-3.5 ml-1"
+                                alt="Verified"
+                                src="/assets/image-10.png"
+                              />
+                              <br />
+                              <span className="text-[#5a5d69]">@AndyAyrey</span>
+                            </div>
+                            <div className="mt-4 font-normal text-white text-[13px]">
+                              timeline cleanse
+                            </div>
+                          </div>
+                          <img
+                            className="w-[137px] h-[126px] ml-auto"
+                            alt="Tweet image"
+                            src="/assets/image-27.png"
+                          />
+                        </div>
+
+                        {/* Tweet engagement metrics */}
+                        <div className="flex items-center justify-evenly mt-8">
+                          <div className="flex items-center">
+                            <HeartIcon className="w-4 h-4 text-[red] fill-[red]" />
+                            <span className="ml-2 font-normal text-white text-[13px]">
+                              597
+                            </span>
+                          </div>
+                          <Separator
+                            orientation="vertical"
+                            className="h-[23px] bg-[#5B5E69]"
+                          />
+                          <div className="flex items-center">
+                            <MessageCircleIcon className="w-4 h-3.5 text-white" />
+                            <span className="ml-2 font-normal text-white text-[13px]">
+                              64
+                            </span>
+                          </div>
+                          <Separator
+                            orientation="vertical"
+                            className="h-[23px] bg-[#5B5E69]"
+                          />
+                          <div className="flex items-center">
+                            <RepeatIcon className="w-4 h-3.5 text-white" />
+                            <span className="ml-2 font-normal text-white text-[13px]">
+                              199
+                            </span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                  {/* Chat messages */}
+                  <div className="space-y-4">
+                    {userProfile && (
+                      <ProfileCard
+                        name="Jason Ricky"
+                        username="jasonricky."
+                        avatarUrl="/assets/image-26.png"
+                        mutualServerCount={1}
+                        promoterTag={true}
+                      />
+                    )}
+                    {messages.map((message) =>
+                      chattingHistory(message, () => {
+                        setUserProfile(!userProfile);
+                      })
+                    )}
                   </div>
                 </div>
 

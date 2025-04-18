@@ -4,10 +4,11 @@ import {
   AvatarImage,
 } from "../../components/ui/avatar";
 
-export const chattingHistory = (message: Message) => {
+export const chattingHistory = (message: Message, avatarClick: () => void) => {
+  console.log(avatarClick);
   return (
     <div key={message.id} className="flex items-start gap-2">
-      <Avatar className="w-8 h-8">
+      <Avatar className="w-8 h-8" onClick={avatarClick}>
         <AvatarImage src={message.avatar} alt={message.user} />
         <AvatarFallback>{message.user[0]}</AvatarFallback>
       </Avatar>
