@@ -30,7 +30,7 @@ import { toShortAddress } from "../../../utils/utils";
 import { SettingModal } from "../../settingModal";
 import { ProfileMenu } from "../../ui/profile";
 import { ProfileModal } from "../../profileModal";
-import FirstPage from "./FirstPage";
+// import FirstPage from "./FirstPage";
 import ProfileCard from "../../ui/profileCard";
 import "react-toastify/dist/ReactToastify.css";
 import { showToast } from "../../ui/toastMsg";
