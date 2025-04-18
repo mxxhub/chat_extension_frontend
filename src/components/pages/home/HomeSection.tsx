@@ -1,4 +1,3 @@
-"use client";
 import { LucideIcon } from "lucide-react";
 import {
   ExternalLinkIcon,
@@ -19,35 +18,25 @@ import {
   ImagePlus,
   TicketCheck,
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import TokenInfo from "@/components/ui/tokenInfo";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { chattingHistory } from "@/components/ui/chatting";
-import { Message } from "@/@types/global";
-import { toShortAddress } from "@/utils/utils";
-import { Profile } from "@/components/ui/profile";
-
-interface MenuItemProps {
-  Icon: LucideIcon;
-  text: string;
-}
-
-const MenuItem = ({ Icon, text }: MenuItemProps) => {
-  return (
-    <div className="flex items-center px-4 py-2 text-sm text-white hover:bg-[#373b49] cursor-pointer">
-      <Icon className="mr-3 size-4" />
-      <span>{text}</span>
-    </div>
-  );
-};
+import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
+import TokenInfo from "../../ui/tokenInfo";
+import { Card, CardContent } from "../../ui/card";
+import { Input } from "../../ui/input";
+import { Separator } from "../../ui/separator";
+import { chattingHistory } from "../../ui/chatting";
+import { toShortAddress } from "../../../utils/utils";
+import { SettingModal } from "../../settingModal";
+import { ProfileMenu } from "../../ui/profile";
+import { ProfileModal } from "../../profileModal";
 
 const HomeSection = () => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [menu, setMenu] = useState(false);
+  const [profileModal, setProfileModal] = useState(false);
+  const [image, setImage] = useState<File | null>(null);
   const [openProfile, setOpenProfile] = useState(false);
-  const [pageState, setPageState] = useState(true);
   const [plusBtn, setPlusBtn] = useState(false);
   const [copied, setCopied] = useState(false);
   const [searchBtn, setSearchBtn] = useState(true);
@@ -113,7 +102,7 @@ const HomeSection = () => {
       time: "2:28 AM",
     },
   ]);
-  // Sidebar channels data
+
   const sidebarChannels = [
     { id: 1, image: "/assets/image-11.png" },
     { id: 2, image: "/assets/image-12.png" },
@@ -125,18 +114,37 @@ const HomeSection = () => {
     { id: 8, image: "/assets/image-17.png" },
     { id: 9, image: "/assets/image-18.png" },
     { id: 10, image: "/assets/image-19.png" },
+    { id: 11, image: "/assets/image-22.png" },
+    { id: 12, image: "/assets/image-17.png" },
+    { id: 13, image: "/assets/image-11.png" },
+    { id: 14, image: "/assets/image-16.png" },
+    { id: 15, image: "/assets/image-23.png" },
+    { id: 16, image: "/assets/image-11.png" },
+    { id: 17, image: "/assets/image-18.png" },
+    { id: 18, image: "/assets/image-18.png" },
   ];
+
   const { login } = useLogin();
   const { logout } = useLogout();
   const { ready, authenticated, user } = usePrivy();
   console.log(user);
-  const logoutuser = () => {
-    try {
-      logout();
-      setOpenProfile(false);
-    } catch (err) {
-      console.log("Logout error: ", err);
-    }
+
+  interface MenuItemProps {
+    Icon: LucideIcon;
+    text: string;
+    onClick?: () => void;
+  }
+
+  const MenuItem = ({ Icon, text, onClick }: MenuItemProps) => {
+    return (
+      <div
+        className="flex items-center px-4 py-2 text-sm text-white hover:bg-[#373b49] cursor-pointer"
+        onClick={onClick}
+      >
+        <Icon className="mr-3 size-4" />
+        <span>{text}</span>
+      </div>
+    );
   };
 
   const signupWithTwitter = async () => {
@@ -153,7 +161,29 @@ const HomeSection = () => {
     }
   };
 
-  useEffect(() => {}, [messages]);
+  const logoutuser = () => {
+    try {
+      logout();
+      setOpenProfile(false);
+    } catch (err) {
+      console.log("Logout error: ", err);
+    }
+  };
+
+  const handleFileChange = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".png,.jpg,.jpeg"; // Or specify: ".png,.jpg,.jpeg,.pdf"
+    input.onchange = (event: Event) => {
+      const target = event.target as HTMLInputElement;
+      if (target.files && target.files.length > 0) {
+        const file = target.files[0];
+        console.log("Selected file:", file);
+        // handle your file here
+      }
+    };
+    input.click(); // Open the file dialog
+  };
 
   const handleCopy = async () => {
     try {
@@ -172,22 +202,22 @@ const HomeSection = () => {
   };
 
   const sendMsgHandle = () => {
+    const now = new Date();
+    const time = now.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
     const newMessage: Message = {
       id: messages.length + 1,
       user: "ShockedJS",
       avatar: "/assets/image-26.png",
       message: msg,
-      time: "2:28 AM",
+      time: time,
     };
     messages.push(newMessage);
     setMsg("");
-  };
-
-  const openFileDialog = () => {
-    const inputElement = document.createElement("input");
-    inputElement.type = "file";
-    inputElement.accept = "image/*";
-    inputElement.click();
+    scrollToBottom();
   };
 
   const plusBtnHandle = () => {
@@ -198,15 +228,30 @@ const HomeSection = () => {
     !authenticated && signupWithTwitter();
   };
 
+  const scrollToBottom = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
-    <div className="bg-transparent flex flex-row justify-center w-full min-w-[500px] border-r border-r-[#3f414e]">
-      <div className="overflow-hidden w-full max-w-6xl h-screen">
+    <div className="bg-transparent flex flex-row justify-center w-full border-r border-r-[#3f414e]">
+      <div className="overflow-hidden w-full max-w-[500px] min-w-[500px] h-screen">
         <div className="relative w-full h-full flex">
           {/* Sidebar */}
           <div className="h-full block md:block md:relative bg-[#22242D] border-[#22242d]">
             <div className="relative h-full">
               <div className="border-r border-r-[#3f414e] justify-items-center py-3">
-                <MenuIcon className="w-7 h-7 text-white cursor-pointer" />
+                <MenuIcon
+                  className="w-7 h-7 text-white cursor-pointer"
+                  onClick={() => setMenu(true)}
+                />
+                {menu && (
+                  <SettingModal isOpen={menu} onClose={() => setMenu(false)} />
+                )}
               </div>
               <div className="w-[63px] h-full border-r border-r-[#3f414e] flex flex-col items-center overflow-y-scroll">
                 <div className="mt-4 relative">
@@ -318,9 +363,15 @@ const HomeSection = () => {
                     onClick={() => setOpenProfile(!openProfile)}
                   />
                   {openProfile && (
-                    <Profile
-                      myProfile={() => console.log("my profile is consoled")}
+                    <ProfileMenu
+                      myProfile={() => setProfileModal(true)}
                       logout={logoutuser}
+                    />
+                  )}
+                  {profileModal && (
+                    <ProfileModal
+                      isOpen={profileModal}
+                      onClose={() => setProfileModal(false)}
                     />
                   )}
                 </div>
@@ -330,7 +381,7 @@ const HomeSection = () => {
                 />
               </div>
             </div>
-            {authenticated ? (
+            {authenticated && (
               <div className="flex-1 flex flex-col overflow-hidden">
                 {/* Banner */}
                 <div className="w-full">
@@ -366,7 +417,10 @@ const HomeSection = () => {
                 </div>
 
                 {/* Chat messages container with scrolling */}
-                <div className="flex-1 overflow-y-auto bg-[#191a21] p-4">
+                <div
+                  ref={scrollRef}
+                  className="flex-1 overflow-y-scroll bg-[#191a21] p-4"
+                >
                   {/* Chat messages */}
                   <div className="space-y-4">
                     {messages
@@ -469,7 +523,11 @@ const HomeSection = () => {
                     />
                     {plusBtn && (
                       <div className="absolute bottom-full mb-2 left-0 w-48 bg-[#22242D] rounded-md shadow-lg py-1 z-50">
-                        <MenuItem Icon={ImagePlus} text="Add Image" />
+                        <MenuItem
+                          Icon={ImagePlus}
+                          text="Add Image"
+                          onClick={handleFileChange}
+                        />
                         <MenuItem Icon={Play} text="Start Raid" />
                         <MenuItem Icon={ThumbsUp} text="Top Holders" />
                         <MenuItem Icon={TicketCheck} text="Bundle Checker" />
@@ -493,8 +551,6 @@ const HomeSection = () => {
                   </div>
                 </div>
               </div>
-            ) : (
-              <TokenInfo />
             )}
           </div>
         </div>

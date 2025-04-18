@@ -1,4 +1,4 @@
-export const Profile = (props: any) => {
+export const ProfileMenu = (props: any) => {
   return (
     <div className="absolute right-0 mt-2 w-36 bg-[#101114] rounded-lg shadow-lg z-50">
       <button

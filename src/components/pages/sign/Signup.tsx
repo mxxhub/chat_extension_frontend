@@ -1,10 +1,8 @@
-"use client";
-
 import React from "react";
 import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "../../../components/ui/button";
+import { Input } from "../../../components/ui/input";
+import { Card, CardContent } from "../../../components/ui/card";
 
 export default function SignupPage() {
   const { login } = useLogin();

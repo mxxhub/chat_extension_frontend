@@ -1,4 +1,4 @@
-export interface Message {
+declare interface Message {
   id: number;
   user: string;
   avatar: string;

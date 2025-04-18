@@ -1,7 +1,4 @@
-"use client";
-
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
-import React from "react";
 
 type Channel = {
   id: string;
