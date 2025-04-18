@@ -32,6 +32,9 @@ import { ProfileMenu } from "../../ui/profile";
 import { ProfileModal } from "../../profileModal";
 import FirstPage from "./FirstPage";
 import ProfileCard from "../../ui/profileCard";
+import "react-toastify/dist/ReactToastify.css";
+import { showToast } from "../../ui/toastMsg";
+import SidebarChannelList from "../../channelModal";
 
 const HomeSection = () => {
   const navigate = useNavigate();
@@ -47,6 +50,8 @@ const HomeSection = () => {
   const [textToCopy, setTextToCopy] = useState(
     "0xDd0892a70aB28B2B3fac1E6FAa7a4B2121dDd5e4"
   );
+  const [tokenName, setTokenName] = useState("memecoin");
+  const [tokenImage, setTokenImage] = useState("/assets/image-11.png");
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -111,24 +116,114 @@ const HomeSection = () => {
   }, []);
 
   const sidebarChannels = [
-    { id: 1, image: "/assets/image-11.png" },
-    { id: 2, image: "/assets/image-12.png" },
-    { id: 3, image: "/assets/image-14.png" },
-    { id: 4, image: "/assets/image-15.png" },
-    { id: 5, image: "/assets/image-16.png" },
-    { id: 6, image: "/assets/image-22.png" },
-    { id: 7, image: "/assets/image-23.png" },
-    { id: 8, image: "/assets/image-17.png" },
-    { id: 9, image: "/assets/image-18.png" },
-    { id: 10, image: "/assets/image-19.png" },
-    { id: 11, image: "/assets/image-22.png" },
-    { id: 12, image: "/assets/image-17.png" },
-    { id: 13, image: "/assets/image-11.png" },
-    { id: 14, image: "/assets/image-16.png" },
-    { id: 15, image: "/assets/image-23.png" },
-    { id: 16, image: "/assets/image-11.png" },
-    { id: 17, image: "/assets/image-18.png" },
-    { id: 18, image: "/assets/image-18.png" },
+    {
+      id: 1,
+      image: "/assets/image-11.png",
+      name: "memecoin1",
+      tokenAdd: "0xDd0892a70aB28B2B3fac1E6FAa7a4B2121dDd5e4",
+    },
+    {
+      id: 2,
+      image: "/assets/image-12.png",
+      name: "memecoin2",
+      tokenAdd: "0x8283093bf0484c1F806976EA90f79318BDB9688a",
+    },
+    {
+      id: 3,
+      image: "/assets/image-14.png",
+      name: "memecoin3",
+      tokenAdd: "0x12e6e01F7D56BeC3aC5bD7Fd4fC7c9154907b332",
+    },
+    {
+      id: 4,
+      image: "/assets/image-15.png",
+      name: "memecoin4",
+      tokenAdd: "0x5c5CEb764fFC6366E2d353137E69725d41856891",
+    },
+    {
+      id: 5,
+      image: "/assets/image-16.png",
+      name: "memecoin5",
+      tokenAdd: "0x0814A0eDE62581B4CE5C2Ae24F66358A46ea2c75",
+    },
+    {
+      id: 6,
+      image: "/assets/image-22.png",
+      name: "memecoin6",
+      tokenAdd: "0x190c835F37caAD3d3923f7EB8E4B4AC6a9F4721e",
+    },
+    {
+      id: 7,
+      image: "/assets/image-23.png",
+      name: "memecoin7",
+      tokenAdd: "0x558418c3FA620e3C6c01Cd9cFeFeA831F1E20589",
+    },
+    {
+      id: 8,
+      image: "/assets/image-17.png",
+      name: "memecoin8",
+      tokenAdd: "0x32CD52e43bB38197081367B11B385b10b960ECCf",
+    },
+    {
+      id: 9,
+      image: "/assets/image-18.png",
+      name: "memecoin9",
+      tokenAdd: "0x3E30A914c6b42f0BB620A9e22Fb57238e160D699",
+    },
+    {
+      id: 10,
+      image: "/assets/image-19.png",
+      name: "memecoin10",
+      tokenAdd: "0x833635A3ecd933D482423fE7C76D376381556FfC",
+    },
+    {
+      id: 11,
+      image: "/assets/image-22.png",
+      name: "memecoin11",
+      tokenAdd: "0xfDB120AA45c4fA586Cae67e17196Eb7a08645EC9",
+    },
+    {
+      id: 12,
+      image: "/assets/image-17.png",
+      name: "memecoin12",
+      tokenAdd: "0x176caBDE01214270C5cB9bfe4751F8822e6BD179",
+    },
+    {
+      id: 13,
+      image: "/assets/image-11.png",
+      name: "memecoin13",
+      tokenAdd: "0xC8A7383A88307527960Ce978a3708a9951DB89a0",
+    },
+    {
+      id: 14,
+      image: "/assets/image-16.png",
+      name: "memecoin14",
+      tokenAdd: "0xd8e9A64a1cF2E92FC6e6d7a2923eF56854190Ea8",
+    },
+    {
+      id: 15,
+      image: "/assets/image-23.png",
+      name: "memecoin15",
+      tokenAdd: "0xd81e99Ea9880c6F38e32D0A819D7E83C1D59E34E",
+    },
+    {
+      id: 16,
+      image: "/assets/image-11.png",
+      name: "memecoin16",
+      tokenAdd: "0xfACBCAd8A639F0b3ca51f7E79Fc574b7eAe19078",
+    },
+    {
+      id: 17,
+      image: "/assets/image-18.png",
+      name: "memecoin17",
+      tokenAdd: "0xdA2a761d25A6d7E64bB6DA19047f0d90cE8B875f",
+    },
+    {
+      id: 18,
+      image: "/assets/image-18.png",
+      name: "memecoin18",
+      tokenAdd: "0x92da67500F13e70694B4aD3bd9Ad8cD583f0a985",
+    },
   ];
 
   const { login } = useLogin();
@@ -166,6 +261,7 @@ const HomeSection = () => {
     if (!ready) return console.log("Waiting for Privy to be ready...");
     try {
       await login();
+
       if (authenticated && user) {
         console.log("User signed up with Twitter");
         console.log("Username:", user.twitter?.username);
@@ -179,6 +275,7 @@ const HomeSection = () => {
   const logoutuser = () => {
     try {
       logout();
+      showToast("success", "Logged out successfully!");
       setOpenProfile(false);
     } catch (err) {
       console.log("Logout error: ", err);
@@ -216,6 +313,10 @@ const HomeSection = () => {
   };
 
   const sendMsgHandle = () => {
+    if (!authenticated) {
+      showToast("warning", "Please Login First");
+      return;
+    }
     const now = new Date();
     const time = now.toLocaleTimeString("en-US", {
       hour: "numeric",
@@ -261,6 +362,12 @@ const HomeSection = () => {
     setUserProfile(!userProfile);
   };
 
+  const channelClick = (name: string, image: string, tokenAdd: string) => {
+    setTokenName(name);
+    setTokenImage(image);
+    setTextToCopy(tokenAdd);
+  };
+
   return (
     <div className="bg-transparent flex flex-row justify-center w-full border-r border-r-[#3f414e]">
       <div className="overflow-hidden w-full max-w-[500px] min-w-[500px] h-screen">
@@ -290,9 +397,16 @@ const HomeSection = () => {
                 {/* Pinned channels */}
                 <div className="mt-2 flex flex-col items-center gap-2">
                   {sidebarChannels.slice(0, 3).map((channel) => (
-                    <Avatar key={channel.id} className="w-[46px] h-[46px]">
-                      <AvatarImage src={channel.image} alt="Channel" />
-                    </Avatar>
+                    <SidebarChannelList
+                      channel={channel}
+                      channelClick={() =>
+                        channelClick(
+                          channel.name,
+                          channel.image,
+                          channel.tokenAdd
+                        )
+                      }
+                    />
                   ))}
                 </div>
 
@@ -310,9 +424,16 @@ const HomeSection = () => {
                 {/* Trending channels */}
                 <div className="mt-2 flex flex-col items-center gap-2">
                   {sidebarChannels.slice(3).map((channel) => (
-                    <Avatar key={channel.id} className="w-[46px] h-[46px]">
-                      <AvatarImage src={channel.image} alt="Channel" />
-                    </Avatar>
+                    <SidebarChannelList
+                      channel={channel}
+                      channelClick={() =>
+                        channelClick(
+                          channel.name,
+                          channel.image,
+                          channel.tokenAdd
+                        )
+                      }
+                    />
                   ))}
                 </div>
               </div>
@@ -322,16 +443,18 @@ const HomeSection = () => {
           <div className="flex-1 flex flex-col h-full">
             {/* Header */}
             <div className="h-[58px] bg-[#101114] border border-solid border-[#22242d] flex items-center px-4">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 overflow-x-hidden w-[230px]">
                 <Avatar className="w-9 h-9">
-                  <AvatarImage src="/assets/image-11.png" alt="DB" />
+                  <AvatarImage src={tokenImage} alt="DB" />
                   <AvatarFallback>DB</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
                   <div className="flex items-center space-x-2">
-                    <b className="text-white text-base font-bold">memecoin</b>
+                    <b className="text-white text-base font-bold">
+                      {tokenName}
+                    </b>
                     <b className="text-white text-[13px] font-medium">
-                      memecoin
+                      {tokenName}
                     </b>
                     <Pin
                       size={12}
@@ -403,182 +526,185 @@ const HomeSection = () => {
                 />
               </div>
             </div>
-            {authenticated ? (
-              <div className="flex-1 flex flex-col overflow-hidden">
-                {/* Banner */}
-                <div className="w-full">
-                  <img
-                    className="w-full max-h-[129px] object-cover"
-                    alt="Banner"
-                    src="/assets/image-1.png"
-                  />
-                </div>
+            {/* {authenticated ? ( */}
+            <div className="flex-1 flex flex-col overflow-hidden">
+              {/* Banner */}
+              <div className="w-full">
+                <img
+                  className="w-full max-h-[129px] object-cover"
+                  alt="Banner"
+                  src="/assets/image-1.png"
+                />
+              </div>
 
-                {/* Twitter/Website tabs */}
-                <div className="w-full h-[31px] bg-[#101114] border border-solid border-[#22242d] flex items-center justify-evenly">
-                  <div className="flex items-center">
+              {/* Twitter/Website tabs */}
+              <div className="w-full h-[31px] bg-[#101114] border border-solid border-[#22242d] flex items-center justify-evenly">
+                <div className="flex items-center">
+                  <img
+                    className="w-4 h-3.5"
+                    alt="Twitter icon"
+                    src="/assets/vector.svg"
+                  />
+                  <span className="ml-1 font-medium text-white text-[13px]">
+                    Twitter
+                  </span>
+                </div>
+                <Separator
+                  orientation="vertical"
+                  className="h-[30px] mx-4 bg-[#5B5E69]"
+                />
+                <div className="flex items-center">
+                  <ExternalLinkIcon className="w-4 h-4 text-white" />
+                  <span className="ml-1 font-medium text-white text-[13px]">
+                    Website
+                  </span>
+                </div>
+              </div>
+
+              {/* Chat messages container with scrolling */}
+              <div
+                ref={scrollRef}
+                className="flex-1 overflow-y-scroll bg-[#191a21] p-4"
+              >
+                {/* Twitter Raid section */}
+                <div className="mt-4">
+                  <div className="flex items-center mb-2">
                     <img
-                      className="w-4 h-3.5"
+                      className="w-[13px] h-[11px]"
                       alt="Twitter icon"
                       src="/assets/vector.svg"
                     />
-                    <span className="ml-1 font-medium text-white text-[13px]">
-                      Twitter
+                    <span className="ml-2 font-bold text-white text-[13px]">
+                      Twitter Raid
                     </span>
                   </div>
-                  <Separator
-                    orientation="vertical"
-                    className="h-[30px] mx-4 bg-[#5B5E69]"
-                  />
-                  <div className="flex items-center">
-                    <ExternalLinkIcon className="w-4 h-4 text-white" />
-                    <span className="ml-1 font-medium text-white text-[13px]">
-                      Website
-                    </span>
-                  </div>
-                </div>
 
-                {/* Chat messages container with scrolling */}
-                <div
-                  ref={scrollRef}
-                  className="flex-1 overflow-y-scroll bg-[#191a21] p-4"
-                >
-                  {/* Twitter Raid section */}
-                  <div className="mt-4">
-                    <div className="flex items-center mb-2">
-                      <img
-                        className="w-[13px] h-[11px]"
-                        alt="Twitter icon"
-                        src="/assets/vector.svg"
-                      />
-                      <span className="ml-2 font-bold text-white text-[13px]">
-                        Twitter Raid
-                      </span>
-                    </div>
-
-                    <Card className="w-full max-w-full bg-[#15202b] rounded-lg border-none">
-                      <CardContent className="p-4">
-                        <div className="flex items-start">
-                          <Avatar className="w-8 h-8">
-                            <AvatarImage
-                              src="/assets/image-28.png"
-                              alt="Andy Ayrey"
+                  <Card className="w-full max-w-full bg-[#15202b] rounded-lg border-none">
+                    <CardContent className="p-4">
+                      <div className="flex items-start">
+                        <Avatar className="w-8 h-8">
+                          <AvatarImage
+                            src="/assets/image-28.png"
+                            alt="Andy Ayrey"
+                          />
+                          <AvatarFallback>AA</AvatarFallback>
+                        </Avatar>
+                        <div className="ml-2 flex-1">
+                          <div className="font-normal text-white text-[13px]">
+                            Andy Ayrey
+                            <img
+                              className="inline-block w-3.5 h-3.5 ml-1"
+                              alt="Verified"
+                              src="/assets/image-10.png"
                             />
-                            <AvatarFallback>AA</AvatarFallback>
-                          </Avatar>
-                          <div className="ml-2 flex-1">
-                            <div className="font-normal text-white text-[13px]">
-                              Andy Ayrey
-                              <img
-                                className="inline-block w-3.5 h-3.5 ml-1"
-                                alt="Verified"
-                                src="/assets/image-10.png"
-                              />
-                              <br />
-                              <span className="text-[#5a5d69]">@AndyAyrey</span>
-                            </div>
-                            <div className="mt-4 font-normal text-white text-[13px]">
-                              timeline cleanse
-                            </div>
+                            <br />
+                            <span className="text-[#5a5d69]">@AndyAyrey</span>
                           </div>
-                          <img
-                            className="w-[137px] h-[126px] ml-auto"
-                            alt="Tweet image"
-                            src="/assets/image-27.png"
-                          />
-                        </div>
-
-                        {/* Tweet engagement metrics */}
-                        <div className="flex items-center justify-evenly mt-8">
-                          <div className="flex items-center">
-                            <HeartIcon className="w-4 h-4 text-[red] fill-[red]" />
-                            <span className="ml-2 font-normal text-white text-[13px]">
-                              597
-                            </span>
-                          </div>
-                          <Separator
-                            orientation="vertical"
-                            className="h-[23px] bg-[#5B5E69]"
-                          />
-                          <div className="flex items-center">
-                            <MessageCircleIcon className="w-4 h-3.5 text-white" />
-                            <span className="ml-2 font-normal text-white text-[13px]">
-                              64
-                            </span>
-                          </div>
-                          <Separator
-                            orientation="vertical"
-                            className="h-[23px] bg-[#5B5E69]"
-                          />
-                          <div className="flex items-center">
-                            <RepeatIcon className="w-4 h-3.5 text-white" />
-                            <span className="ml-2 font-normal text-white text-[13px]">
-                              199
-                            </span>
+                          <div className="mt-4 font-normal text-white text-[13px]">
+                            timeline cleanse
                           </div>
                         </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                  {/* Chat messages */}
-                  <div className="space-y-4">
-                    {userProfile && (
-                      <ProfileCard
-                        name="Jason Ricky"
-                        username="jasonricky."
-                        avatarUrl="/assets/image-26.png"
-                        mutualServerCount={1}
-                        promoterTag={true}
-                      />
-                    )}
-                    {messages.map((message) =>
-                      chattingHistory(message, () => {
-                        setUserProfile(!userProfile);
-                      })
-                    )}
-                  </div>
-                </div>
-
-                {/* Message input */}
-                <div className="max-w-full bg-[#22242D] p-2">
-                  <div className="relative w-full h-[45px] bg-[100%_100%] flex items-center px-3 rounded-md">
-                    <CirclePlus
-                      className="w-5 h-5 text-[#777a8c] cursor-pointer"
-                      onClick={plusBtnHandle}
-                    />
-                    {plusBtn && (
-                      <div className="absolute bottom-full mb-2 left-0 w-48 bg-[#22242D] rounded-md shadow-lg py-1 z-50">
-                        <MenuItem
-                          Icon={ImagePlus}
-                          text="Add Image"
-                          onClick={handleFileChange}
+                        <img
+                          className="w-[137px] h-[126px] ml-auto"
+                          alt="Tweet image"
+                          src="/assets/image-27.png"
                         />
-                        <MenuItem Icon={Play} text="Start Raid" />
-                        <MenuItem Icon={ThumbsUp} text="Top Holders" />
-                        <MenuItem Icon={TicketCheck} text="Bundle Checker" />
                       </div>
-                    )}
-                    <Input
-                      className="border-none bg-transparent text-[#dbd6d6] text-sm h-full focus:outline-none focus:ring-0 focus:border-none focus-visible:ring-0 focus-visible:ring-offset-0"
-                      placeholder="Write a message..."
-                      value={msg}
-                      onChange={(e) => setMsg(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          sendMsgHandle();
-                        }
-                      }}
+
+                      {/* Tweet engagement metrics */}
+                      <div className="flex items-center justify-evenly mt-8">
+                        <div className="flex items-center">
+                          <HeartIcon className="w-4 h-4 text-[red] fill-[red]" />
+                          <span className="ml-2 font-normal text-white text-[13px]">
+                            597
+                          </span>
+                        </div>
+                        <Separator
+                          orientation="vertical"
+                          className="h-[23px] bg-[#5B5E69]"
+                        />
+                        <div className="flex items-center">
+                          <MessageCircleIcon className="w-4 h-3.5 text-white" />
+                          <span className="ml-2 font-normal text-white text-[13px]">
+                            64
+                          </span>
+                        </div>
+                        <Separator
+                          orientation="vertical"
+                          className="h-[23px] bg-[#5B5E69]"
+                        />
+                        <div className="flex items-center">
+                          <RepeatIcon className="w-4 h-3.5 text-white" />
+                          <span className="ml-2 font-normal text-white text-[13px]">
+                            199
+                          </span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+                {/* Chat messages */}
+                <div className="space-y-4">
+                  {userProfile && (
+                    <ProfileCard
+                      name="Orangie"
+                      username="orangie"
+                      avatarUrl="/assets/image-26.png"
+                      mutualServerCount={1}
+                      promoterTag={true}
                     />
-                    <div className="flex items-center gap-2 ml-auto">
-                      <HandCoins className="w-5 h-5 text-[green] hidden sm:block cursor-pointer" />
-                      <Smile className="w-[18px] h-[18px] text-[#777a8c] cursor-pointer" />
+                  )}
+                  {messages.map((message) =>
+                    chattingHistory(message, () => {
+                      setUserProfile(!userProfile);
+                    })
+                  )}
+                </div>
+              </div>
+
+              {/* Message input */}
+              <div className="max-w-full bg-[#22242D] p-2">
+                <div className="relative w-full h-[45px] bg-[100%_100%] flex items-center px-3 rounded-md">
+                  <CirclePlus
+                    className="w-5 h-5 text-[#777a8c] cursor-pointer"
+                    onClick={plusBtnHandle}
+                  />
+                  {plusBtn && (
+                    <div className="absolute bottom-full mb-2 left-0 w-48 bg-[#22242D] rounded-md shadow-lg py-1 z-50">
+                      <MenuItem
+                        Icon={ImagePlus}
+                        text="Add Image"
+                        onClick={handleFileChange}
+                      />
+                      <MenuItem Icon={Play} text="Start Raid" />
+                      <MenuItem Icon={ThumbsUp} text="Top Holders" />
+                      <MenuItem Icon={TicketCheck} text="Bundle Checker" />
                     </div>
+                  )}
+                  <Input
+                    className="border-none bg-transparent text-[#dbd6d6] text-sm h-full focus:outline-none focus:ring-0 focus:border-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                    placeholder="Write a message..."
+                    value={msg}
+                    onChange={(e) => setMsg(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        sendMsgHandle();
+                      }
+                    }}
+                  />
+                  <div className="flex items-center gap-2 ml-auto">
+                    <HandCoins className="w-5 h-5 text-[green] hidden sm:block cursor-pointer" />
+                    <Smile
+                      className="w-[18px] h-[18px] text-[#777a8c] cursor-pointer"
+                      onClick={() => showToast("success", "My name")}
+                    />
                   </div>
                 </div>
               </div>
-            ) : (
+            </div>
+            {/* ) : (
               <FirstPage />
-            )}
+            )} */}
           </div>
         </div>
       </div>
