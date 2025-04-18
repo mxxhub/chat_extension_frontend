@@ -132,10 +132,10 @@ const HomeSection = () => {
   const { ready, authenticated, user } = usePrivy();
   console.log(user);
 
-  // useEffect(() => {
-  //   if (!user) return;
-  //   window.location.href = "https://chat-extension-frontend.onrender.com/";
-  // }, [user]);
+  useEffect(() => {
+    if (!authenticated) return;
+    window.location.href = "https://chat-extension-frontend.onrender.com/";
+  }, [authenticated]);
 
   interface MenuItemProps {
     Icon: LucideIcon;
@@ -165,17 +165,13 @@ const HomeSection = () => {
       // } finally {
       //   window.location.href = "https://chat-extension-frontend.onrender.com/";
       // }
-      // if (authenticated && user) {
-      //   console.log("User signed up with Twitter");
-      //   console.log("Username:", user.twitter?.username);
-      //   console.log("Wallet address:", user.wallet?.address);
-      // }
+      if (authenticated && user) {
+        console.log("User signed up with Twitter");
+        console.log("Username:", user.twitter?.username);
+        console.log("Wallet address:", user.wallet?.address);
+      }
     } catch (err) {
       console.log("Signup failed: ", err);
-    } finally {
-      if (user) {
-        window.location.href = "https://chat-extension-frontend.onrender.com";
-      }
     }
   };
 
