@@ -358,9 +358,9 @@ const HomeSection = () => {
     setOpenProfile(false);
   };
 
-  const clickAvatar = () => {
-    setUserProfile(!userProfile);
-  };
+  // const clickAvatar = () => {
+  //   setUserProfile(!userProfile);
+  // };
 
   const channelClick = (name: string, image: string, tokenAdd: string) => {
     setTokenName(name);

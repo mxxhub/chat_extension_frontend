@@ -12,9 +12,9 @@ export default function ProfileCard({
   name,
   username,
   avatarUrl,
-  mutualServerCount,
-  promoterTag = false,
-}: ProfileCardProps) {
+}: // mutualServerCount,
+// promoterTag = false,
+ProfileCardProps) {
   return (
     <div className="relative">
       <div className="w-60 h-auto overflow-y-scroll rounded-xl bg-[#2b2d31] p-5 text-white shadow-lg">
