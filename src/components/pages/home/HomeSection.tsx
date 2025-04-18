@@ -29,6 +29,7 @@ import { toShortAddress } from "../../../utils/utils";
 import { SettingModal } from "../../settingModal";
 import { ProfileMenu } from "../../ui/profile";
 import { ProfileModal } from "../../profileModal";
+import FirstPage from "./FirstPage";
 
 const HomeSection = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -379,7 +380,7 @@ const HomeSection = () => {
                 />
               </div>
             </div>
-            {authenticated && (
+            {authenticated ? (
               <div className="flex-1 flex flex-col overflow-hidden">
                 {/* Banner */}
                 <div className="w-full">
@@ -549,6 +550,8 @@ const HomeSection = () => {
                   </div>
                 </div>
               </div>
+            ) : (
+              <FirstPage />
             )}
           </div>
         </div>

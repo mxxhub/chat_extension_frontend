@@ -16,6 +16,7 @@ export const SettingModal = ({ isOpen, onClose }: SettingModalProps) => {
         <CardContent className="p-8">
           {/* Close button */}
           <button
+            aria-label="Close"
             className="absolute top-4 right-4 text-white hover:text-gray-300"
             onClick={onClose}
           >
