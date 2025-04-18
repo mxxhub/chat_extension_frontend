@@ -132,10 +132,10 @@ const HomeSection = () => {
   const { ready, authenticated, user } = usePrivy();
   console.log(user);
 
-  useEffect(() => {
-    if (!user) return;
-    window.location.href = "https://chat-extension-frontend.onrender.com/";
-  }, [user]);
+  // useEffect(() => {
+  //   if (!user) return;
+  //   window.location.href = "https://chat-extension-frontend.onrender.com/";
+  // }, [user]);
 
   interface MenuItemProps {
     Icon: LucideIcon;
@@ -159,6 +159,7 @@ const HomeSection = () => {
     if (!ready) return console.log("Waiting for Privy to be ready...");
     try {
       await login();
+      window.location.href = "https://chat-extension-frontend.onrender.com/";
       if (authenticated && user) {
         console.log("User signed up with Twitter");
         console.log("Username:", user.twitter?.username);
