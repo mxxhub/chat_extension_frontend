@@ -223,7 +223,7 @@ const HomeSection = () => {
     setPlusBtn(!plusBtn);
   };
 
-  const channelClick = () => {
+  const LoginWithTwitter = () => {
     !authenticated && signupWithTwitter();
   };
 
@@ -234,6 +234,11 @@ const HomeSection = () => {
         behavior: "smooth",
       });
     }
+  };
+
+  const handleProfileModalClose = () => {
+    setProfileModal(false);
+    setOpenProfile(false);
   };
 
   return (
@@ -266,11 +271,7 @@ const HomeSection = () => {
                 <div className="mt-2 flex flex-col items-center gap-2">
                   {sidebarChannels.slice(0, 3).map((channel) => (
                     <Avatar key={channel.id} className="w-[46px] h-[46px]">
-                      <AvatarImage
-                        src={channel.image}
-                        alt="Channel"
-                        onClick={() => channelClick()}
-                      />
+                      <AvatarImage src={channel.image} alt="Channel" />
                     </Avatar>
                   ))}
                 </div>
@@ -325,9 +326,9 @@ const HomeSection = () => {
                     >
                       <span>
                         {copied ? (
-                          <Check size={13} className="mt-1" />
+                          <Check size={13} className="mt-1 bg-tranparent" />
                         ) : (
-                          <Copy size={13} className="mt-1" />
+                          <Copy size={13} className="mt-1 bg-tranparent" />
                         )}
                       </span>
                     </button>
@@ -365,12 +366,14 @@ const HomeSection = () => {
                     <ProfileMenu
                       myProfile={() => setProfileModal(true)}
                       logout={logoutuser}
+                      authenticated={authenticated}
+                      login={LoginWithTwitter}
                     />
                   )}
                   {profileModal && (
                     <ProfileModal
                       isOpen={profileModal}
-                      onClose={() => setProfileModal(false)}
+                      onClose={handleProfileModalClose}
                     />
                   )}
                 </div>
