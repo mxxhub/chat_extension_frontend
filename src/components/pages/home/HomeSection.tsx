@@ -19,12 +19,7 @@ import {
   TicketCheck,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import {
-  useLogin,
-  usePrivy,
-  useLogout,
-  useLoginWithOAuth,
-} from "@privy-io/react-auth";
+import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { Card, CardContent } from "../../ui/card";
 import { Input } from "../../ui/input";
@@ -106,8 +101,6 @@ const HomeSection = () => {
       time: "2:28 AM",
     },
   ]);
-
-  const { initOAuth } = useLoginWithOAuth();
 
   useEffect(() => {
     setTextToCopy("0xDd0892a70aB28B2B3fac1E6FAa7a4B2121dDd5e4");
