@@ -49,7 +49,7 @@ const HomeSection = () => {
   const [textToCopy, setTextToCopy] = useState(
     "0xDd0892a70aB28B2B3fac1E6FAa7a4B2121dDd5e4"
   );
-  const [tokenName, setTokenName] = useState("memecoin");
+  const [tokenName, setTokenName] = useState("memecoin1");
   const [tokenImage, setTokenImage] = useState("/assets/image-11.png");
   const [messages, setMessages] = useState([
     {
