@@ -229,8 +229,8 @@ const HomeSection = () => {
     });
     const newMessage: Message = {
       id: messages.length + 1,
-      user: "ShockedJS",
-      avatar: "/assets/image-26.png",
+      user: user?.twitter?.name || "ShockedJS",
+      avatar: user?.twitter?.profilePictureUrl || "/assets/image-9.png",
       message: msg,
       time: time,
     };
