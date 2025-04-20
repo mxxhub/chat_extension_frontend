@@ -9,7 +9,14 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
+  "overrides": {
+    "@emoji-mart/react": {
+      "react": "^19.1.0"
+    }
+  },
   "dependencies": {
+    "@emoji-mart/data": "^1.2.1",
+    "@emoji-mart/react": "^1.1.1",
     "@privy-io/react-auth": "^2.9.1",
     "@radix-ui/react-avatar": "^1.1.1",
     "@radix-ui/react-separator": "^1.1.0",

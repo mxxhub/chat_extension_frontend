@@ -34,6 +34,8 @@ import { ProfileModal } from "../../profileModal";
 import ProfileCard from "../../ui/profileCard";
 import { showToast } from "../../ui/toastMsg";
 import SidebarChannelList from "../../channelModal";
+import Picker from "@emoji-mart/react";
+import data from "@emoji-mart/data";
 
 const HomeSection = () => {
   const navigate = useNavigate();
@@ -51,68 +53,29 @@ const HomeSection = () => {
   );
   const [tokenName, setTokenName] = useState("memecoin1");
   const [tokenImage, setTokenImage] = useState("/assets/image-11.png");
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      user: "Orangie",
-      avatar: "/assets/image-9.png",
-      message: "I wont miss this trump",
-      time: "2:27 AM",
-    },
-    {
-      id: 2,
-      user: "Ansem",
-      avatar: "/assets/image-7.png",
-      message: "Tweet is up",
-      time: "2:27 AM",
-    },
-    {
-      id: 3,
-      user: "POE",
-      avatar: "/assets/image-6.png",
-      message: "RAIDDD",
-      time: "2:27 AM",
-    },
-    {
-      id: 4,
-      user: "Orangie",
-      avatar: "/assets/image-9.png",
-      message: "I wont miss this trump",
-      time: "2:27 AM",
-    },
-    {
-      id: 5,
-      user: "Ansem",
-      avatar: "/assets/image-7.png",
-      message: "If we flip trump ill get this on the Sphere",
-      time: "2:27 AM",
-    },
-    {
-      id: 6,
-      user: "POE",
-      avatar: "/assets/image-6.png",
-      message: "Smash the tweet",
-      time: "2:27 AM",
-    },
-    {
-      id: 7,
-      user: "fomo",
-      avatar: "/assets/image-25.png",
-      message: "Posting a tiktok now",
-      time: "2:27 AM",
-    },
-    {
-      id: 8,
-      user: "ShockedJS",
-      avatar: "/assets/image-26.png",
-      message: "DB to 10M",
-      time: "2:28 AM",
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
 
   useEffect(() => {
     setTextToCopy("0xDd0892a70aB28B2B3fac1E6FAa7a4B2121dDd5e4");
   }, []);
+
+  const [showPicker, setShowPicker] = useState(false);
+  const popupRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (popupRef.current && !popupRef.current.contains(e.target as Node)) {
+        setShowPicker(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleEmojiSelect = (emoji: any) => {
+    setMsg((prevMsg) => prevMsg + emoji.native);
+    setShowPicker(false);
+  };
 
   const sidebarChannels = [
     {
@@ -340,6 +303,7 @@ const HomeSection = () => {
   };
 
   const LoginWithTwitter = () => {
+    setOpenProfile(false);
     !authenticated && signupWithTwitter();
   };
 
@@ -365,6 +329,7 @@ const HomeSection = () => {
     setTokenName(name);
     setTokenImage(image);
     setTextToCopy(tokenAdd);
+    setMessages([]);
   };
 
   return (
@@ -695,8 +660,20 @@ const HomeSection = () => {
                     <HandCoins className="w-5 h-5 text-[green] hidden sm:block cursor-pointer" />
                     <Smile
                       className="w-[18px] h-[18px] text-[#777a8c] cursor-pointer"
-                      onClick={() => showToast("success", "My name")}
+                      onClick={() => setShowPicker((prev) => !prev)}
                     />
+                    {showPicker && (
+                      <div
+                        ref={popupRef}
+                        className="absolute z-20 right-9 bottom-5 w-30"
+                      >
+                        <Picker
+                          data={data}
+                          onEmojiSelect={handleEmojiSelect}
+                          theme="dark"
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
