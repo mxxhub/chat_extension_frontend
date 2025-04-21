@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { Card, CardContent } from "../../ui/card";
@@ -36,9 +37,22 @@ import { showToast } from "../../ui/toastMsg";
 import SidebarChannelList from "../../channelModal";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
+import axios from "axios";
+import {
+  setAuthenticated,
+  setUnauthenticated,
+  setLoading,
+  setError,
+} from "../../../redux/features/auth/authSlice";
+// import dotenv from "dotenv";
+// dotenv.config();
 
 const HomeSection = () => {
+  // const userCre = useSelector(({ state }) => auth.state);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  // const server = process.env.SERVER || "localhost:3000";
+  const server = "https://localhost:4000";
   const scrollRef = useRef<HTMLDivElement>(null);
   const [userProfile, setUserProfile] = useState(false);
   const [menu, setMenu] = useState(false);
@@ -54,12 +68,16 @@ const HomeSection = () => {
   const [tokenName, setTokenName] = useState("memecoin1");
   const [tokenImage, setTokenImage] = useState("/assets/image-11.png");
   const [messages, setMessages] = useState<Message[]>([]);
+  const [showPicker, setShowPicker] = useState(false);
+
+  const { login } = useLogin();
+  const { logout } = useLogout();
+  const { authenticated, user } = usePrivy();
 
   useEffect(() => {
     setTextToCopy("0xDd0892a70aB28B2B3fac1E6FAa7a4B2121dDd5e4");
   }, []);
 
-  const [showPicker, setShowPicker] = useState(false);
   const popupRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -72,10 +90,36 @@ const HomeSection = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleEmojiSelect = (emoji: any) => {
-    setMsg((prevMsg) => prevMsg + emoji.native);
-    setShowPicker(false);
-  };
+  useEffect(() => {
+    const saveUser = async () => {
+      if (!user) return;
+
+      // const userData = {
+      //   userId: user?.twitter?.username || "ShockedJS",
+      //   displayName: user?.twitter?.name || "Leon",
+      //   wallet: user?.wallet?.address || "0x1294724982",
+      //   avatar: user?.twitter?.profilePictureUrl || "/assets/image-5-1.png",
+      //   channel: textToCopy || "",
+      // };
+
+      const userData = {
+        userId: "ShockedJS",
+        displayName: "Leon",
+        wallet: "0x1294724982",
+        avatar: "/assets/image-5-1.png",
+        channel: "43245233",
+      };
+      try {
+        const response = await axios.post(`${server}/auth/addUser`, userData);
+        console.log("response: ", response);
+        // dispatch(setAuthenticated(response.data));
+      } catch (err) {
+        console.log("Error saving user: ", err);
+      }
+    };
+
+    saveUser();
+  }, [user]);
 
   const sidebarChannels = [
     {
@@ -188,17 +232,10 @@ const HomeSection = () => {
     },
   ];
 
-  const { login } = useLogin();
-  const { logout } = useLogout();
-  const { ready, authenticated, user } = usePrivy();
-  console.log(user);
-
   useEffect(() => {
     if (authenticated) {
       navigate("/");
-    } else {
-      return;
-    }
+    } else return;
   }, [authenticated]);
 
   interface MenuItemProps {
@@ -219,19 +256,9 @@ const HomeSection = () => {
     );
   };
 
-  const signupWithTwitter = async () => {
-    if (!ready) return console.log("Waiting for Privy to be ready...");
-    try {
-      await login();
-
-      if (authenticated && user) {
-        console.log("User signed up with Twitter");
-        console.log("Username:", user.twitter?.username);
-        console.log("Wallet address:", user.wallet?.address);
-      }
-    } catch (err) {
-      console.log("Signup failed: ", err);
-    }
+  const handleEmojiSelect = (emoji: any) => {
+    setMsg((prevMsg) => prevMsg + emoji.native);
+    setShowPicker(false);
   };
 
   const logoutuser = () => {
@@ -285,12 +312,20 @@ const HomeSection = () => {
       minute: "2-digit",
       hour12: true,
     });
+    const sender: User = {
+      userId: user?.twitter?.username || "ShockedJS",
+      displayName: user?.twitter?.name || "Leon",
+      wallet: user?.wallet?.address || "",
+      avatar: user?.twitter?.profilePictureUrl || "/assets/image-5-1.png",
+      channels: textToCopy ? [textToCopy] : [],
+      isOnline: true,
+    };
     const newMessage: Message = {
-      id: messages.length + 1,
-      user: user?.twitter?.name || "ShockedJS",
-      avatar: user?.twitter?.profilePictureUrl || "/assets/image-9.png",
-      message: msg,
-      time: time,
+      sender: sender,
+      content: msg,
+      room: textToCopy,
+      createdAt: time,
+      timestamp: new Date(),
     };
     messages.push(newMessage);
     setMessages(messages);
@@ -302,9 +337,16 @@ const HomeSection = () => {
     setPlusBtn(!plusBtn);
   };
 
-  const LoginWithTwitter = () => {
-    setOpenProfile(false);
-    !authenticated && signupWithTwitter();
+  const LoginWithTwitter = async () => {
+    try {
+      if (authenticated) return;
+
+      setOpenProfile(false);
+
+      await login();
+    } catch (err) {
+      console.log("login error: ", err);
+    }
   };
 
   const scrollToBottom = () => {
