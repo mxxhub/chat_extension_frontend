@@ -159,7 +159,7 @@ const HomeSection = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   // const server = process.env.SERVER || "localhost:3000";
-  const server = "http://144.172.94.181:4000";
+  const server = "https://144.172.94.181:4000";
   const scrollRef = useRef<HTMLDivElement>(null);
   const [userProfile, setUserProfile] = useState(false);
   const [menu, setMenu] = useState(false);
@@ -192,7 +192,7 @@ const HomeSection = () => {
   useEffect(() => {
     if (!token) return;
 
-    const newSocket = io("http://144.172.94.181:4000", {
+    const newSocket = io("https://144.172.94.181:4000", {
       auth: { token: token },
     });
 
