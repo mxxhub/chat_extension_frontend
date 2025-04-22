@@ -1,3 +1,113 @@
+const sidebarChannels = [
+  {
+    id: 1,
+    image: "/assets/image-11.png",
+    name: "memecoin1",
+    tokenAdd: "0xDd0892a70aB28B2B3fac1E6FAa7a4B2121dDd5e4",
+  },
+  {
+    id: 2,
+    image: "/assets/image-12.png",
+    name: "memecoin2",
+    tokenAdd: "0x8283093bf0484c1F806976EA90f79318BDB9688a",
+  },
+  {
+    id: 3,
+    image: "/assets/image-14.png",
+    name: "memecoin3",
+    tokenAdd: "0x12e6e01F7D56BeC3aC5bD7Fd4fC7c9154907b332",
+  },
+  {
+    id: 4,
+    image: "/assets/image-15.png",
+    name: "memecoin4",
+    tokenAdd: "0x5c5CEb764fFC6366E2d353137E69725d41856891",
+  },
+  {
+    id: 5,
+    image: "/assets/image-16.png",
+    name: "memecoin5",
+    tokenAdd: "0x0814A0eDE62581B4CE5C2Ae24F66358A46ea2c75",
+  },
+  {
+    id: 6,
+    image: "/assets/image-22.png",
+    name: "memecoin6",
+    tokenAdd: "0x190c835F37caAD3d3923f7EB8E4B4AC6a9F4721e",
+  },
+  {
+    id: 7,
+    image: "/assets/image-23.png",
+    name: "memecoin7",
+    tokenAdd: "0x558418c3FA620e3C6c01Cd9cFeFeA831F1E20589",
+  },
+  {
+    id: 8,
+    image: "/assets/image-17.png",
+    name: "memecoin8",
+    tokenAdd: "0x32CD52e43bB38197081367B11B385b10b960ECCf",
+  },
+  {
+    id: 9,
+    image: "/assets/image-18.png",
+    name: "memecoin9",
+    tokenAdd: "0x3E30A914c6b42f0BB620A9e22Fb57238e160D699",
+  },
+  {
+    id: 10,
+    image: "/assets/image-19.png",
+    name: "memecoin10",
+    tokenAdd: "0x833635A3ecd933D482423fE7C76D376381556FfC",
+  },
+  {
+    id: 11,
+    image: "/assets/image-22.png",
+    name: "memecoin11",
+    tokenAdd: "0xfDB120AA45c4fA586Cae67e17196Eb7a08645EC9",
+  },
+  {
+    id: 12,
+    image: "/assets/image-17.png",
+    name: "memecoin12",
+    tokenAdd: "0x176caBDE01214270C5cB9bfe4751F8822e6BD179",
+  },
+  {
+    id: 13,
+    image: "/assets/image-11.png",
+    name: "memecoin13",
+    tokenAdd: "0xC8A7383A88307527960Ce978a3708a9951DB89a0",
+  },
+  {
+    id: 14,
+    image: "/assets/image-16.png",
+    name: "memecoin14",
+    tokenAdd: "0xd8e9A64a1cF2E92FC6e6d7a2923eF56854190Ea8",
+  },
+  {
+    id: 15,
+    image: "/assets/image-23.png",
+    name: "memecoin15",
+    tokenAdd: "0xd81e99Ea9880c6F38e32D0A819D7E83C1D59E34E",
+  },
+  {
+    id: 16,
+    image: "/assets/image-11.png",
+    name: "memecoin16",
+    tokenAdd: "0xfACBCAd8A639F0b3ca51f7E79Fc574b7eAe19078",
+  },
+  {
+    id: 17,
+    image: "/assets/image-18.png",
+    name: "memecoin17",
+    tokenAdd: "0xdA2a761d25A6d7E64bB6DA19047f0d90cE8B875f",
+  },
+  {
+    id: 18,
+    image: "/assets/image-18.png",
+    name: "memecoin18",
+    tokenAdd: "0x92da67500F13e70694B4aD3bd9Ad8cD583f0a985",
+  },
+];
 import { LucideIcon } from "lucide-react";
 import {
   ExternalLinkIcon,
@@ -20,7 +130,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { Card, CardContent } from "../../ui/card";
@@ -38,22 +148,11 @@ import SidebarChannelList from "../../channelModal";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
 import axios from "axios";
-import {
-  setAuthenticated,
-  setUnauthenticated,
-  setLoading,
-  setError,
-} from "../../../redux/features/auth/authSlice";
+import { setAuthenticated } from "../../../redux/features/auth/authSlice";
 
 import io from "socket.io-client";
 // import dotenv from "dotenv";
 // dotenv.config();
-
-const socket = io("http://localhost:4000", {
-  auth: {
-    token: "",
-  },
-});
 
 const HomeSection = () => {
   // const userCre = useSelector(({ state }) => auth.state);
@@ -76,41 +175,57 @@ const HomeSection = () => {
   const [tokenName, setTokenName] = useState("memecoin1");
   const [tokenImage, setTokenImage] = useState("/assets/image-11.png");
   const [messages, setMessages] = useState<Message[]>([]);
-  const [typingStatus, setTypingStatus] = useState<string | null>(null);
+  const [typingStatus, setTypingStatus] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
+  const [token, setToken] = useState<string>("");
+  const [socket, setSocket] = useState<any>(null);
 
   const { login } = useLogin();
   const { logout } = useLogout();
   const { authenticated, user } = usePrivy();
 
   useEffect(() => {
-    socket.on("connect", () => {
+    if (!authenticated) return;
+    navigate("/");
+  }, [authenticated]);
+
+  useEffect(() => {
+    if (!token) return;
+
+    const newSocket = io("http://localhost:4000", {
+      auth: { token: token },
+    });
+
+    setSocket(newSocket);
+
+    newSocket.on("connect", () => {
       console.log("Connected to socket server");
+      newSocket.emit("join:room", textToCopy);
     });
 
-    socket.on("message:received", (messages) => {
-      setMessages((prevMessages) => [...prevMessages, messages]);
+    newSocket.on("message:received", (receivedMsg) => {
+      console.log("Received new message", receivedMsg);
+      setMessages((prevMessages) => [...prevMessages, receivedMsg]);
     });
 
-    socket.on("user:typing", (data) => {
-      setTypingStatus(`${data.displayName} is typing...`);
+    newSocket.on("user:typing", (data) => {
+      console.log("typing socket: ", data);
+      setTypingStatus(true);
     });
 
-    socket.on("uesr:status", (data) => {
+    newSocket.on("uesr:status", (data) => {
       console.log("User status: ", data);
     });
 
     return () => {
-      socket.off("connect");
-      socket.off("message:received");
-      socket.off("user:typing");
-      socket.off("user:status");
+      newSocket.emit("leave:room", textToCopy);
+      newSocket.off("connect");
+      newSocket.off("message:received");
+      newSocket.off("user:typing");
+      newSocket.off("user:status");
+      newSocket.disconnect();
     };
-  }, []);
-
-  useEffect(() => {
-    setTextToCopy("0xDd0892a70aB28B2B3fac1E6FAa7a4B2121dDd5e4");
-  }, []);
+  }, [token, textToCopy]);
 
   const popupRef = useRef<HTMLDivElement | null>(null);
 
@@ -139,7 +254,8 @@ const HomeSection = () => {
       try {
         const response = await axios.post(`${server}/auth/addUser`, userData);
         console.log("response: ", response);
-        dispatch(setAuthenticated(response.data));
+        setToken(response?.data?.token);
+        dispatch(setAuthenticated(response?.data?.user));
       } catch (err) {
         console.log("Error saving user: ", err);
       }
@@ -148,121 +264,17 @@ const HomeSection = () => {
     saveUser();
   }, [user]);
 
-  const sidebarChannels = [
-    {
-      id: 1,
-      image: "/assets/image-11.png",
-      name: "memecoin1",
-      tokenAdd: "0xDd0892a70aB28B2B3fac1E6FAa7a4B2121dDd5e4",
-    },
-    {
-      id: 2,
-      image: "/assets/image-12.png",
-      name: "memecoin2",
-      tokenAdd: "0x8283093bf0484c1F806976EA90f79318BDB9688a",
-    },
-    {
-      id: 3,
-      image: "/assets/image-14.png",
-      name: "memecoin3",
-      tokenAdd: "0x12e6e01F7D56BeC3aC5bD7Fd4fC7c9154907b332",
-    },
-    {
-      id: 4,
-      image: "/assets/image-15.png",
-      name: "memecoin4",
-      tokenAdd: "0x5c5CEb764fFC6366E2d353137E69725d41856891",
-    },
-    {
-      id: 5,
-      image: "/assets/image-16.png",
-      name: "memecoin5",
-      tokenAdd: "0x0814A0eDE62581B4CE5C2Ae24F66358A46ea2c75",
-    },
-    {
-      id: 6,
-      image: "/assets/image-22.png",
-      name: "memecoin6",
-      tokenAdd: "0x190c835F37caAD3d3923f7EB8E4B4AC6a9F4721e",
-    },
-    {
-      id: 7,
-      image: "/assets/image-23.png",
-      name: "memecoin7",
-      tokenAdd: "0x558418c3FA620e3C6c01Cd9cFeFeA831F1E20589",
-    },
-    {
-      id: 8,
-      image: "/assets/image-17.png",
-      name: "memecoin8",
-      tokenAdd: "0x32CD52e43bB38197081367B11B385b10b960ECCf",
-    },
-    {
-      id: 9,
-      image: "/assets/image-18.png",
-      name: "memecoin9",
-      tokenAdd: "0x3E30A914c6b42f0BB620A9e22Fb57238e160D699",
-    },
-    {
-      id: 10,
-      image: "/assets/image-19.png",
-      name: "memecoin10",
-      tokenAdd: "0x833635A3ecd933D482423fE7C76D376381556FfC",
-    },
-    {
-      id: 11,
-      image: "/assets/image-22.png",
-      name: "memecoin11",
-      tokenAdd: "0xfDB120AA45c4fA586Cae67e17196Eb7a08645EC9",
-    },
-    {
-      id: 12,
-      image: "/assets/image-17.png",
-      name: "memecoin12",
-      tokenAdd: "0x176caBDE01214270C5cB9bfe4751F8822e6BD179",
-    },
-    {
-      id: 13,
-      image: "/assets/image-11.png",
-      name: "memecoin13",
-      tokenAdd: "0xC8A7383A88307527960Ce978a3708a9951DB89a0",
-    },
-    {
-      id: 14,
-      image: "/assets/image-16.png",
-      name: "memecoin14",
-      tokenAdd: "0xd8e9A64a1cF2E92FC6e6d7a2923eF56854190Ea8",
-    },
-    {
-      id: 15,
-      image: "/assets/image-23.png",
-      name: "memecoin15",
-      tokenAdd: "0xd81e99Ea9880c6F38e32D0A819D7E83C1D59E34E",
-    },
-    {
-      id: 16,
-      image: "/assets/image-11.png",
-      name: "memecoin16",
-      tokenAdd: "0xfACBCAd8A639F0b3ca51f7E79Fc574b7eAe19078",
-    },
-    {
-      id: 17,
-      image: "/assets/image-18.png",
-      name: "memecoin17",
-      tokenAdd: "0xdA2a761d25A6d7E64bB6DA19047f0d90cE8B875f",
-    },
-    {
-      id: 18,
-      image: "/assets/image-18.png",
-      name: "memecoin18",
-      tokenAdd: "0x92da67500F13e70694B4aD3bd9Ad8cD583f0a985",
-    },
-  ];
-
   useEffect(() => {
-    if (!authenticated) return;
-    navigate("/");
-  }, [authenticated]);
+    const getMessage = async () => {
+      const data = {
+        room: textToCopy,
+        limit: 50,
+      };
+      const res: any = await axios.post(`${server}/messages/getMessage`, data);
+      setMessages(res.data);
+    };
+    getMessage();
+  }, [textToCopy]);
 
   interface MenuItemProps {
     Icon: LucideIcon;
@@ -328,36 +340,23 @@ const HomeSection = () => {
   };
 
   const sendMsgHandle = (content: string, room: string) => {
+    startTyping(textToCopy);
     if (!authenticated) {
       showToast("warning", "Please Login First");
       return;
     }
-    const now = new Date();
-    const time = now.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
-    const sender: User = {
-      userId: user?.twitter?.username || "ShockedJS",
-      displayName: user?.twitter?.name || "Leon",
-      wallet: user?.wallet?.address || "",
-      avatar: user?.twitter?.profilePictureUrl || "/assets/image-5-1.png",
-      channels: textToCopy ? [textToCopy] : [],
-      isOnline: true,
-    };
-    const newMessage: Message = {
-      sender: sender,
-      content: msg,
-      room: textToCopy,
-      createdAt: time,
-      timestamp: new Date(),
-    };
-    socket.emit("message:new", { content, room });
-    messages.push(newMessage);
-    setMessages(messages);
-    setMsg("");
+    const timestamp = new Date()
+      .toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      })
+      .toString();
+    if (socket) {
+      socket.emit("message:new", { content, room, timestamp });
+    }
     scrollToBottom();
+    setMsg("");
   };
 
   const plusBtnHandle = () => {
@@ -372,14 +371,19 @@ const HomeSection = () => {
 
       await login();
 
-      socket.emit("join:room", textToCopy);
+      // if (socket) {
+      //   socket.emit("join:room", textToCopy);
+      //   console.log(`you joined ${textToCopy}`);
+      // }
     } catch (err) {
       console.log("login error: ", err);
     }
   };
 
   const startTyping = (room: string) => {
-    socket.emit("typing:start", room);
+    if (socket) {
+      socket.emit("typing:start", room);
+    }
   };
 
   const scrollToBottom = () => {
@@ -405,6 +409,11 @@ const HomeSection = () => {
     setTokenImage(image);
     setTextToCopy(tokenAdd);
     setMessages([]);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    startTyping(textToCopy);
+    setMsg(e.target.value);
   };
 
   return (
@@ -728,7 +737,7 @@ const HomeSection = () => {
                     className="border-none bg-transparent text-[#dbd6d6] text-sm h-full focus:outline-none focus:ring-0 focus:border-none focus-visible:ring-0 focus-visible:ring-offset-0"
                     placeholder="Write a message..."
                     value={msg}
-                    onChange={(e) => setMsg(e.target.value)}
+                    onChange={(e) => handleInputChange(e)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         sendMsgHandle(msg, textToCopy);

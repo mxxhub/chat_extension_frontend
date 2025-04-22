@@ -9,10 +9,11 @@ declare interface User {
 }
 
 declare interface Message {
+  id: number;
   sender: User;
   content: string;
   room: string;
-  timestamp?: Date;
+  timestamp?: string;
   createdAt: string;
 }
 
