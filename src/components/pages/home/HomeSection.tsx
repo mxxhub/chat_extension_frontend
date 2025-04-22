@@ -44,15 +44,23 @@ import {
   setLoading,
   setError,
 } from "../../../redux/features/auth/authSlice";
+
+import io from "socket.io-client";
 // import dotenv from "dotenv";
 // dotenv.config();
+
+const socket = io("http://localhost:4000", {
+  auth: {
+    token: "",
+  },
+});
 
 const HomeSection = () => {
   // const userCre = useSelector(({ state }) => auth.state);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   // const server = process.env.SERVER || "localhost:3000";
-  const server = "https://localhost:4000";
+  const server = "http://localhost:4000";
   const scrollRef = useRef<HTMLDivElement>(null);
   const [userProfile, setUserProfile] = useState(false);
   const [menu, setMenu] = useState(false);
@@ -68,11 +76,37 @@ const HomeSection = () => {
   const [tokenName, setTokenName] = useState("memecoin1");
   const [tokenImage, setTokenImage] = useState("/assets/image-11.png");
   const [messages, setMessages] = useState<Message[]>([]);
+  const [typingStatus, setTypingStatus] = useState<string | null>(null);
   const [showPicker, setShowPicker] = useState(false);
 
   const { login } = useLogin();
   const { logout } = useLogout();
   const { authenticated, user } = usePrivy();
+
+  useEffect(() => {
+    socket.on("connect", () => {
+      console.log("Connected to socket server");
+    });
+
+    socket.on("message:received", (messages) => {
+      setMessages((prevMessages) => [...prevMessages, messages]);
+    });
+
+    socket.on("user:typing", (data) => {
+      setTypingStatus(`${data.displayName} is typing...`);
+    });
+
+    socket.on("uesr:status", (data) => {
+      console.log("User status: ", data);
+    });
+
+    return () => {
+      socket.off("connect");
+      socket.off("message:received");
+      socket.off("user:typing");
+      socket.off("user:status");
+    };
+  }, []);
 
   useEffect(() => {
     setTextToCopy("0xDd0892a70aB28B2B3fac1E6FAa7a4B2121dDd5e4");
@@ -94,25 +128,18 @@ const HomeSection = () => {
     const saveUser = async () => {
       if (!user) return;
 
-      // const userData = {
-      //   userId: user?.twitter?.username || "ShockedJS",
-      //   displayName: user?.twitter?.name || "Leon",
-      //   wallet: user?.wallet?.address || "0x1294724982",
-      //   avatar: user?.twitter?.profilePictureUrl || "/assets/image-5-1.png",
-      //   channel: textToCopy || "",
-      // };
-
       const userData = {
-        userId: "ShockedJS",
-        displayName: "Leon",
-        wallet: "0x1294724982",
-        avatar: "/assets/image-5-1.png",
-        channel: "43245233",
+        userId: user?.twitter?.username || "ShockedJS",
+        displayName: user?.twitter?.name || "Leon",
+        wallet: user?.wallet?.address || "0x1294724982",
+        avatar: user?.twitter?.profilePictureUrl || "/assets/image-5-1.png",
+        channel: textToCopy || "",
       };
+
       try {
         const response = await axios.post(`${server}/auth/addUser`, userData);
         console.log("response: ", response);
-        // dispatch(setAuthenticated(response.data));
+        dispatch(setAuthenticated(response.data));
       } catch (err) {
         console.log("Error saving user: ", err);
       }
@@ -233,9 +260,8 @@ const HomeSection = () => {
   ];
 
   useEffect(() => {
-    if (authenticated) {
-      navigate("/");
-    } else return;
+    if (!authenticated) return;
+    navigate("/");
   }, [authenticated]);
 
   interface MenuItemProps {
@@ -301,7 +327,7 @@ const HomeSection = () => {
     setSearchBtn(!searchBtn);
   };
 
-  const sendMsgHandle = () => {
+  const sendMsgHandle = (content: string, room: string) => {
     if (!authenticated) {
       showToast("warning", "Please Login First");
       return;
@@ -327,6 +353,7 @@ const HomeSection = () => {
       createdAt: time,
       timestamp: new Date(),
     };
+    socket.emit("message:new", { content, room });
     messages.push(newMessage);
     setMessages(messages);
     setMsg("");
@@ -344,9 +371,15 @@ const HomeSection = () => {
       setOpenProfile(false);
 
       await login();
+
+      socket.emit("join:room", textToCopy);
     } catch (err) {
       console.log("login error: ", err);
     }
+  };
+
+  const startTyping = (room: string) => {
+    socket.emit("typing:start", room);
   };
 
   const scrollToBottom = () => {
@@ -670,6 +703,10 @@ const HomeSection = () => {
 
               {/* Message input */}
               <div className="max-w-full bg-[#22242D] p-2">
+                {typingStatus && (
+                  <div className="text-white">Andy is typing...</div>
+                )}
+
                 <div className="relative w-full h-[45px] bg-[100%_100%] flex items-center px-3 rounded-md">
                   <CirclePlus
                     className="w-5 h-5 text-[#777a8c] cursor-pointer"
@@ -694,7 +731,7 @@ const HomeSection = () => {
                     onChange={(e) => setMsg(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        sendMsgHandle();
+                        sendMsgHandle(msg, textToCopy);
                       }
                     }}
                   />
