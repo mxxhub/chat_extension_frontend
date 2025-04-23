@@ -1,17 +1,7 @@
 import { useState } from "react";
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Button } from "./ui/button";
-import { Card, CardContent } from "./ui/card";
-import {
-  X,
-  Edit,
-  MapPin,
-  Calendar,
-  Globe,
-  Twitter,
-  Linkedin,
-  Github,
-} from "lucide-react";
+import { X, Edit, MapPin, Calendar, Globe } from "lucide-react";
 import { Avatar } from "./ui/avatar";
 
 interface SignupModalProps {
@@ -33,7 +23,6 @@ export const ProfileModal = ({
   const [isEditing, setIsEditing] = useState(false);
   const [display, setDisplay] = useState<string>(displayName);
   const [uname, setUname] = useState<string>(username);
-  const [image, setImage] = useState<string>(avatar);
   const [bio, setBio] = useState<string>("");
   const [walletAdd, setWalletAdd] = useState<string>("");
 
@@ -44,19 +33,19 @@ export const ProfileModal = ({
       <div className="bg-gray-800 rounded-xl shadow-xl overflow-hidden w-full max-w-sm transform transition-all duration-300 ease-in-out animate-modal-in border border-gray-700">
         <div className="relative h-32 bg-gradient-to-r from-blue-600 to-blue-800">
           <button
-            // onClick={closeModal}
+            onClick={onClose}
             className="absolute top-4 right-4 p-1 rounded-full bg-black/30 text-white hover:bg-black/40 transition-colors duration-200"
             aria-label="Close modal"
           >
-            <X size={18} onClick={onClose} />
+            <X size={18} />
           </button>
 
           <button
-            // onClick={() => setIsEditing(true)}
+            onClick={() => setIsEditing(!isEditing)}
             className="absolute top-4 right-14 p-1 rounded-full bg-black/30 text-white hover:bg-black/40 transition-colors duration-200"
             aria-label="Edit profile"
           >
-            <Edit size={18} onClick={() => setIsEditing(!isEditing)} />
+            <Edit size={18} />
           </button>
           {/* )} */}
         </div>
