@@ -1,30 +1,61 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Button } from "./ui/button";
-import { X, Edit, MapPin, Calendar, Globe } from "lucide-react";
+import { X, Edit, MapPin, Calendar, Twitter } from "lucide-react";
 import { Avatar } from "./ui/avatar";
+import { showToast } from "./ui/toastMsg";
+import axios from "axios";
+import { setUser } from "../redux/features/auth/authSlice";
 
 interface SignupModalProps {
   isOpen: boolean;
   displayName: string;
   username: string;
   avatar: string;
+  _id: string;
+  bio: string;
+  wallet: string;
   onClose: () => void;
 }
 
 export const ProfileModal = ({
   isOpen,
   onClose,
+  _id,
   displayName,
   username,
   avatar,
+  bio,
+  wallet,
 }: SignupModalProps) => {
   if (!isOpen) return null;
+  const dispatch = useDispatch();
+
   const [isEditing, setIsEditing] = useState(false);
   const [display, setDisplay] = useState<string>(displayName);
-  const [uname, setUname] = useState<string>(username);
-  const [bio, setBio] = useState<string>("");
-  const [walletAdd, setWalletAdd] = useState<string>("");
+  const [biodata, setBiodata] = useState<string>(bio || "");
+  const [walletAdd, setWalletAdd] = useState<string>(wallet || "");
+
+  const server = "http://localhost:4000";
+
+  const handleSave = async () => {
+    try {
+      const response = await axios.post(`${server}/auth/updateUser`, {
+        _id: _id,
+        userId: username,
+        displayName: display,
+        wallet: walletAdd,
+        bio: biodata,
+      });
+      console.log("userdata updated: ", response);
+      showToast("success", "User data updated successfully");
+      setIsEditing(false);
+      dispatch(setUser(response.data.user));
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -47,7 +78,6 @@ export const ProfileModal = ({
           >
             <Edit size={18} />
           </button>
-          {/* )} */}
         </div>
 
         <div className="relative px-6 pb-6">
@@ -72,6 +102,7 @@ export const ProfileModal = ({
                   name="name"
                   value={display}
                   onChange={(e) => setDisplay(e.target.value)}
+                  placeholder="Enter your name"
                 />
               </div>
 
@@ -83,8 +114,9 @@ export const ProfileModal = ({
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   type="text"
                   name="username"
-                  value={uname}
-                  onChange={(e) => setUname(e.target.value)}
+                  placeholder="Enter your username"
+                  disabled={true}
+                  value={username}
                 />
               </div>
 
@@ -94,10 +126,11 @@ export const ProfileModal = ({
                 </label>
                 <textarea
                   name="bio"
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
+                  value={biodata}
+                  onChange={(e) => setBiodata(e.target.value)}
                   rows={3}
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Enter your bio"
                 />
               </div>
 
@@ -111,6 +144,7 @@ export const ProfileModal = ({
                   name="wallet"
                   value={walletAdd}
                   onChange={(e) => setWalletAdd(e.target.value)}
+                  placeholder="Enter your wallet address"
                 />
               </div>
 
@@ -121,7 +155,10 @@ export const ProfileModal = ({
                 >
                   Cancel
                 </Button>
-                <Button className="bg-[#1DA1F2] hover:bg-[#0d8ddf] text-white w-full">
+                <Button
+                  className="bg-[#1DA1F2] hover:bg-[#0d8ddf] text-white w-full"
+                  onClick={handleSave}
+                >
                   Save
                 </Button>
               </div>
@@ -134,11 +171,7 @@ export const ProfileModal = ({
               </div>
 
               <div className="space-y-4 mb-6">
-                <p className="text-gray-300 leading-relaxed">
-                  Passionate about decoding market trends and crafting strategic
-                  trades that capitalize on volatility. Always analyzing,
-                  adapting, and refining my edge in global markets.
-                </p>
+                <p className="text-gray-300 leading-relaxed">{biodata}</p>
 
                 <div className="flex items-center text-gray-300">
                   <MapPin size={18} className="mr-2" />
@@ -151,10 +184,9 @@ export const ProfileModal = ({
                 </div>
 
                 <div className="flex items-center text-gray-300 hover:text-blue-400 transition-colors duration-200">
-                  <Globe size={18} className="mr-2" />
                   <a className="flex items-center text-gray-300 hover:text-blue-400 transition-colors duration-200 cursor-pointer">
                     <span className="mr-2">
-                      <X />
+                      <Twitter size={18} />
                     </span>
                     <span>Twitter</span>
                   </a>

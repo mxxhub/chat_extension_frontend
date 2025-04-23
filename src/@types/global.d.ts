@@ -1,7 +1,9 @@
 declare interface User {
+  id?: string;
   userId: string;
   displayName: string;
   wallet: string;
+  bio: string;
   avatar?: string;
   channels: string[];
   isOnline: boolean;

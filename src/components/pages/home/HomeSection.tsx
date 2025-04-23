@@ -585,6 +585,9 @@ const HomeSection = () => {
                       displayName={userdata?.displayName || ""}
                       username={userdata?.userId || ""}
                       avatar={userdata?.avatar || ""}
+                      _id={userdata?.id || ""}
+                      bio={userdata?.bio || ""}
+                      wallet={userdata?.wallet || ""}
                     />
                   )}
                 </div>
