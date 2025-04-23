@@ -9,7 +9,7 @@ declare interface User {
 }
 
 declare interface Message {
-  id: number;
+  _id: string;
   sender: User;
   content: string;
   room: string;

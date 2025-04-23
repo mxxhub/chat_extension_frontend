@@ -108,7 +108,7 @@ const sidebarChannels = [
     tokenAdd: "0x92da67500F13e70694B4aD3bd9Ad8cD583f0a985",
   },
 ];
-import { LucideIcon } from "lucide-react";
+import { LucideIcon, X } from "lucide-react";
 import {
   ExternalLinkIcon,
   HeartIcon,
@@ -149,9 +149,9 @@ import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
 import axios from "axios";
 import { setAuthenticated } from "../../../redux/features/auth/authSlice";
-
-import io from "socket.io-client";
 // import dotenv from "dotenv";
+import io from "socket.io-client";
+
 // dotenv.config();
 
 const HomeSection = () => {
@@ -159,7 +159,7 @@ const HomeSection = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   // const server = process.env.SERVER || "localhost:3000";
-  const server = "https://144.172.94.181:4000";
+  const server = "http://localhost:4000";
   const scrollRef = useRef<HTMLDivElement>(null);
   const [userProfile, setUserProfile] = useState(false);
   const [menu, setMenu] = useState(false);
@@ -179,10 +179,18 @@ const HomeSection = () => {
   const [showPicker, setShowPicker] = useState(false);
   const [token, setToken] = useState<string>("");
   const [socket, setSocket] = useState<any>(null);
+  const [xRaid, setXRaid] = useState<boolean>(false);
+  const [tweetLink, setTweetLink] = useState<string>("");
 
   const { login } = useLogin();
   const { logout } = useLogout();
   const { authenticated, user } = usePrivy();
+
+  interface MenuItemProps {
+    Icon: LucideIcon;
+    text: string;
+    onClick?: () => void;
+  }
 
   useEffect(() => {
     if (!authenticated) return;
@@ -192,15 +200,16 @@ const HomeSection = () => {
   useEffect(() => {
     if (!token) return;
 
-    const newSocket = io("https://144.172.94.181:4000", {
+    const newSocket = io("http://localhost:4000", {
       auth: { token: token },
     });
 
     setSocket(newSocket);
 
+    newSocket.emit("join:room", textToCopy);
+
     newSocket.on("connect", () => {
       console.log("Connected to socket server");
-      newSocket.emit("join:room", textToCopy);
     });
 
     newSocket.on("message:received", (receivedMsg) => {
@@ -213,7 +222,7 @@ const HomeSection = () => {
       setTypingStatus(true);
     });
 
-    newSocket.on("uesr:status", (data) => {
+    newSocket.on("user:status", (data) => {
       console.log("User status: ", data);
     });
 
@@ -265,6 +274,11 @@ const HomeSection = () => {
   }, [user]);
 
   useEffect(() => {
+    if (socket) {
+      socket.emit("join:room", textToCopy);
+      console.log(`you joined ${textToCopy}`);
+    }
+
     const getMessage = async () => {
       const data = {
         room: textToCopy,
@@ -275,12 +289,6 @@ const HomeSection = () => {
     };
     getMessage();
   }, [textToCopy]);
-
-  interface MenuItemProps {
-    Icon: LucideIcon;
-    text: string;
-    onClick?: () => void;
-  }
 
   const MenuItem = ({ Icon, text, onClick }: MenuItemProps) => {
     return (
@@ -310,6 +318,7 @@ const HomeSection = () => {
   };
 
   const handleFileChange = () => {
+    setPlusBtn(false);
     const input = document.createElement("input");
     input.type = "file";
     input.accept = ".png,.jpg,.jpeg";
@@ -408,12 +417,16 @@ const HomeSection = () => {
     setTokenName(name);
     setTokenImage(image);
     setTextToCopy(tokenAdd);
-    setMessages([]);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     startTyping(textToCopy);
     setMsg(e.target.value);
+  };
+
+  const handleStartRaid = () => {
+    setXRaid(!xRaid);
+    setPlusBtn(false);
   };
 
   return (
@@ -446,6 +459,7 @@ const HomeSection = () => {
                 <div className="mt-2 flex flex-col items-center gap-2">
                   {sidebarChannels.slice(0, 3).map((channel) => (
                     <SidebarChannelList
+                      key={channel.id}
                       channel={channel}
                       channelClick={() =>
                         channelClick(
@@ -473,6 +487,7 @@ const HomeSection = () => {
                 <div className="mt-2 flex flex-col items-center gap-2">
                   {sidebarChannels.slice(3).map((channel) => (
                     <SidebarChannelList
+                      key={channel.id}
                       channel={channel}
                       channelClick={() =>
                         channelClick(
@@ -627,6 +642,27 @@ const HomeSection = () => {
                     </span>
                   </div>
 
+                  {xRaid && (
+                    <div className="w-5/6 bg-transparent z-10 items-center justify-center backdrop-blur-2xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-2xl p-5">
+                      <div className="text-white text-center mb-2">
+                        Start Twitter Raid
+                      </div>
+                      <button
+                        aria-label="Close"
+                        className="absolute top-4 right-4 text-white hover:text-gray-300"
+                        onClick={() => setXRaid(false)}
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                      <Input
+                        className="w-full self-center placeholder:text-center text-white"
+                        placeholder="Enter Tweet Link"
+                        onChange={(e) => setTweetLink(e.target.value)}
+                        value={tweetLink}
+                      />
+                    </div>
+                  )}
+
                   <Card className="w-full max-w-full bg-[#15202b] rounded-lg border-none">
                     <CardContent className="p-4">
                       <div className="flex items-start">
@@ -728,7 +764,11 @@ const HomeSection = () => {
                         text="Add Image"
                         onClick={handleFileChange}
                       />
-                      <MenuItem Icon={Play} text="Start Raid" />
+                      <MenuItem
+                        Icon={Play}
+                        text="Start Raid"
+                        onClick={handleStartRaid}
+                      />
                       <MenuItem Icon={ThumbsUp} text="Top Holders" />
                       <MenuItem Icon={TicketCheck} text="Bundle Checker" />
                     </div>
