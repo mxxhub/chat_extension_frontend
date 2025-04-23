@@ -188,6 +188,8 @@ const HomeSection = () => {
   const { logout } = useLogout();
   const { authenticated, user } = usePrivy();
 
+  const typingTimeout = useRef<NodeJS.Timeout | null>(null);
+
   interface MenuItemProps {
     Icon: LucideIcon;
     text: string;
@@ -222,6 +224,11 @@ const HomeSection = () => {
     newSocket.on("user:typing", (data) => {
       console.log("typing socket: ", data);
       setTypingStatus(true);
+      if (typingTimeout.current) clearTimeout(typingTimeout.current);
+
+      typingTimeout.current = setTimeout(() => {
+        setTypingStatus(false);
+      }, 1000);
     });
 
     newSocket.on("user:status", (data) => {
@@ -229,12 +236,12 @@ const HomeSection = () => {
     });
 
     return () => {
-      newSocket.emit("leave:room", textToCopy);
-      newSocket.off("connect");
-      newSocket.off("message:received");
-      newSocket.off("user:typing");
-      newSocket.off("user:status");
-      newSocket.disconnect();
+      // newSocket.emit("leave:room", textToCopy);
+      // newSocket.off("connect");
+      // newSocket.off("message:received");
+      // newSocket.off("user:typing");
+      // newSocket.off("user:status");
+      // newSocket.disconnect();
     };
   }, [token, textToCopy]);
 
@@ -351,7 +358,6 @@ const HomeSection = () => {
   };
 
   const sendMsgHandle = (content: string, room: string) => {
-    startTyping(textToCopy);
     if (!authenticated) {
       showToast("warning", "Please Login First");
       return;
@@ -755,9 +761,9 @@ const HomeSection = () => {
               </div>
 
               {/* Message input */}
-              <div className="max-w-full bg-[#22242D] p-2">
+              <div className="max-w-full bg-[#191A21] p-2">
                 {typingStatus && (
-                  <div className="text-white">Andy is typing...</div>
+                  <div className="text-white bg-transparent backdrop-blur-sm ml-1">{`${userdata?.displayName} is typing...`}</div>
                 )}
 
                 <div className="relative w-full h-[45px] bg-[100%_100%] flex items-center px-3 rounded-md">
