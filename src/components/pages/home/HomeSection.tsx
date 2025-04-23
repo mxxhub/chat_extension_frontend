@@ -236,12 +236,12 @@ const HomeSection = () => {
     });
 
     return () => {
-      // newSocket.emit("leave:room", textToCopy);
-      // newSocket.off("connect");
-      // newSocket.off("message:received");
-      // newSocket.off("user:typing");
-      // newSocket.off("user:status");
-      // newSocket.disconnect();
+      newSocket.emit("leave:room", textToCopy);
+      newSocket.off("connect");
+      newSocket.off("message:received");
+      newSocket.off("user:typing");
+      newSocket.off("user:status");
+      newSocket.disconnect();
     };
   }, [token, textToCopy]);
 
@@ -443,7 +443,7 @@ const HomeSection = () => {
         <div className="relative w-full h-full flex">
           {/* Sidebar */}
           <div className="h-full block md:block md:relative bg-[#22242D] border-[#22242d]">
-            <div className="relative h-full">
+            <div className="relative h-full w-[63px]">
               <div className="border-r border-r-[#3f414e] justify-items-center py-3">
                 <MenuIcon
                   className="w-7 h-7 text-white cursor-pointer"
@@ -453,7 +453,7 @@ const HomeSection = () => {
                   <SettingModal isOpen={menu} onClose={() => setMenu(false)} />
                 )}
               </div>
-              <div className="w-[63px] h-full border-r border-r-[#3f414e] flex flex-col items-center overflow-y-scroll">
+              <div className="h-full border-r border-r-[#3f414e] flex flex-col items-center overflow-y-scroll">
                 <div className="mt-4 relative">
                   <div className="text-[#777a8c] text-[10px] ml-4">Pinned</div>
                   <img
@@ -511,7 +511,7 @@ const HomeSection = () => {
             </div>
           </div>
           {/* Main chat container */}
-          <div className="flex-1 flex flex-col h-full">
+          <div className="flex-1 flex flex-col h-full w-[437px]">
             {/* Header */}
             <div className="h-[58px] bg-[#101114] border border-solid border-[#22242d] flex items-center px-4">
               <div className="flex items-center gap-2 overflow-x-hidden w-[230px]">
@@ -604,7 +604,7 @@ const HomeSection = () => {
               </div>
             </div>
             {/* {authenticated ? ( */}
-            <div className="flex-1 flex flex-col overflow-hidden">
+            <div className="flex-1 flex flex-col overflow-y-auto">
               {/* Banner */}
               <div className="w-full">
                 <img
@@ -641,7 +641,7 @@ const HomeSection = () => {
               {/* Chat messages container with scrolling */}
               <div
                 ref={scrollRef}
-                className="flex-1 overflow-y-scroll bg-[#191a21] p-4"
+                className="flex-1 overflow-y-scroll bg-[#191a21] p-4 w-full"
               >
                 {/* Twitter Raid section */}
                 <div className="mt-4">
@@ -742,7 +742,7 @@ const HomeSection = () => {
                   </Card>
                 </div>
                 {/* Chat messages */}
-                <div className="space-y-4">
+                <div className="space-y-4 w-full break-all">
                   {userProfile && (
                     <ProfileCard
                       name="Orangie"
