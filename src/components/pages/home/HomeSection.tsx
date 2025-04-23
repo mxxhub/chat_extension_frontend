@@ -130,7 +130,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { Card, CardContent } from "../../ui/card";
@@ -151,11 +151,13 @@ import axios from "axios";
 import { setAuthenticated } from "../../../redux/features/auth/authSlice";
 // import dotenv from "dotenv";
 import io from "socket.io-client";
+import { RootState } from "../../../redux/store";
 
 // dotenv.config();
 
 const HomeSection = () => {
-  // const userCre = useSelector(({ state }) => auth.state);
+  const userdata = useSelector((state: RootState) => state.auth.user);
+  console.log("userdata: ", userdata);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   // const server = process.env.SERVER || "localhost:3000";
@@ -580,6 +582,9 @@ const HomeSection = () => {
                     <ProfileModal
                       isOpen={profileModal}
                       onClose={handleProfileModalClose}
+                      displayName={userdata?.displayName || ""}
+                      username={userdata?.userId || ""}
+                      avatar={userdata?.avatar || ""}
                     />
                   )}
                 </div>
