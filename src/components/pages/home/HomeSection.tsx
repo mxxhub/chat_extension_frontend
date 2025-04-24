@@ -148,7 +148,7 @@ import SidebarChannelList from "../../channelModal";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
 import axios from "axios";
-import { setAuthenticated } from "../../../redux/features/auth/authSlice";
+// import { setAuthenticated } from "../../../redux/features/auth/authSlice";
 // import dotenv from "dotenv";
 import io from "socket.io-client";
 import { RootState } from "../../../redux/store";
@@ -158,8 +158,8 @@ import { RootState } from "../../../redux/store";
 const HomeSection = () => {
   const userdata = useSelector((state: RootState) => state.auth.user);
   console.log("userdata: ", userdata);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const dispatch = useDispatch();
+  // const navigate = useNavigate();
   // const server = process.env.SERVER || "localhost:3000";
   const server = "http://localhost:4000";
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -202,6 +202,7 @@ const HomeSection = () => {
 
   useEffect(() => {
     if (!authenticated) return;
+    setToken("");
     const getJoinedChannels = async () => {
       const res = await axios.post(`${server}/auth/getChannelsByUser`, {
         userId: userdata?.id,
