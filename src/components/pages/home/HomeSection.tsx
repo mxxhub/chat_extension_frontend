@@ -425,49 +425,50 @@ const HomeSection = () => {
       if (authenticated) return;
 
       setOpenProfile(false);
-      const asyncLogin = async (): Promise<void> => {
-        return await login();
-      };
+      login();
+      // const asyncLogin = async (): Promise<void> => {
+      //   return await login();
+      // };
 
-      asyncLogin()
-        .then(() => {
-          const saveUser = async () => {
-            if (!user) return;
+      // asyncLogin()
+      //   .then(() => {
+      //     const saveUser = async () => {
+      //       if (!user) return;
 
-            const userData = {
-              userId: user?.twitter?.username || "ShockedJS",
-              displayName: user?.twitter?.name || "Leon",
-              wallet: user?.wallet?.address || "0x1294724982",
-              avatar:
-                user?.twitter?.profilePictureUrl || "/assets/image-5-1.png",
-              channel: {
-                name: tokenName,
-                image: tokenImage,
-                tokenAdd: textToCopy,
-                symbol: "tokenSymbol",
-              },
-            };
+      //       const userData = {
+      //         userId: user?.twitter?.username || "ShockedJS",
+      //         displayName: user?.twitter?.name || "Leon",
+      //         wallet: user?.wallet?.address || "0x1294724982",
+      //         avatar:
+      //           user?.twitter?.profilePictureUrl || "/assets/image-5-1.png",
+      //         channel: {
+      //           name: tokenName,
+      //           image: tokenImage,
+      //           tokenAdd: textToCopy,
+      //           symbol: "tokenSymbol",
+      //         },
+      //       };
 
-            try {
-              const response = await axios.post(
-                `${server}/auth/addUser`,
-                userData
-              );
-              console.log("response: ", response);
-              setToken(response?.data?.token);
-              dispatch(setAuthenticated(response?.data?.user));
-            } catch (err) {
-              console.log("Error saving user: ", err);
-            }
-          };
+      //       try {
+      //         const response = await axios.post(
+      //           `${server}/auth/addUser`,
+      //           userData
+      //         );
+      //         console.log("response: ", response);
+      //         setToken(response?.data?.token);
+      //         dispatch(setAuthenticated(response?.data?.user));
+      //       } catch (err) {
+      //         console.log("Error saving user: ", err);
+      //       }
+      //     };
 
-          saveUser();
-          if (!authenticated) return;
-          navigate("/");
-        })
-        .catch((err) => {
-          console.log("login error: ", err);
-        });
+      //     saveUser();
+      //     if (!authenticated) return;
+      //     navigate("/");
+      //   })
+      //   .catch((err) => {
+      //     console.log("login error: ", err);
+      //   });
     } catch (err) {
       console.log("login error: ", err);
     }
