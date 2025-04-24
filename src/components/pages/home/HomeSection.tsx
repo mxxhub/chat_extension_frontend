@@ -128,9 +128,9 @@ import {
   ImagePlus,
   TicketCheck,
 } from "lucide-react";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { Card, CardContent } from "../../ui/card";
@@ -148,7 +148,10 @@ import SidebarChannelList from "../../channelModal";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
 import axios from "axios";
-// import { setAuthenticated } from "../../../redux/features/auth/authSlice";
+import {
+  setAuthenticated,
+  setUnauthenticated,
+} from "../../../redux/features/auth/authSlice";
 // import dotenv from "dotenv";
 import io from "socket.io-client";
 import { RootState } from "../../../redux/store";
@@ -158,8 +161,8 @@ import { RootState } from "../../../redux/store";
 const HomeSection = () => {
   const userdata = useSelector((state: RootState) => state.auth.user);
   console.log("userdata: ", userdata);
-  // const dispatch = useDispatch();
-  // const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   // const server = process.env.SERVER || "localhost:3000";
   const server = "http://localhost:4000";
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -190,7 +193,7 @@ const HomeSection = () => {
 
   const { login } = useLogin();
   const { logout } = useLogout();
-  const { authenticated, user } = usePrivy();
+  const { authenticated, user, ready } = usePrivy();
 
   const typingTimeout = useRef<NodeJS.Timeout | null>(null);
 
@@ -199,52 +202,23 @@ const HomeSection = () => {
     text: string;
     onClick?: () => void;
   }
-
-  useEffect(() => {
-    if (!authenticated) return;
-    setToken("");
-    const getJoinedChannels = async () => {
-      const res = await axios.post(`${server}/auth/getChannelsByUser`, {
-        userId: userdata?.id,
-      });
-      console.log("Joined channels: ", res.data);
-      setJoinedChannels(res.data);
-    };
-    getJoinedChannels();
-  }, []);
-
+  console.log("joinedChannels: ", joinedChannels);
   // useEffect(() => {
-  //   const saveUser = async () => {
-  //     if (!user) return;
-
-  //     const userData = {
-  //       userId: user?.twitter?.username || "ShockedJS",
-  //       displayName: user?.twitter?.name || "Leon",
-  //       wallet: user?.wallet?.address || "0x1294724982",
-  //       avatar: user?.twitter?.profilePictureUrl || "/assets/image-5-1.png",
-  //       channel: {
-  //         name: tokenName,
-  //         image: tokenImage,
-  //         tokenAdd: textToCopy,
-  //         symbol: "tokenSymbol",
-  //       },
+  //   if (!user) return;
+  //   const getJoinedChannels = async () => {
+  //     const data = {
+  //       userId: user?.twitter?.username,
   //     };
-
-  //     try {
-  //       const response = await axios.post(`${server}/auth/addUser`, userData);
-  //       console.log("response: ", response);
-  //       setToken(response?.data?.token);
-  //       dispatch(setAuthenticated(response?.data?.user));
-  //     } catch (err) {
-  //       console.log("Error saving user: ", err);
-  //     }
+  //     console.log("userdata?.userId: ", data);
+  //     const res: any = await axios.post(
+  //       `${server}/auth/getChannelsByUser`,
+  //       data
+  //     );
+  //     console.log("Joined channels: ", res.data);
+  //     setJoinedChannels(res.data);
   //   };
-
-  //   saveUser();
-
-  //   if (!authenticated) return;
-  //   navigate("/");
-  // }, [authenticated]);
+  //   getJoinedChannels();
+  // }, [user]);
 
   useEffect(() => {
     if (!token) return;
@@ -310,18 +284,18 @@ const HomeSection = () => {
   }, []);
 
   useEffect(() => {
-    if (socket) {
-      console.log("socket", socket);
-      const data = {
-        userId: user?.twitter?.username || "ShockedJS",
-        tokenAdd: textToCopy,
-        image: tokenImage,
-        name: tokenName,
-        symbol: "tokenSymbol",
-      };
-      socket.emit("join:room", data);
-      console.log(`you joined ${textToCopy}`);
-    }
+    // if (socket) {
+    //   console.log("socket", socket);
+    //   const data = {
+    //     userId: user?.twitter?.username || "ShockedJS",
+    //     tokenAdd: textToCopy,
+    //     image: tokenImage,
+    //     name: tokenName,
+    //     symbol: "tokenSymbol",
+    //   };
+    //   socket.emit("join:room", data);
+    //   console.log(`you joined ${textToCopy}`);
+    // }
 
     const getMessage = async () => {
       const data = {
@@ -334,6 +308,41 @@ const HomeSection = () => {
     };
     getMessage();
   }, [textToCopy]);
+
+  useEffect(() => {
+    if (!ready && !authenticated && !user) return;
+
+    const saveUser = async () => {
+      try {
+        const userData = {
+          userId: user?.twitter?.username || "ShockedJS",
+          displayName: user?.twitter?.name || "Leon",
+          wallet: user?.wallet?.address || "0x1294724982",
+          avatar: user?.twitter?.profilePictureUrl || "/assets/image-5-1.png",
+          channel: {
+            name: tokenName,
+            image: tokenImage,
+            tokenAdd: textToCopy,
+            symbol: "tokenSymbol",
+          },
+        };
+
+        const response = await axios.post(`${server}/auth/addUser`, userData);
+        console.log("response: ", response);
+        setToken(response?.data?.token);
+        console.log(
+          "response?.data?.channels: ",
+          response?.data?.user?.channels
+        );
+        setJoinedChannels(response?.data?.user?.channels);
+        dispatch(setAuthenticated(response?.data?.user));
+      } catch (err) {
+        console.log("save user error: ", err);
+      }
+    };
+    saveUser();
+    // navigate("/");
+  }, [ready, authenticated, user, dispatch]);
 
   const MenuItem = ({ Icon, text, onClick }: MenuItemProps) => {
     return (
@@ -361,6 +370,7 @@ const HomeSection = () => {
       // console.log("response: ", response);
       logout();
       showToast("success", "Logged out successfully!");
+      dispatch(setUnauthenticated());
       setOpenProfile(false);
     } catch (err) {
       console.log("Logout error: ", err);
@@ -426,50 +436,7 @@ const HomeSection = () => {
       if (authenticated) return;
 
       setOpenProfile(false);
-      login();
-      // const asyncLogin = async (): Promise<void> => {
-      //   return await login();
-      // };
-
-      // asyncLogin()
-      //   .then(() => {
-      //     const saveUser = async () => {
-      //       if (!user) return;
-
-      //       const userData = {
-      //         userId: user?.twitter?.username || "ShockedJS",
-      //         displayName: user?.twitter?.name || "Leon",
-      //         wallet: user?.wallet?.address || "0x1294724982",
-      //         avatar:
-      //           user?.twitter?.profilePictureUrl || "/assets/image-5-1.png",
-      //         channel: {
-      //           name: tokenName,
-      //           image: tokenImage,
-      //           tokenAdd: textToCopy,
-      //           symbol: "tokenSymbol",
-      //         },
-      //       };
-
-      //       try {
-      //         const response = await axios.post(
-      //           `${server}/auth/addUser`,
-      //           userData
-      //         );
-      //         console.log("response: ", response);
-      //         setToken(response?.data?.token);
-      //         dispatch(setAuthenticated(response?.data?.user));
-      //       } catch (err) {
-      //         console.log("Error saving user: ", err);
-      //       }
-      //     };
-
-      //     saveUser();
-      //     if (!authenticated) return;
-      //     navigate("/");
-      //   })
-      //   .catch((err) => {
-      //     console.log("login error: ", err);
-      //   });
+      await login();
     } catch (err) {
       console.log("login error: ", err);
     }
@@ -524,6 +491,19 @@ const HomeSection = () => {
     setSidebarChannels((prev) => prev.filter((ch) => ch.id !== textToCopy));
     setJoinedChannels((prev) => [...prev, selected]);
     setJoinStatus(true);
+
+    if (socket) {
+      console.log("socket", socket);
+      const data = {
+        userId: user?.twitter?.username || "ShockedJS",
+        tokenAdd: textToCopy,
+        image: tokenImage,
+        name: tokenName,
+        symbol: "tokenSymbol",
+      };
+      socket.emit("join:room", data);
+      console.log(`you joined ${textToCopy}`);
+    }
   };
 
   return (
@@ -554,19 +534,20 @@ const HomeSection = () => {
 
                 {/* Pinned channels */}
                 <div className="mt-2 flex flex-col items-center gap-2">
-                  {joinedChannels.map((channel: any) => (
-                    <SidebarChannelList
-                      key={channel._id}
-                      channel={channel}
-                      channelClick={() =>
-                        channelClick(
-                          channel.name,
-                          channel.image,
-                          channel.tokenAdd
-                        )
-                      }
-                    />
-                  ))}
+                  {joinedChannels &&
+                    joinedChannels.map((channel: any) => (
+                      <SidebarChannelList
+                        key={channel._id}
+                        channel={channel}
+                        channelClick={() =>
+                          channelClick(
+                            channel.name,
+                            channel.image,
+                            channel.tokenAdd
+                          )
+                        }
+                      />
+                    ))}
                 </div>
 
                 <div className="mt-4 flex items-center">

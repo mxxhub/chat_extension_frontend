@@ -5,7 +5,7 @@ declare interface User {
   wallet: string;
   bio: string;
   avatar?: string;
-  channels: string[];
+  channels: Channel[];
   isOnline: boolean;
   lastSeen?: Date;
 }
@@ -24,6 +24,7 @@ declare interface AuthState {
   user: User | null;
   loading: boolean;
   error: string | null;
+  token: string | null;
 }
 
 declare interface Channel {
