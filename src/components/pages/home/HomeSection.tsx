@@ -353,11 +353,11 @@ const HomeSection = () => {
 
   const logoutuser = async () => {
     try {
-      if (!userdata) return;
-      const response = await axios.post(`${server}/auth/deleteUser`, {
-        _id: userdata?.id,
-      });
-      console.log("response: ", response);
+      // if (!userdata) return;
+      // const response = await axios.post(`${server}/auth/deleteUser`, {
+      //   _id: userdata?.id,
+      // });
+      // console.log("response: ", response);
       logout();
       showToast("success", "Logged out successfully!");
       setOpenProfile(false);
