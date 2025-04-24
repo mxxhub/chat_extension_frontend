@@ -1,108 +1,108 @@
-const sidebarChannels = [
+const defaultChannels: Channel[] = [
   {
-    id: 1,
+    id: "1",
     image: "/assets/image-11.png",
     name: "memecoin1",
     tokenAdd: "0xDd0892a70aB28B2B3fac1E6FAa7a4B2121dDd5e4",
   },
   {
-    id: 2,
+    id: "2",
     image: "/assets/image-12.png",
     name: "memecoin2",
     tokenAdd: "0x8283093bf0484c1F806976EA90f79318BDB9688a",
   },
   {
-    id: 3,
+    id: "3",
     image: "/assets/image-14.png",
     name: "memecoin3",
     tokenAdd: "0x12e6e01F7D56BeC3aC5bD7Fd4fC7c9154907b332",
   },
   {
-    id: 4,
+    id: "4",
     image: "/assets/image-15.png",
     name: "memecoin4",
     tokenAdd: "0x5c5CEb764fFC6366E2d353137E69725d41856891",
   },
   {
-    id: 5,
+    id: "5",
     image: "/assets/image-16.png",
     name: "memecoin5",
     tokenAdd: "0x0814A0eDE62581B4CE5C2Ae24F66358A46ea2c75",
   },
   {
-    id: 6,
+    id: "6",
     image: "/assets/image-22.png",
     name: "memecoin6",
     tokenAdd: "0x190c835F37caAD3d3923f7EB8E4B4AC6a9F4721e",
   },
   {
-    id: 7,
+    id: "7",
     image: "/assets/image-23.png",
     name: "memecoin7",
     tokenAdd: "0x558418c3FA620e3C6c01Cd9cFeFeA831F1E20589",
   },
   {
-    id: 8,
+    id: "8",
     image: "/assets/image-17.png",
     name: "memecoin8",
     tokenAdd: "0x32CD52e43bB38197081367B11B385b10b960ECCf",
   },
   {
-    id: 9,
+    id: "9",
     image: "/assets/image-18.png",
     name: "memecoin9",
     tokenAdd: "0x3E30A914c6b42f0BB620A9e22Fb57238e160D699",
   },
   {
-    id: 10,
+    id: "10",
     image: "/assets/image-19.png",
     name: "memecoin10",
     tokenAdd: "0x833635A3ecd933D482423fE7C76D376381556FfC",
   },
   {
-    id: 11,
+    id: "11",
     image: "/assets/image-22.png",
     name: "memecoin11",
     tokenAdd: "0xfDB120AA45c4fA586Cae67e17196Eb7a08645EC9",
   },
   {
-    id: 12,
+    id: "12",
     image: "/assets/image-17.png",
     name: "memecoin12",
     tokenAdd: "0x176caBDE01214270C5cB9bfe4751F8822e6BD179",
   },
   {
-    id: 13,
+    id: "13",
     image: "/assets/image-11.png",
     name: "memecoin13",
     tokenAdd: "0xC8A7383A88307527960Ce978a3708a9951DB89a0",
   },
   {
-    id: 14,
+    id: "14",
     image: "/assets/image-16.png",
     name: "memecoin14",
     tokenAdd: "0xd8e9A64a1cF2E92FC6e6d7a2923eF56854190Ea8",
   },
   {
-    id: 15,
+    id: "15",
     image: "/assets/image-23.png",
     name: "memecoin15",
     tokenAdd: "0xd81e99Ea9880c6F38e32D0A819D7E83C1D59E34E",
   },
   {
-    id: 16,
+    id: "16",
     image: "/assets/image-11.png",
     name: "memecoin16",
     tokenAdd: "0xfACBCAd8A639F0b3ca51f7E79Fc574b7eAe19078",
   },
   {
-    id: 17,
+    id: "17",
     image: "/assets/image-18.png",
     name: "memecoin17",
     tokenAdd: "0xdA2a761d25A6d7E64bB6DA19047f0d90cE8B875f",
   },
   {
-    id: 18,
+    id: "18",
     image: "/assets/image-18.png",
     name: "memecoin18",
     tokenAdd: "0x92da67500F13e70694B4aD3bd9Ad8cD583f0a985",
@@ -183,6 +183,10 @@ const HomeSection = () => {
   const [socket, setSocket] = useState<any>(null);
   const [xRaid, setXRaid] = useState<boolean>(false);
   const [tweetLink, setTweetLink] = useState<string>("");
+  const [joinStatus, setJoinStatus] = useState<boolean>(false);
+  const [joinedChannels, setJoinedChannels] = useState<Channel[]>([]);
+  const [sidebarChannels, setSidebarChannels] =
+    useState<Channel[]>(defaultChannels);
 
   const { login } = useLogin();
   const { logout } = useLogout();
@@ -198,8 +202,48 @@ const HomeSection = () => {
 
   useEffect(() => {
     if (!authenticated) return;
-    navigate("/");
-  }, [authenticated]);
+    const getJoinedChannels = async () => {
+      const res = await axios.post(`${server}/auth/getChannelsByUser`, {
+        userId: userdata?.id,
+      });
+      console.log("Joined channels: ", res.data);
+      setJoinedChannels(res.data);
+    };
+    getJoinedChannels();
+  }, []);
+
+  // useEffect(() => {
+  //   const saveUser = async () => {
+  //     if (!user) return;
+
+  //     const userData = {
+  //       userId: user?.twitter?.username || "ShockedJS",
+  //       displayName: user?.twitter?.name || "Leon",
+  //       wallet: user?.wallet?.address || "0x1294724982",
+  //       avatar: user?.twitter?.profilePictureUrl || "/assets/image-5-1.png",
+  //       channel: {
+  //         name: tokenName,
+  //         image: tokenImage,
+  //         tokenAdd: textToCopy,
+  //         symbol: "tokenSymbol",
+  //       },
+  //     };
+
+  //     try {
+  //       const response = await axios.post(`${server}/auth/addUser`, userData);
+  //       console.log("response: ", response);
+  //       setToken(response?.data?.token);
+  //       dispatch(setAuthenticated(response?.data?.user));
+  //     } catch (err) {
+  //       console.log("Error saving user: ", err);
+  //     }
+  //   };
+
+  //   saveUser();
+
+  //   if (!authenticated) return;
+  //   navigate("/");
+  // }, [authenticated]);
 
   useEffect(() => {
     if (!token) return;
@@ -210,7 +254,14 @@ const HomeSection = () => {
 
     setSocket(newSocket);
 
-    newSocket.emit("join:room", textToCopy);
+    const data = {
+      userId: user?.twitter?.username || "ShockedJS",
+      tokenAdd: textToCopy,
+      image: tokenImage,
+      name: tokenName,
+      symbol: "tokenSymbol",
+    };
+    newSocket.emit("join:room", data);
 
     newSocket.on("connect", () => {
       console.log("Connected to socket server");
@@ -236,14 +287,14 @@ const HomeSection = () => {
     });
 
     return () => {
-      newSocket.emit("leave:room", textToCopy);
-      newSocket.off("connect");
-      newSocket.off("message:received");
-      newSocket.off("user:typing");
-      newSocket.off("user:status");
-      newSocket.disconnect();
+      // newSocket.emit("leave:room", textToCopy);
+      // newSocket.off("connect");
+      // newSocket.off("message:received");
+      // newSocket.off("user:typing");
+      // newSocket.off("user:status");
+      // newSocket.disconnect();
     };
-  }, [token, textToCopy]);
+  }, [token]);
 
   const popupRef = useRef<HTMLDivElement | null>(null);
 
@@ -258,33 +309,16 @@ const HomeSection = () => {
   }, []);
 
   useEffect(() => {
-    const saveUser = async () => {
-      if (!user) return;
-
-      const userData = {
-        userId: user?.twitter?.username || "ShockedJS",
-        displayName: user?.twitter?.name || "Leon",
-        wallet: user?.wallet?.address || "0x1294724982",
-        avatar: user?.twitter?.profilePictureUrl || "/assets/image-5-1.png",
-        channel: textToCopy || "",
-      };
-
-      try {
-        const response = await axios.post(`${server}/auth/addUser`, userData);
-        console.log("response: ", response);
-        setToken(response?.data?.token);
-        dispatch(setAuthenticated(response?.data?.user));
-      } catch (err) {
-        console.log("Error saving user: ", err);
-      }
-    };
-
-    saveUser();
-  }, [user]);
-
-  useEffect(() => {
     if (socket) {
-      socket.emit("join:room", textToCopy);
+      console.log("socket", socket);
+      const data = {
+        userId: user?.twitter?.username || "ShockedJS",
+        tokenAdd: textToCopy,
+        image: tokenImage,
+        name: tokenName,
+        symbol: "tokenSymbol",
+      };
+      socket.emit("join:room", data);
       console.log(`you joined ${textToCopy}`);
     }
 
@@ -295,6 +329,7 @@ const HomeSection = () => {
       };
       const res: any = await axios.post(`${server}/messages/getMessage`, data);
       setMessages(res.data);
+      console.log("getting messages", res.data);
     };
     getMessage();
   }, [textToCopy]);
@@ -316,8 +351,13 @@ const HomeSection = () => {
     setShowPicker(false);
   };
 
-  const logoutuser = () => {
+  const logoutuser = async () => {
     try {
+      if (!userdata) return;
+      const response = await axios.post(`${server}/auth/deleteUser`, {
+        _id: userdata?.id,
+      });
+      console.log("response: ", response);
       logout();
       showToast("success", "Logged out successfully!");
       setOpenProfile(false);
@@ -385,13 +425,49 @@ const HomeSection = () => {
       if (authenticated) return;
 
       setOpenProfile(false);
+      const asyncLogin = async (): Promise<void> => {
+        return await login();
+      };
 
-      await login();
+      asyncLogin()
+        .then(() => {
+          const saveUser = async () => {
+            if (!user) return;
 
-      // if (socket) {
-      //   socket.emit("join:room", textToCopy);
-      //   console.log(`you joined ${textToCopy}`);
-      // }
+            const userData = {
+              userId: user?.twitter?.username || "ShockedJS",
+              displayName: user?.twitter?.name || "Leon",
+              wallet: user?.wallet?.address || "0x1294724982",
+              avatar:
+                user?.twitter?.profilePictureUrl || "/assets/image-5-1.png",
+              channel: {
+                name: tokenName,
+                image: tokenImage,
+                tokenAdd: textToCopy,
+                symbol: "tokenSymbol",
+              },
+            };
+
+            try {
+              const response = await axios.post(
+                `${server}/auth/addUser`,
+                userData
+              );
+              console.log("response: ", response);
+              setToken(response?.data?.token);
+              dispatch(setAuthenticated(response?.data?.user));
+            } catch (err) {
+              console.log("Error saving user: ", err);
+            }
+          };
+
+          saveUser();
+          if (!authenticated) return;
+          navigate("/");
+        })
+        .catch((err) => {
+          console.log("login error: ", err);
+        });
     } catch (err) {
       console.log("login error: ", err);
     }
@@ -425,6 +501,7 @@ const HomeSection = () => {
     setTokenName(name);
     setTokenImage(image);
     setTextToCopy(tokenAdd);
+    setJoinStatus(false);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -435,6 +512,16 @@ const HomeSection = () => {
   const handleStartRaid = () => {
     setXRaid(!xRaid);
     setPlusBtn(false);
+  };
+
+  const handleJoinChannel = () => {
+    const selected = defaultChannels.find((ch) => ch.tokenAdd === textToCopy);
+    console.log("selected: ", selected);
+    if (!selected) return;
+
+    setSidebarChannels((prev) => prev.filter((ch) => ch.id !== textToCopy));
+    setJoinedChannels((prev) => [...prev, selected]);
+    setJoinStatus(true);
   };
 
   return (
@@ -465,9 +552,9 @@ const HomeSection = () => {
 
                 {/* Pinned channels */}
                 <div className="mt-2 flex flex-col items-center gap-2">
-                  {sidebarChannels.slice(0, 3).map((channel) => (
+                  {joinedChannels.map((channel: any) => (
                     <SidebarChannelList
-                      key={channel.id}
+                      key={channel._id}
                       channel={channel}
                       channelClick={() =>
                         channelClick(
@@ -493,7 +580,7 @@ const HomeSection = () => {
 
                 {/* Trending channels */}
                 <div className="mt-2 flex flex-col items-center gap-2">
-                  {sidebarChannels.slice(3).map((channel) => (
+                  {sidebarChannels.map((channel) => (
                     <SidebarChannelList
                       key={channel.id}
                       channel={channel}
@@ -638,7 +725,7 @@ const HomeSection = () => {
                 </div>
               </div>
 
-              {/* Chat messages container with scrolling */}
+              {/* Chat messages container */}
               <div
                 ref={scrollRef}
                 className="flex-1 overflow-y-scroll bg-[#191a21] p-4 w-full"
@@ -752,7 +839,7 @@ const HomeSection = () => {
                       promoterTag={true}
                     />
                   )}
-                  {messages.map((message) =>
+                  {messages.map((message: any) =>
                     chattingHistory(message, () => {
                       setUserProfile(!userProfile);
                     })
@@ -766,7 +853,7 @@ const HomeSection = () => {
                   <div className="text-white bg-transparent backdrop-blur-sm ml-1">{`${userdata?.displayName} is typing...`}</div>
                 )}
 
-                <div className="relative w-full h-[45px] bg-[100%_100%] flex items-center px-3 rounded-md">
+                <div className="relative w-full h-[45px] bg-[100%_100%] flex items-center px-3 rounded-md border border-solid border-[#22242d]">
                   <CirclePlus
                     className="w-5 h-5 text-[#777a8c] cursor-pointer"
                     onClick={plusBtnHandle}
@@ -787,17 +874,26 @@ const HomeSection = () => {
                       <MenuItem Icon={TicketCheck} text="Bundle Checker" />
                     </div>
                   )}
-                  <Input
-                    className="border-none bg-transparent text-[#dbd6d6] text-sm h-full focus:outline-none focus:ring-0 focus:border-none focus-visible:ring-0 focus-visible:ring-offset-0"
-                    placeholder="Write a message..."
-                    value={msg}
-                    onChange={(e) => handleInputChange(e)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        sendMsgHandle(msg, textToCopy);
-                      }
-                    }}
-                  />
+                  {joinStatus ? (
+                    <Input
+                      className="border-none bg-transparent text-[#dbd6d6] text-sm h-full focus:outline-none focus:ring-0 focus:border-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                      placeholder="Write a message..."
+                      value={msg}
+                      onChange={(e) => handleInputChange(e)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          sendMsgHandle(msg, textToCopy);
+                        }
+                      }}
+                    />
+                  ) : (
+                    <button
+                      className="text-white flex-auto"
+                      onClick={handleJoinChannel}
+                    >
+                      Join Channel
+                    </button>
+                  )}
                   <div className="flex items-center gap-2 ml-auto">
                     <HandCoins className="w-5 h-5 text-[green] hidden sm:block cursor-pointer" />
                     <Smile

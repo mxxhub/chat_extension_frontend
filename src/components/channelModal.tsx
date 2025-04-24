@@ -1,12 +1,5 @@
 import { Avatar, AvatarImage } from "./ui/avatar";
 
-type Channel = {
-  id: number;
-  image: string;
-  name: string;
-  tokenAdd: string;
-};
-
 type SidebarChannelListProps = {
   channel: Channel;
   channelClick: () => void;

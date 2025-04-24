@@ -25,3 +25,10 @@ declare interface AuthState {
   loading: boolean;
   error: string | null;
 }
+
+declare interface Channel {
+  id: string;
+  image: string;
+  name: string;
+  tokenAdd: string;
+}
