@@ -1,115 +1,15 @@
-const defaultChannels: Channel[] = [
-  {
-    id: "1",
-    image: "/assets/image-11.png",
-    name: "memecoin1",
-    tokenAdd: "0x1D02a7E63E2f8575E76776BE7828926fADef6029",
-  },
-  // {
-  //   id: "2",
-  //   image: "/assets/image-12.png",
-  //   name: "memecoin2",
-  //   tokenAdd: "0x8283093bf0484c1F806976EA90f79318BDB9688a",
-  // },
-  // {
-  //   id: "3",
-  //   image: "/assets/image-14.png",
-  //   name: "memecoin3",
-  //   tokenAdd: "0x12e6e01F7D56BeC3aC5bD7Fd4fC7c9154907b332",
-  // },
-  // {
-  //   id: "4",
-  //   image: "/assets/image-15.png",
-  //   name: "memecoin4",
-  //   tokenAdd: "0x5c5CEb764fFC6366E2d353137E69725d41856891",
-  // },
-  // {
-  //   id: "5",
-  //   image: "/assets/image-16.png",
-  //   name: "memecoin5",
-  //   tokenAdd: "0x0814A0eDE62581B4CE5C2Ae24F66358A46ea2c75",
-  // },
-  // {
-  //   id: "6",
-  //   image: "/assets/image-22.png",
-  //   name: "memecoin6",
-  //   tokenAdd: "0x190c835F37caAD3d3923f7EB8E4B4AC6a9F4721e",
-  // },
-  // {
-  //   id: "7",
-  //   image: "/assets/image-23.png",
-  //   name: "memecoin7",
-  //   tokenAdd: "0x558418c3FA620e3C6c01Cd9cFeFeA831F1E20589",
-  // },
-  // {
-  //   id: "8",
-  //   image: "/assets/image-17.png",
-  //   name: "memecoin8",
-  //   tokenAdd: "0x32CD52e43bB38197081367B11B385b10b960ECCf",
-  // },
-  // {
-  //   id: "9",
-  //   image: "/assets/image-18.png",
-  //   name: "memecoin9",
-  //   tokenAdd: "0x3E30A914c6b42f0BB620A9e22Fb57238e160D699",
-  // },
-  // {
-  //   id: "10",
-  //   image: "/assets/image-19.png",
-  //   name: "memecoin10",
-  //   tokenAdd: "0x833635A3ecd933D482423fE7C76D376381556FfC",
-  // },
-  // {
-  //   id: "11",
-  //   image: "/assets/image-22.png",
-  //   name: "memecoin11",
-  //   tokenAdd: "0xfDB120AA45c4fA586Cae67e17196Eb7a08645EC9",
-  // },
-  // {
-  //   id: "12",
-  //   image: "/assets/image-17.png",
-  //   name: "memecoin12",
-  //   tokenAdd: "0x176caBDE01214270C5cB9bfe4751F8822e6BD179",
-  // },
-  // {
-  //   id: "13",
-  //   image: "/assets/image-11.png",
-  //   name: "memecoin13",
-  //   tokenAdd: "0xC8A7383A88307527960Ce978a3708a9951DB89a0",
-  // },
-  // {
-  //   id: "14",
-  //   image: "/assets/image-16.png",
-  //   name: "memecoin14",
-  //   tokenAdd: "0xd8e9A64a1cF2E92FC6e6d7a2923eF56854190Ea8",
-  // },
-  // {
-  //   id: "15",
-  //   image: "/assets/image-23.png",
-  //   name: "memecoin15",
-  //   tokenAdd: "0xd81e99Ea9880c6F38e32D0A819D7E83C1D59E34E",
-  // },
-  // {
-  //   id: "16",
-  //   image: "/assets/image-11.png",
-  //   name: "memecoin16",
-  //   tokenAdd: "0xfACBCAd8A639F0b3ca51f7E79Fc574b7eAe19078",
-  // },
-  // {
-  //   id: "17",
-  //   image: "/assets/image-18.png",
-  //   name: "memecoin17",
-  //   tokenAdd: "0xdA2a761d25A6d7E64bB6DA19047f0d90cE8B875f",
-  // },
-  // {
-  //   id: "18",
-  //   image: "/assets/image-18.png",
-  //   name: "memecoin18",
-  //   tokenAdd: "0x92da67500F13e70694B4aD3bd9Ad8cD583f0a985",
-  // },
-];
-import { LucideIcon, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import io from "socket.io-client";
+import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
+import Picker from "@emoji-mart/react";
+import data from "@emoji-mart/data";
+// import dotenv from "dotenv";
 import {
+  LucideIcon,
+  X,
   ExternalLinkIcon,
   HeartIcon,
   MenuIcon,
@@ -129,47 +29,58 @@ import {
   TicketCheck,
   LogOut,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
-import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
-import { Card, CardContent } from "../../ui/card";
-import { Input } from "../../ui/input";
-import { Separator } from "../../ui/separator";
-import { chattingHistory } from "../../ui/chatting";
-import { getTokenInfo, toShortAddress } from "../../../utils/utils";
-import { SettingModal } from "../../settingModal";
-import { ProfileMenu } from "../../ui/profile";
-import { ProfileModal } from "../../profileModal";
-// import FirstPage from "./FirstPage";
-import ProfileCard from "../../ui/profileCard";
-import { showToast } from "../../ui/toastMsg";
-import SidebarChannelList from "../../channelModal";
-import Picker from "@emoji-mart/react";
-import data from "@emoji-mart/data";
-import axios from "axios";
+import { toShortAddress } from "../../../utils/utils";
 import {
   setAuthenticated,
   setChannels,
   setUnauthenticated,
 } from "../../../redux/features/auth/authSlice";
-// import dotenv from "dotenv";
-import io from "socket.io-client";
 import { RootState } from "../../../redux/store";
+import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
+import { Card, CardContent } from "../../ui/card";
+import { Input } from "../../ui/input";
+import { Separator } from "../../ui/separator";
+import { chattingHistory } from "../../ui/chatting";
+import ProfileCard from "../../ui/profileCard";
+import { showToast } from "../../ui/toastMsg";
+import { ProfileMenu } from "../../ui/profile";
+import { SettingModal } from "../../settingModal";
+import { ProfileModal } from "../../profileModal";
+import SidebarChannelList from "../../channelModal";
 
 // dotenv.config();
 
 const HomeSection = () => {
   const userdata = useSelector((state: RootState) => state.auth.user);
+  console.log("userdata: ", userdata);
   const joinedChannel = useSelector(
     (state: RootState) => state.auth.user?.channels
   );
-  console.log("joinedChannel: ", joinedChannel);
-  console.log("userdata: ", userdata);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { login } = useLogin();
+  const { logout } = useLogout();
   // const server = process.env.SERVER || "localhost:3000";
+  const defaultChannels: Channel[] = [
+    {
+      id: "1",
+      image: "/assets/image-11.png",
+      name: "memecoin1",
+      tokenAdd: "0x1D02a7E63E2f8575E76776BE7828926fADef6029",
+    },
+    // {
+    //   id: "2",
+    //   image: "/assets/image-12.png",
+    //   name: "memecoin2",
+    //   tokenAdd: "0x8283093bf0484c1F806976EA90f79318BDB9688a",
+    // },
+    // {
+    //   id: "3",
+    //   image: "/assets/image-14.png",
+    //   name: "memecoin3",
+    //   tokenAdd: "0x12e6e01F7D56BeC3aC5bD7Fd4fC7c9154907b332",
+    // },
+  ];
   const server = "http://localhost:4000";
   const scrollRef = useRef<HTMLDivElement>(null);
   const [userProfile, setUserProfile] = useState(false);
@@ -194,18 +105,16 @@ const HomeSection = () => {
   const [sidebarChannels, setSidebarChannels] =
     useState<Channel[]>(defaultChannels);
 
-  const { login } = useLogin();
-  const { logout } = useLogout();
   const { authenticated, user, ready } = usePrivy();
 
   const typingTimeout = useRef<NodeJS.Timeout | null>(null);
+  const popupRef = useRef<HTMLDivElement | null>(null);
 
   interface MenuItemProps {
     Icon: LucideIcon;
     text: string;
     onClick?: () => void;
   }
-  // console.log("joinedChannels: ", joinedChannels);
 
   useEffect(() => {
     if (!token) return;
@@ -257,8 +166,6 @@ const HomeSection = () => {
       // newSocket.disconnect();
     };
   }, [token]);
-
-  const popupRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -343,21 +250,6 @@ const HomeSection = () => {
     } catch (err) {
       console.log("Logout error: ", err);
     }
-  };
-
-  const handleFileChange = () => {
-    setPlusBtn(false);
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = ".png,.jpg,.jpeg";
-    input.onchange = (event: Event) => {
-      const target = event.target as HTMLInputElement;
-      if (target.files && target.files.length > 0) {
-        const file = target.files[0];
-        console.log("Selected file:", file);
-      }
-    };
-    input.click();
   };
 
   const handleCopy = async () => {
@@ -446,6 +338,21 @@ const HomeSection = () => {
     setMsg(e.target.value);
   };
 
+  const handleFileChange = () => {
+    setPlusBtn(false);
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".png,.jpg,.jpeg";
+    input.onchange = (event: Event) => {
+      const target = event.target as HTMLInputElement;
+      if (target.files && target.files.length > 0) {
+        const file = target.files[0];
+        console.log("Selected file:", file);
+      }
+    };
+    input.click();
+  };
+
   const handleStartRaid = () => {
     setXRaid(!xRaid);
     setPlusBtn(false);
@@ -458,11 +365,6 @@ const HomeSection = () => {
       name: "memecoin1",
       tokenAdd: "0x1D02a7E63E2f8575E76776BE7828926fADef6029",
     };
-    // const tokenInfo = await getTokenInfo(
-    //   "0x1D02a7E63E2f8575E76776BE7828926fADef6029",
-    //   "ethereum"
-    // );
-    // console.log("tokenInfo: ", tokenInfo);
     if (socket) {
       console.log("socket", socket);
       const data = {
@@ -656,7 +558,6 @@ const HomeSection = () => {
                 />
               </div>
             </div>
-            {/* {authenticated ? ( */}
             <div className="flex-1 flex flex-col overflow-y-auto">
               {/* Banner */}
               <div className="w-full">
@@ -887,9 +788,6 @@ const HomeSection = () => {
                 </div>
               </div>
             </div>
-            {/* ) : (
-              <FirstPage />
-            )} */}
           </div>
         </div>
       </div>
