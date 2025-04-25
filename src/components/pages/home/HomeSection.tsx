@@ -3,110 +3,110 @@ const defaultChannels: Channel[] = [
     id: "1",
     image: "/assets/image-11.png",
     name: "memecoin1",
-    tokenAdd: "0xDd0892a70aB28B2B3fac1E6FAa7a4B2121dDd5e4",
+    tokenAdd: "0x1D02a7E63E2f8575E76776BE7828926fADef6029",
   },
-  {
-    id: "2",
-    image: "/assets/image-12.png",
-    name: "memecoin2",
-    tokenAdd: "0x8283093bf0484c1F806976EA90f79318BDB9688a",
-  },
-  {
-    id: "3",
-    image: "/assets/image-14.png",
-    name: "memecoin3",
-    tokenAdd: "0x12e6e01F7D56BeC3aC5bD7Fd4fC7c9154907b332",
-  },
-  {
-    id: "4",
-    image: "/assets/image-15.png",
-    name: "memecoin4",
-    tokenAdd: "0x5c5CEb764fFC6366E2d353137E69725d41856891",
-  },
-  {
-    id: "5",
-    image: "/assets/image-16.png",
-    name: "memecoin5",
-    tokenAdd: "0x0814A0eDE62581B4CE5C2Ae24F66358A46ea2c75",
-  },
-  {
-    id: "6",
-    image: "/assets/image-22.png",
-    name: "memecoin6",
-    tokenAdd: "0x190c835F37caAD3d3923f7EB8E4B4AC6a9F4721e",
-  },
-  {
-    id: "7",
-    image: "/assets/image-23.png",
-    name: "memecoin7",
-    tokenAdd: "0x558418c3FA620e3C6c01Cd9cFeFeA831F1E20589",
-  },
-  {
-    id: "8",
-    image: "/assets/image-17.png",
-    name: "memecoin8",
-    tokenAdd: "0x32CD52e43bB38197081367B11B385b10b960ECCf",
-  },
-  {
-    id: "9",
-    image: "/assets/image-18.png",
-    name: "memecoin9",
-    tokenAdd: "0x3E30A914c6b42f0BB620A9e22Fb57238e160D699",
-  },
-  {
-    id: "10",
-    image: "/assets/image-19.png",
-    name: "memecoin10",
-    tokenAdd: "0x833635A3ecd933D482423fE7C76D376381556FfC",
-  },
-  {
-    id: "11",
-    image: "/assets/image-22.png",
-    name: "memecoin11",
-    tokenAdd: "0xfDB120AA45c4fA586Cae67e17196Eb7a08645EC9",
-  },
-  {
-    id: "12",
-    image: "/assets/image-17.png",
-    name: "memecoin12",
-    tokenAdd: "0x176caBDE01214270C5cB9bfe4751F8822e6BD179",
-  },
-  {
-    id: "13",
-    image: "/assets/image-11.png",
-    name: "memecoin13",
-    tokenAdd: "0xC8A7383A88307527960Ce978a3708a9951DB89a0",
-  },
-  {
-    id: "14",
-    image: "/assets/image-16.png",
-    name: "memecoin14",
-    tokenAdd: "0xd8e9A64a1cF2E92FC6e6d7a2923eF56854190Ea8",
-  },
-  {
-    id: "15",
-    image: "/assets/image-23.png",
-    name: "memecoin15",
-    tokenAdd: "0xd81e99Ea9880c6F38e32D0A819D7E83C1D59E34E",
-  },
-  {
-    id: "16",
-    image: "/assets/image-11.png",
-    name: "memecoin16",
-    tokenAdd: "0xfACBCAd8A639F0b3ca51f7E79Fc574b7eAe19078",
-  },
-  {
-    id: "17",
-    image: "/assets/image-18.png",
-    name: "memecoin17",
-    tokenAdd: "0xdA2a761d25A6d7E64bB6DA19047f0d90cE8B875f",
-  },
-  {
-    id: "18",
-    image: "/assets/image-18.png",
-    name: "memecoin18",
-    tokenAdd: "0x92da67500F13e70694B4aD3bd9Ad8cD583f0a985",
-  },
+  // {
+  //   id: "2",
+  //   image: "/assets/image-12.png",
+  //   name: "memecoin2",
+  //   tokenAdd: "0x8283093bf0484c1F806976EA90f79318BDB9688a",
+  // },
+  // {
+  //   id: "3",
+  //   image: "/assets/image-14.png",
+  //   name: "memecoin3",
+  //   tokenAdd: "0x12e6e01F7D56BeC3aC5bD7Fd4fC7c9154907b332",
+  // },
+  // {
+  //   id: "4",
+  //   image: "/assets/image-15.png",
+  //   name: "memecoin4",
+  //   tokenAdd: "0x5c5CEb764fFC6366E2d353137E69725d41856891",
+  // },
+  // {
+  //   id: "5",
+  //   image: "/assets/image-16.png",
+  //   name: "memecoin5",
+  //   tokenAdd: "0x0814A0eDE62581B4CE5C2Ae24F66358A46ea2c75",
+  // },
+  // {
+  //   id: "6",
+  //   image: "/assets/image-22.png",
+  //   name: "memecoin6",
+  //   tokenAdd: "0x190c835F37caAD3d3923f7EB8E4B4AC6a9F4721e",
+  // },
+  // {
+  //   id: "7",
+  //   image: "/assets/image-23.png",
+  //   name: "memecoin7",
+  //   tokenAdd: "0x558418c3FA620e3C6c01Cd9cFeFeA831F1E20589",
+  // },
+  // {
+  //   id: "8",
+  //   image: "/assets/image-17.png",
+  //   name: "memecoin8",
+  //   tokenAdd: "0x32CD52e43bB38197081367B11B385b10b960ECCf",
+  // },
+  // {
+  //   id: "9",
+  //   image: "/assets/image-18.png",
+  //   name: "memecoin9",
+  //   tokenAdd: "0x3E30A914c6b42f0BB620A9e22Fb57238e160D699",
+  // },
+  // {
+  //   id: "10",
+  //   image: "/assets/image-19.png",
+  //   name: "memecoin10",
+  //   tokenAdd: "0x833635A3ecd933D482423fE7C76D376381556FfC",
+  // },
+  // {
+  //   id: "11",
+  //   image: "/assets/image-22.png",
+  //   name: "memecoin11",
+  //   tokenAdd: "0xfDB120AA45c4fA586Cae67e17196Eb7a08645EC9",
+  // },
+  // {
+  //   id: "12",
+  //   image: "/assets/image-17.png",
+  //   name: "memecoin12",
+  //   tokenAdd: "0x176caBDE01214270C5cB9bfe4751F8822e6BD179",
+  // },
+  // {
+  //   id: "13",
+  //   image: "/assets/image-11.png",
+  //   name: "memecoin13",
+  //   tokenAdd: "0xC8A7383A88307527960Ce978a3708a9951DB89a0",
+  // },
+  // {
+  //   id: "14",
+  //   image: "/assets/image-16.png",
+  //   name: "memecoin14",
+  //   tokenAdd: "0xd8e9A64a1cF2E92FC6e6d7a2923eF56854190Ea8",
+  // },
+  // {
+  //   id: "15",
+  //   image: "/assets/image-23.png",
+  //   name: "memecoin15",
+  //   tokenAdd: "0xd81e99Ea9880c6F38e32D0A819D7E83C1D59E34E",
+  // },
+  // {
+  //   id: "16",
+  //   image: "/assets/image-11.png",
+  //   name: "memecoin16",
+  //   tokenAdd: "0xfACBCAd8A639F0b3ca51f7E79Fc574b7eAe19078",
+  // },
+  // {
+  //   id: "17",
+  //   image: "/assets/image-18.png",
+  //   name: "memecoin17",
+  //   tokenAdd: "0xdA2a761d25A6d7E64bB6DA19047f0d90cE8B875f",
+  // },
+  // {
+  //   id: "18",
+  //   image: "/assets/image-18.png",
+  //   name: "memecoin18",
+  //   tokenAdd: "0x92da67500F13e70694B4aD3bd9Ad8cD583f0a985",
+  // },
 ];
 import { LucideIcon, X } from "lucide-react";
 import {
@@ -127,6 +127,7 @@ import {
   ThumbsUp,
   ImagePlus,
   TicketCheck,
+  LogOut,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
@@ -137,7 +138,7 @@ import { Card, CardContent } from "../../ui/card";
 import { Input } from "../../ui/input";
 import { Separator } from "../../ui/separator";
 import { chattingHistory } from "../../ui/chatting";
-import { toShortAddress } from "../../../utils/utils";
+import { getTokenInfo, toShortAddress } from "../../../utils/utils";
 import { SettingModal } from "../../settingModal";
 import { ProfileMenu } from "../../ui/profile";
 import { ProfileModal } from "../../profileModal";
@@ -150,6 +151,7 @@ import data from "@emoji-mart/data";
 import axios from "axios";
 import {
   setAuthenticated,
+  setChannels,
   setUnauthenticated,
 } from "../../../redux/features/auth/authSlice";
 // import dotenv from "dotenv";
@@ -160,6 +162,10 @@ import { RootState } from "../../../redux/store";
 
 const HomeSection = () => {
   const userdata = useSelector((state: RootState) => state.auth.user);
+  const joinedChannel = useSelector(
+    (state: RootState) => state.auth.user?.channels
+  );
+  console.log("joinedChannel: ", joinedChannel);
   console.log("userdata: ", userdata);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -174,11 +180,9 @@ const HomeSection = () => {
   const [copied, setCopied] = useState(false);
   const [searchBtn, setSearchBtn] = useState(true);
   const [msg, setMsg] = useState("");
-  const [textToCopy, setTextToCopy] = useState(
-    "0xDd0892a70aB28B2B3fac1E6FAa7a4B2121dDd5e4"
-  );
-  const [tokenName, setTokenName] = useState("memecoin1");
-  const [tokenImage, setTokenImage] = useState("/assets/image-11.png");
+  const [textToCopy, setTextToCopy] = useState("");
+  const [tokenName, setTokenName] = useState("");
+  const [tokenImage, setTokenImage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [typingStatus, setTypingStatus] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
@@ -187,7 +191,6 @@ const HomeSection = () => {
   const [xRaid, setXRaid] = useState<boolean>(false);
   const [tweetLink, setTweetLink] = useState<string>("");
   const [joinStatus, setJoinStatus] = useState<boolean>(false);
-  const [joinedChannels, setJoinedChannels] = useState<Channel[]>([]);
   const [sidebarChannels, setSidebarChannels] =
     useState<Channel[]>(defaultChannels);
 
@@ -202,23 +205,7 @@ const HomeSection = () => {
     text: string;
     onClick?: () => void;
   }
-  console.log("joinedChannels: ", joinedChannels);
-  // useEffect(() => {
-  //   if (!user) return;
-  //   const getJoinedChannels = async () => {
-  //     const data = {
-  //       userId: user?.twitter?.username,
-  //     };
-  //     console.log("userdata?.userId: ", data);
-  //     const res: any = await axios.post(
-  //       `${server}/auth/getChannelsByUser`,
-  //       data
-  //     );
-  //     console.log("Joined channels: ", res.data);
-  //     setJoinedChannels(res.data);
-  //   };
-  //   getJoinedChannels();
-  // }, [user]);
+  // console.log("joinedChannels: ", joinedChannels);
 
   useEffect(() => {
     if (!token) return;
@@ -284,19 +271,6 @@ const HomeSection = () => {
   }, []);
 
   useEffect(() => {
-    // if (socket) {
-    //   console.log("socket", socket);
-    //   const data = {
-    //     userId: user?.twitter?.username || "ShockedJS",
-    //     tokenAdd: textToCopy,
-    //     image: tokenImage,
-    //     name: tokenName,
-    //     symbol: "tokenSymbol",
-    //   };
-    //   socket.emit("join:room", data);
-    //   console.log(`you joined ${textToCopy}`);
-    // }
-
     const getMessage = async () => {
       const data = {
         room: textToCopy,
@@ -334,7 +308,6 @@ const HomeSection = () => {
           "response?.data?.channels: ",
           response?.data?.user?.channels
         );
-        setJoinedChannels(response?.data?.user?.channels);
         dispatch(setAuthenticated(response?.data?.user));
       } catch (err) {
         console.log("save user error: ", err);
@@ -363,11 +336,6 @@ const HomeSection = () => {
 
   const logoutuser = async () => {
     try {
-      // if (!userdata) return;
-      // const response = await axios.post(`${server}/auth/deleteUser`, {
-      //   _id: userdata?.id,
-      // });
-      // console.log("response: ", response);
       logout();
       showToast("success", "Logged out successfully!");
       dispatch(setUnauthenticated());
@@ -483,15 +451,18 @@ const HomeSection = () => {
     setPlusBtn(false);
   };
 
-  const handleJoinChannel = () => {
-    const selected = defaultChannels.find((ch) => ch.tokenAdd === textToCopy);
-    console.log("selected: ", selected);
-    if (!selected) return;
-
-    setSidebarChannels((prev) => prev.filter((ch) => ch.id !== textToCopy));
-    setJoinedChannels((prev) => [...prev, selected]);
-    setJoinStatus(true);
-
+  const handleJoinChannel = async () => {
+    const selected = {
+      id: "",
+      image: "/assets/image-11.png",
+      name: "memecoin1",
+      tokenAdd: "0x1D02a7E63E2f8575E76776BE7828926fADef6029",
+    };
+    // const tokenInfo = await getTokenInfo(
+    //   "0x1D02a7E63E2f8575E76776BE7828926fADef6029",
+    //   "ethereum"
+    // );
+    // console.log("tokenInfo: ", tokenInfo);
     if (socket) {
       console.log("socket", socket);
       const data = {
@@ -504,6 +475,18 @@ const HomeSection = () => {
       socket.emit("join:room", data);
       console.log(`you joined ${textToCopy}`);
     }
+    dispatch(setChannels(selected));
+    setJoinStatus(true);
+  };
+
+  const handleLeaveChannel = () => {
+    if (socket) {
+      socket.emit("leave:room", textToCopy);
+      console.log(`you left ${textToCopy}`);
+    }
+
+    setJoinStatus(false);
+    setPlusBtn(false);
   };
 
   return (
@@ -534,8 +517,8 @@ const HomeSection = () => {
 
                 {/* Pinned channels */}
                 <div className="mt-2 flex flex-col items-center gap-2">
-                  {joinedChannels &&
-                    joinedChannels.map((channel: any) => (
+                  {joinedChannel &&
+                    joinedChannel.map((channel: any) => (
                       <SidebarChannelList
                         key={channel._id}
                         channel={channel}
@@ -855,6 +838,11 @@ const HomeSection = () => {
                       />
                       <MenuItem Icon={ThumbsUp} text="Top Holders" />
                       <MenuItem Icon={TicketCheck} text="Bundle Checker" />
+                      <MenuItem
+                        Icon={LogOut}
+                        text="Leave Channel"
+                        onClick={handleLeaveChannel}
+                      />
                     </div>
                   )}
                   {joinStatus ? (
@@ -872,7 +860,7 @@ const HomeSection = () => {
                   ) : (
                     <button
                       className="text-white flex-auto"
-                      onClick={handleJoinChannel}
+                      onClick={() => handleJoinChannel()}
                     >
                       Join Channel
                     </button>

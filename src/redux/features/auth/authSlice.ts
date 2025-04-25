@@ -22,6 +22,12 @@ const authSlice = createSlice({
     setUser: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
     },
+    setChannels: (state, action: PayloadAction<Channel>) => {
+      console.log("action.payload: ", action.payload);
+      if (state.user) {
+        state.user.channels = [...state.user.channels, action.payload];
+      }
+    },
     setUnauthenticated: (state) => {
       localStorage.removeItem("user");
       state.isAuthenticated = false;
@@ -33,7 +39,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { setAuthenticated, setUser, setUnauthenticated } =
+export const { setAuthenticated, setUser, setUnauthenticated, setChannels } =
   authSlice.actions;
 
 export const authReducer = authSlice.reducer;
