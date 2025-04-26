@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import { toShortAddress } from "../../../utils/utils";
 import {
+  removeChannel,
   setAuthenticated,
   setChannels,
   setUnauthenticated,
@@ -71,18 +72,18 @@ const HomeSection = () => {
       name: "memecoin1",
       tokenAdd: "0x1D02a7E63E2f8575E76776BE7828926fADef6029",
     },
-    // {
-    //   id: "2",
-    //   image: "/assets/image-12.png",
-    //   name: "memecoin2",
-    //   tokenAdd: "0x8283093bf0484c1F806976EA90f79318BDB9688a",
-    // },
-    // {
-    //   id: "3",
-    //   image: "/assets/image-14.png",
-    //   name: "memecoin3",
-    //   tokenAdd: "0x12e6e01F7D56BeC3aC5bD7Fd4fC7c9154907b332",
-    // },
+    {
+      id: "2",
+      image: "/assets/image-12.png",
+      name: "memecoin2",
+      tokenAdd: "0x8283093bf0484c1F806976EA90f79318BDB9688a",
+    },
+    {
+      id: "3",
+      image: "/assets/image-14.png",
+      name: "memecoin3",
+      tokenAdd: "0x12e6e01F7D56BeC3aC5bD7Fd4fC7c9154907b332",
+    },
   ];
 
   const [userProfile, setUserProfile] = useState(false);
@@ -364,8 +365,8 @@ const HomeSection = () => {
       name: "memecoin1",
       tokenAdd: "0x1D02a7E63E2f8575E76776BE7828926fADef6029",
     };
+
     if (socket) {
-      console.log("socket", socket);
       const data = {
         userId: user?.twitter?.username || "ShockedJS",
         tokenAdd: textToCopy,
@@ -377,6 +378,7 @@ const HomeSection = () => {
       console.log(`you joined ${textToCopy}`);
     }
     dispatch(setChannels(selected));
+    showToast("success", "Joined channel successfully!");
     setJoinStatus(true);
   };
 
@@ -386,7 +388,9 @@ const HomeSection = () => {
       console.log(`you left ${textToCopy}`);
     }
 
+    dispatch(removeChannel(textToCopy));
     setJoinStatus(false);
+    showToast("success", "Left channel successfully!");
     setPlusBtn(false);
   };
 
