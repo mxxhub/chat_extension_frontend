@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import io from "socket.io-client";
 import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
-// import dotenv from "dotenv";
 import {
   LucideIcon,
   X,
@@ -47,8 +46,7 @@ import { ProfileMenu } from "../../ui/profile";
 import { SettingModal } from "../../settingModal";
 import { ProfileModal } from "../../profileModal";
 import SidebarChannelList from "../../channelModal";
-
-// dotenv.config();
+import config from "../../../../config/config.json";
 
 const HomeSection = () => {
   const userdata = useSelector((state: RootState) => state.auth.user);
@@ -57,10 +55,15 @@ const HomeSection = () => {
     (state: RootState) => state.auth.user?.channels
   );
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { login } = useLogin();
   const { logout } = useLogout();
-  // const server = process.env.SERVER || "localhost:3000";
+
+  const typingTimeout = useRef<NodeJS.Timeout | null>(null);
+  const popupRef = useRef<HTMLDivElement | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const server = config.server || "localhost:4000";
   const defaultChannels: Channel[] = [
     {
       id: "1",
@@ -81,8 +84,7 @@ const HomeSection = () => {
     //   tokenAdd: "0x12e6e01F7D56BeC3aC5bD7Fd4fC7c9154907b332",
     // },
   ];
-  const server = "http://localhost:4000";
-  const scrollRef = useRef<HTMLDivElement>(null);
+
   const [userProfile, setUserProfile] = useState(false);
   const [menu, setMenu] = useState(false);
   const [profileModal, setProfileModal] = useState(false);
@@ -107,9 +109,6 @@ const HomeSection = () => {
 
   const { authenticated, user, ready } = usePrivy();
 
-  const typingTimeout = useRef<NodeJS.Timeout | null>(null);
-  const popupRef = useRef<HTMLDivElement | null>(null);
-
   interface MenuItemProps {
     Icon: LucideIcon;
     text: string;
@@ -119,7 +118,7 @@ const HomeSection = () => {
   useEffect(() => {
     if (!token) return;
 
-    const newSocket = io("http://localhost:4000", {
+    const newSocket = io(server, {
       auth: { token: token },
     });
 
