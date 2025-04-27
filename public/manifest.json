@@ -9,5 +9,9 @@
       "16": "icon.png"
     }
   },
-  "permissions": ["storage"]
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["storage", "tabs"],
+  "host_permissions": ["<all_urls>"]
 }

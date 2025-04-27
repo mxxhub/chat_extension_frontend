@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { crx } from "@crxjs/vite-plugin";
 import { resolve } from "path";
-import manifest from "./public/manifest.json";
+import manifest from "./public/manifest.json"; // or wherever your manifest is
 
 export default defineConfig({
   plugins: [react(), crx({ manifest })],
@@ -14,12 +14,8 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        index: resolve(__dirname, "index.html"),
-      },
-      output: {
-        entryFileNames: "assets/[name]-[hash].js",
-        chunkFileNames: "assets/[name]-[hash].js",
-        assetFileNames: "assets/[name]-[hash].[ext]",
+        main: resolve(__dirname, "index.html"),
+        background: resolve(__dirname, "src/background.ts"), // <- added background
       },
     },
     outDir: "dist",

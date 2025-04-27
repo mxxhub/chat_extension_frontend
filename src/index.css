@@ -19,3 +19,15 @@ code {
 * {
   scrollbar-width: none;
 }
+
+html,
+body,
+#root {
+  width: 500px;
+  max-width: 500px;
+  min-width: 500px;
+  height: 800px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
