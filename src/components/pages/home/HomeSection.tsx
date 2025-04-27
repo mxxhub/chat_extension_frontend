@@ -109,6 +109,7 @@ const HomeSection = () => {
     useState<Channel[]>(defaultChannels);
 
   const { authenticated, user, ready } = usePrivy();
+  console.log(setSidebarChannels(defaultChannels));
 
   interface MenuItemProps {
     Icon: LucideIcon;
