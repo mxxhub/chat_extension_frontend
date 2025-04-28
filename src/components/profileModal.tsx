@@ -7,7 +7,7 @@ import { Avatar } from "./ui/avatar";
 import { showToast } from "./ui/toastMsg";
 import axios from "axios";
 import { setUser } from "../redux/features/auth/authSlice";
-import config from "../config/config.json";
+import config from "../../config/config.json";
 
 interface SignupModalProps {
   isOpen: boolean;
@@ -38,7 +38,7 @@ export const ProfileModal = ({
   const [biodata, setBiodata] = useState<string>(bio || "");
   const [walletAdd, setWalletAdd] = useState<string>(wallet || "");
 
-  const server = config.SERVER || "http://localhost:4000";
+  const server = config.server || "localhost:4000";
 
   const handleSave = async () => {
     try {

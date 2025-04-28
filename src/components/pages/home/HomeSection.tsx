@@ -46,7 +46,7 @@ import { ProfileMenu } from "../../ui/profile";
 import { SettingModal } from "../../settingModal";
 import { ProfileModal } from "../../profileModal";
 import SidebarChannelList from "../../channelModal";
-import config from "../../../config/config.json";
+import config from "../../../../config/config.json";
 
 const HomeSection = () => {
   const userdata = useSelector((state: RootState) => state.auth.user);
@@ -58,18 +58,33 @@ const HomeSection = () => {
   // const navigate = useNavigate();
   const { login } = useLogin();
   const { logout } = useLogout();
-  const server = config.SERVER || "localhost:4000";
+
+  const typingTimeout = useRef<NodeJS.Timeout | null>(null);
+  const popupRef = useRef<HTMLDivElement | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const server = config.server || "localhost:4000";
   const defaultChannels: Channel[] = [
     {
       id: "1",
-      image:
-        "https://coin-images.coingecko.com/coins/images/54821/large/photo_2025-03-10_7.51.53_PM.jpeg?1741857858",
-      name: "Cocoro",
-      tokenAdd: "0xa93d86af16fe83f064e3c0e2f3d129f7b7b002b0",
+      image: "/assets/image-11.png",
+      name: "memecoin1",
+      tokenAdd: "0x1D02a7E63E2f8575E76776BE7828926fADef6029",
+    },
+    {
+      id: "2",
+      image: "/assets/image-12.png",
+      name: "memecoin2",
+      tokenAdd: "0x8283093bf0484c1F806976EA90f79318BDB9688a",
+    },
+    {
+      id: "3",
+      image: "/assets/image-14.png",
+      name: "memecoin3",
+      tokenAdd: "0x12e6e01F7D56BeC3aC5bD7Fd4fC7c9154907b332",
     },
   ];
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const popupRef = useRef<HTMLDivElement | null>(null);
+
   const [userProfile, setUserProfile] = useState(false);
   const [menu, setMenu] = useState(false);
   const [profileModal, setProfileModal] = useState(false);
@@ -94,8 +109,6 @@ const HomeSection = () => {
 
   const { authenticated, user, ready } = usePrivy();
 
-  const typingTimeout = useRef<NodeJS.Timeout | null>(null);
-
   interface MenuItemProps {
     Icon: LucideIcon;
     text: string;
@@ -105,7 +118,7 @@ const HomeSection = () => {
   useEffect(() => {
     if (!token) return;
 
-    const newSocket = io("http://localhost:4000", {
+    const newSocket = io(server, {
       auth: { token: token },
     });
 
@@ -157,7 +170,6 @@ const HomeSection = () => {
     const handleClickOutside = (e: MouseEvent) => {
       if (popupRef.current && !popupRef.current.contains(e.target as Node)) {
         setShowPicker(false);
-        setPlusBtn(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -347,11 +359,10 @@ const HomeSection = () => {
 
   const handleJoinChannel = async () => {
     const selected = {
-      id: "1",
-      image:
-        "https://coin-images.coingecko.com/coins/images/54821/large/photo_2025-03-10_7.51.53_PM.jpeg?1741857858",
-      name: "Cocoro",
-      tokenAdd: "0xa93d86af16fe83f064e3c0e2f3d129f7b7b002b0",
+      id: "",
+      image: "/assets/image-11.png",
+      name: "memecoin1",
+      tokenAdd: "0x1D02a7E63E2f8575E76776BE7828926fADef6029",
     };
 
     if (socket) {
@@ -366,6 +377,7 @@ const HomeSection = () => {
       console.log(`you joined ${textToCopy}`);
     }
     dispatch(setChannels(selected));
+    showToast("success", "Joined channel successfully!");
     setJoinStatus(true);
   };
 
@@ -376,6 +388,7 @@ const HomeSection = () => {
     }
 
     setJoinStatus(false);
+    showToast("success", "Left channel successfully!");
     setPlusBtn(false);
   };
 
@@ -714,10 +727,7 @@ const HomeSection = () => {
                     onClick={plusBtnHandle}
                   />
                   {plusBtn && (
-                    <div
-                      ref={popupRef}
-                      className="absolute bottom-full mb-2 left-0 w-48 bg-[#22242D] rounded-md shadow-lg py-1 z-50"
-                    >
+                    <div className="absolute bottom-full mb-2 left-0 w-48 bg-[#22242D] rounded-md shadow-lg py-1 z-50">
                       <MenuItem
                         Icon={ImagePlus}
                         text="Add Image"
@@ -751,7 +761,7 @@ const HomeSection = () => {
                     />
                   ) : (
                     <button
-                      className="text-white flex-auto text-sm"
+                      className="text-white flex-auto"
                       onClick={() => handleJoinChannel()}
                     >
                       Join Channel
