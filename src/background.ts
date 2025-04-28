@@ -1,29 +1,27 @@
-// Background script for Chrome extension
-console.log("Background script running");
+// Background script for the Chrome extension
+console.log("Background script loaded");
 
-// Handle messages from content scripts or popup
-// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-//   console.log("Message received in background:", message);
-
-//   if (message.type === "CHAT_MESSAGE") {
-//     // Process chat messages, store in chrome.storage
-//     chrome.storage.local.set({ latestMessage: message.content });
-//     sendResponse({ status: "received" });
-//   }
-
-//   return true;
-// });
-
-chrome.runtime.onInstalled.addListener((details) => {
-  console.log("Extension installed:", details.reason);
-
-  chrome.storage.local.set({
-    messages: [],
-    settings: {
-      notifications: true,
-      theme: "light",
-    },
-  });
+// Listen for installation
+chrome.runtime.onInstalled.addListener(() => {
+  console.log("Extension installed");
 });
 
-export {};
+// Listen for messages from content script or popup
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  console.log(sender);
+  console.log("Message received in background script:", message);
+
+  // Handle different message types
+  if (message.type === "GET_DATA") {
+    // Example: Get data from storage and send it back
+    chrome.storage.local.get(["userData"], (result) => {
+      sendResponse({ data: result.userData });
+    });
+    return true; // Required for async sendResponse
+  }
+
+  // Add more message handlers as needed
+
+  // Default response
+  sendResponse({ status: "received" });
+});

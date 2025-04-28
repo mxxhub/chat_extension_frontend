@@ -23,10 +23,10 @@ code {
 html,
 body,
 #root {
-  width: 500px;
-  max-width: 500px;
-  min-width: 500px;
-  height: 800px;
+  width: 350px;
+  max-width: 350px;
+  min-width: 350px;
+  height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
   box-sizing: border-box;

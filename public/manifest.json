@@ -4,14 +4,13 @@
   "version": "1.0.0",
   "description": "A chat application Chrome extension",
   "action": {
-    "default_popup": "index.html",
     "default_icon": {
       "16": "icon.png"
     }
   },
-  "background": {
-    "service_worker": "background.js"
-  },
-  "permissions": ["storage", "tabs"],
-  "host_permissions": ["<all_urls>"]
+  "permissions": ["storage", "tabs", "sidePanel"],
+  "host_permissions": ["<all_urls>"],
+  "side_panel": {
+    "default_path": "index.html"
+  }
 }

@@ -30,7 +30,6 @@ import {
 } from "lucide-react";
 import { toShortAddress } from "../../../utils/utils";
 import {
-  removeChannel,
   setAuthenticated,
   setChannels,
   setUnauthenticated,
@@ -109,8 +108,10 @@ const HomeSection = () => {
     useState<Channel[]>(defaultChannels);
 
   const { authenticated, user, ready } = usePrivy();
-  console.log(setSidebarChannels(defaultChannels));
 
+  useEffect(() => {
+    setSidebarChannels(defaultChannels);
+  }, []);
   interface MenuItemProps {
     Icon: LucideIcon;
     text: string;
@@ -389,7 +390,6 @@ const HomeSection = () => {
       console.log(`you left ${textToCopy}`);
     }
 
-    dispatch(removeChannel(textToCopy));
     setJoinStatus(false);
     showToast("success", "Left channel successfully!");
     setPlusBtn(false);
