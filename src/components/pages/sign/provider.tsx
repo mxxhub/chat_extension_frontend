@@ -1,10 +1,11 @@
 import { PrivyProvider } from "@privy-io/react-auth";
 import { ReactNode } from "react";
+import config from "../../../../config/config.json";
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <PrivyProvider
-      appId="cm9k8w2gv00jzjr0nldhn54sd"
+      appId={config.privyId}
       config={{
         loginMethods: ["twitter", "google"],
         appearance: {

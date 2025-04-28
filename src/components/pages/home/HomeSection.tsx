@@ -170,6 +170,7 @@ const HomeSection = () => {
     const handleClickOutside = (e: MouseEvent) => {
       if (popupRef.current && !popupRef.current.contains(e.target as Node)) {
         setShowPicker(false);
+        setPlusBtn(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -544,10 +545,10 @@ const HomeSection = () => {
                     <ProfileModal
                       isOpen={profileModal}
                       onClose={handleProfileModalClose}
+                      _id={userdata?.id || ""}
                       displayName={userdata?.displayName || ""}
                       username={userdata?.userId || ""}
                       avatar={userdata?.avatar || ""}
-                      _id={userdata?.id || ""}
                       bio={userdata?.bio || ""}
                       wallet={userdata?.wallet || ""}
                     />
@@ -727,7 +728,10 @@ const HomeSection = () => {
                     onClick={plusBtnHandle}
                   />
                   {plusBtn && (
-                    <div className="absolute bottom-full mb-2 left-0 w-48 bg-[#22242D] rounded-md shadow-lg py-1 z-50">
+                    <div
+                      ref={popupRef}
+                      className="absolute bottom-full mb-2 left-0 w-48 bg-[#22242D] rounded-md shadow-lg py-1 z-50"
+                    >
                       <MenuItem
                         Icon={ImagePlus}
                         text="Add Image"
@@ -761,7 +765,7 @@ const HomeSection = () => {
                     />
                   ) : (
                     <button
-                      className="text-white flex-auto"
+                      className="text-white flex-auto text-sm"
                       onClick={() => handleJoinChannel()}
                     >
                       Join Channel

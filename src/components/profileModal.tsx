@@ -37,14 +37,18 @@ export const ProfileModal = ({
   const [display, setDisplay] = useState<string>(displayName);
   const [biodata, setBiodata] = useState<string>(bio || "");
   const [walletAdd, setWalletAdd] = useState<string>(wallet || "");
+  const [userId, setUserId] = useState<string>(username);
+  const [dataId, setDataId] = useState<string>(_id);
+  const [avatarImg, setAvatarImg] = useState<string>(avatar);
 
   const server = config.server || "localhost:4000";
 
   const handleSave = async () => {
     try {
+      console.log(_id);
       const response = await axios.post(`${server}/auth/updateUser`, {
-        _id: _id,
-        userId: username,
+        _id: dataId,
+        userId: userId,
         displayName: display,
         wallet: walletAdd,
         bio: biodata,
@@ -52,6 +56,7 @@ export const ProfileModal = ({
       console.log("userdata updated: ", response);
       showToast("success", "User data updated successfully");
       setIsEditing(false);
+      console.log("response.data.user: ", response.data.user);
       dispatch(setUser(response.data.user));
     } catch (error) {
       console.error("Error updating user:", error);
@@ -84,7 +89,7 @@ export const ProfileModal = ({
         <div className="relative px-6 pb-6">
           <div className="absolute -top-14 left-7">
             <Avatar className="w-24 h-24">
-              <AvatarImage src={avatar} alt="Andy Ayrey" />
+              <AvatarImage src={avatarImg} alt="Andy Ayrey" />
               <AvatarFallback>AA</AvatarFallback>
             </Avatar>
           </div>
@@ -146,6 +151,7 @@ export const ProfileModal = ({
                   value={walletAdd}
                   onChange={(e) => setWalletAdd(e.target.value)}
                   placeholder="Enter your wallet address"
+                  disabled={true}
                 />
               </div>
 
@@ -167,8 +173,8 @@ export const ProfileModal = ({
           ) : (
             <div>
               <div className="space-y-1 mb-6">
-                <h2 className="text-2xl font-bold text-white">{displayName}</h2>
-                <p className="text-blue-400">{username}</p>
+                <h2 className="text-2xl font-bold text-white">{display}</h2>
+                <p className="text-blue-400">{userId}</p>
               </div>
 
               <div className="space-y-4 mb-6">
