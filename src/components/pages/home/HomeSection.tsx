@@ -698,12 +698,12 @@ const HomeSection = () => {
                   </Card>
                 </div>
                 {/* Chat messages */}
-                <div className="space-y-4 w-full break-all">
+                <div className="space-y-4 w-full break-all relative">
                   {userProfile && (
                     <ProfileCard
-                      name="Orangie"
-                      username="orangie"
-                      avatarUrl="/assets/image-26.png"
+                      name={userdata?.displayName || ""}
+                      username={userdata?.userId || ""}
+                      avatarUrl={userdata?.avatar || ""}
                       mutualServerCount={1}
                       promoterTag={true}
                     />

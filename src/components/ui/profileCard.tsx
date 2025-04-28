@@ -16,7 +16,7 @@ export default function ProfileCard({
 // promoterTag = false,
 ProfileCardProps) {
   return (
-    <div className="relative">
+    <div className="absolute">
       <div className="w-60 h-auto overflow-y-scroll rounded-xl bg-[#2b2d31] p-5 text-white shadow-lg">
         <div className="flex justify-between items-center mb-4">
           <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#232428] relative">
