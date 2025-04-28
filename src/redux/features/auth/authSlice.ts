@@ -23,8 +23,11 @@ const authSlice = createSlice({
       state.user = action.payload;
     },
     setChannels: (state, action: PayloadAction<Channel>) => {
-      console.log("action.payload: ", action.payload);
       if (state.user) {
+        const exist = state.user.channels.find(
+          (channel) => channel.tokenAdd == action.payload.tokenAdd
+        );
+        if (exist) return;
         state.user.channels = [...state.user.channels, action.payload];
       }
     },
