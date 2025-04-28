@@ -109,14 +109,14 @@ const HomeSection = () => {
 
   const { authenticated, user, ready } = usePrivy();
 
-  useEffect(() => {
-    setSidebarChannels(defaultChannels);
-  }, []);
   interface MenuItemProps {
     Icon: LucideIcon;
     text: string;
     onClick?: () => void;
   }
+  useEffect(() => {
+    setSidebarChannels(defaultChannels);
+  }, []);
 
   useEffect(() => {
     if (!token) return;
@@ -225,6 +225,12 @@ const HomeSection = () => {
     saveUser();
     // navigate("/");
   }, [ready, authenticated, user, dispatch]);
+
+  useEffect(() => {
+    // const tokenInfo = getTokenInfo(tokenAdd, chainId);
+    // setTextToCopy(tokenAdd);
+    // setChannels(textToCopy);
+  }, []);
 
   const MenuItem = ({ Icon, text, onClick }: MenuItemProps) => {
     return (

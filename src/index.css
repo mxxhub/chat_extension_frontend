@@ -23,9 +23,9 @@ code {
 html,
 body,
 #root {
-  width: 350px;
-  max-width: 350px;
-  min-width: 350px;
+  width: 500px;
+  max-width: 500px;
+  min-width: 500px;
   height: 100%;
   overflow-x: hidden;
   overflow-y: auto;

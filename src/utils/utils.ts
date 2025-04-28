@@ -14,3 +14,14 @@ export const getTokenInfo = async (tokenAddress: string, chainId: string) => {
   console.log("Token Info: ", response.data);
   return response.data;
 };
+
+export const getTokenAdd = (url: string) => {
+  if (!url) return;
+  const chainId = url.split("/")[3];
+  const tokenAdd = url.split("/")[4];
+  if (!tokenAdd || !chainId) return;
+  if (tokenAdd.startsWith("0x")) {
+    console.log("I got token address: ", tokenAdd);
+  }
+  return { chainId, tokenAdd };
+};
