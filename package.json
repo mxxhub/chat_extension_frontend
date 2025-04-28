@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:manual": "tsc src/background.ts --outDir public && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -41,7 +40,6 @@
     "typescript": "^4.9.5"
   },
   "devDependencies": {
-    "@crxjs/vite-plugin": "^2.0.0-beta.32",
     "@eslint/js": "^9.22.0",
     "@types/chrome": "^0.0.316",
     "@types/react": "^19.0.10",

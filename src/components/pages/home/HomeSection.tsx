@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import io from "socket.io-client";
 import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
+// import dotenv from "dotenv";
 import {
   LucideIcon,
   X,
@@ -28,7 +29,7 @@ import {
   TicketCheck,
   LogOut,
 } from "lucide-react";
-import { getTokenInfo, toShortAddress } from "../../../utils/utils";
+import { toShortAddress } from "../../../utils/utils";
 import {
   setAuthenticated,
   setChannels,
@@ -46,7 +47,8 @@ import { ProfileMenu } from "../../ui/profile";
 import { SettingModal } from "../../settingModal";
 import { ProfileModal } from "../../profileModal";
 import SidebarChannelList from "../../channelModal";
-import config from "../../../../config/config.json";
+
+// dotenv.config();
 
 const HomeSection = () => {
   const userdata = useSelector((state: RootState) => state.auth.user);
@@ -55,25 +57,32 @@ const HomeSection = () => {
     (state: RootState) => state.auth.user?.channels
   );
   const dispatch = useDispatch();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const { login } = useLogin();
   const { logout } = useLogout();
-
-  const typingTimeout = useRef<NodeJS.Timeout | null>(null);
-  const popupRef = useRef<HTMLDivElement | null>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  const server = config.server || "localhost:4000";
+  // const server = process.env.SERVER || "localhost:3000";
   const defaultChannels: Channel[] = [
     {
       id: "1",
-      image:
-        "https://coin-images.coingecko.com/coins/images/54821/large/photo_2025-03-10_7.51.53_PM.jpeg?1741857858",
-      name: "Cocoro",
-      tokenAdd: "0xa93d86af16fe83f064e3c0e2f3d129f7b7b002b0",
+      image: "/assets/image-11.png",
+      name: "memecoin1",
+      tokenAdd: "0x1D02a7E63E2f8575E76776BE7828926fADef6029",
     },
+    // {
+    //   id: "2",
+    //   image: "/assets/image-12.png",
+    //   name: "memecoin2",
+    //   tokenAdd: "0x8283093bf0484c1F806976EA90f79318BDB9688a",
+    // },
+    // {
+    //   id: "3",
+    //   image: "/assets/image-14.png",
+    //   name: "memecoin3",
+    //   tokenAdd: "0x12e6e01F7D56BeC3aC5bD7Fd4fC7c9154907b332",
+    // },
   ];
-
+  const server = "http://localhost:4000";
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [userProfile, setUserProfile] = useState(false);
   const [menu, setMenu] = useState(false);
   const [profileModal, setProfileModal] = useState(false);
@@ -98,19 +107,19 @@ const HomeSection = () => {
 
   const { authenticated, user, ready } = usePrivy();
 
+  const typingTimeout = useRef<NodeJS.Timeout | null>(null);
+  const popupRef = useRef<HTMLDivElement | null>(null);
+
   interface MenuItemProps {
     Icon: LucideIcon;
     text: string;
     onClick?: () => void;
   }
-  useEffect(() => {
-    setSidebarChannels(defaultChannels);
-  }, []);
 
   useEffect(() => {
     if (!token) return;
 
-    const newSocket = io(server, {
+    const newSocket = io("http://localhost:4000", {
       auth: { token: token },
     });
 
@@ -214,20 +223,6 @@ const HomeSection = () => {
     saveUser();
     // navigate("/");
   }, [ready, authenticated, user, dispatch]);
-
-  useEffect(() => {
-    chrome.runtime.onMessage.addListener((message) => {
-      if (message.type === "TOKEN_INFO") {
-        const tokenInfo: any = getTokenInfo(message.chainId, message.tokenAdd);
-        setTextToCopy(message.tokenAdd);
-        setTokenName(tokenInfo?.name);
-        setTokenImage(tokenInfo?.image?.large);
-      }
-    });
-    // const tokenInfo = getTokenInfo(tokenAdd, chainId);
-    // setTextToCopy(tokenAdd);
-    // setChannels(textToCopy);
-  }, []);
 
   const MenuItem = ({ Icon, text, onClick }: MenuItemProps) => {
     return (
@@ -370,8 +365,8 @@ const HomeSection = () => {
       name: "memecoin1",
       tokenAdd: "0x1D02a7E63E2f8575E76776BE7828926fADef6029",
     };
-
     if (socket) {
+      console.log("socket", socket);
       const data = {
         userId: user?.twitter?.username || "ShockedJS",
         tokenAdd: textToCopy,
@@ -383,7 +378,6 @@ const HomeSection = () => {
       console.log(`you joined ${textToCopy}`);
     }
     dispatch(setChannels(selected));
-    showToast("success", "Joined channel successfully!");
     setJoinStatus(true);
   };
 
@@ -394,7 +388,6 @@ const HomeSection = () => {
     }
 
     setJoinStatus(false);
-    showToast("success", "Left channel successfully!");
     setPlusBtn(false);
   };
 
