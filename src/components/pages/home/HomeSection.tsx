@@ -67,21 +67,10 @@ const HomeSection = () => {
   const defaultChannels: Channel[] = [
     {
       id: "1",
-      image: "/assets/image-11.png",
-      name: "memecoin1",
-      tokenAdd: "0x1D02a7E63E2f8575E76776BE7828926fADef6029",
-    },
-    {
-      id: "2",
-      image: "/assets/image-12.png",
-      name: "memecoin2",
-      tokenAdd: "0x8283093bf0484c1F806976EA90f79318BDB9688a",
-    },
-    {
-      id: "3",
-      image: "/assets/image-14.png",
-      name: "memecoin3",
-      tokenAdd: "0x12e6e01F7D56BeC3aC5bD7Fd4fC7c9154907b332",
+      image:
+        "https://coin-images.coingecko.com/coins/images/54821/large/photo_2025-03-10_7.51.53_PM.jpeg?1741857858",
+      name: "Cocoro",
+      tokenAdd: "0xa93d86af16fe83f064e3c0e2f3d129f7b7b002b0",
     },
   ];
 
