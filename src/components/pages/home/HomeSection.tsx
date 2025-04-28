@@ -28,7 +28,7 @@ import {
   TicketCheck,
   LogOut,
 } from "lucide-react";
-import { toShortAddress } from "../../../utils/utils";
+import { getTokenInfo, toShortAddress } from "../../../utils/utils";
 import {
   setAuthenticated,
   setChannels,
@@ -227,6 +227,14 @@ const HomeSection = () => {
   }, [ready, authenticated, user, dispatch]);
 
   useEffect(() => {
+    chrome.runtime.onMessage.addListener((message) => {
+      if (message.type === "TOKEN_INFO") {
+        const tokenInfo: any = getTokenInfo(message.chainId, message.tokenAdd);
+        setTextToCopy(message.tokenAdd);
+        setTokenName(tokenInfo?.name);
+        setTokenImage(tokenInfo?.image?.large);
+      }
+    });
     // const tokenInfo = getTokenInfo(tokenAdd, chainId);
     // setTextToCopy(tokenAdd);
     // setChannels(textToCopy);

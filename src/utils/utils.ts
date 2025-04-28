@@ -7,7 +7,7 @@ export const toShortAddress = (text: string) => {
   return `${first}...${last}`;
 };
 
-export const getTokenInfo = async (tokenAddress: string, chainId: string) => {
+export const getTokenInfo = async (chainId: string, tokenAddress: string) => {
   const response = await axios.get(
     `https://api.coingecko.com/api/v3/coins/${chainId}/contract/${tokenAddress}`
   );
