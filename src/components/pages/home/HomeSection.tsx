@@ -50,6 +50,7 @@ import SidebarChannelList from "../../channelModal";
 import config from "../../../../config/config.json";
 
 const HomeSection = () => {
+  console.log("HomeSection");
   const userdata = useSelector((state: RootState) => state.auth.user);
   // const messages = useSelector((state: RootState) => state.message.messages);
   console.log("userdata: ", userdata);

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { ActionMenu } from "./actionMenu";
 import axios from "axios";
 import config from "../../../config/config.json";
+import ProfileCard from "./profileCard";
 
 interface ChattingHistoryProps {
   message: Message;
@@ -52,6 +53,7 @@ export const ChattingHistory = ({
   const handleEdit = () => {
     console.log("edit");
   };
+  console.log("message", message);
 
   return (
     <div
