@@ -28,8 +28,9 @@ import {
   TicketCheck,
   LogOut,
 } from "lucide-react";
-import { toShortAddress } from "../../../utils/utils";
+import { getCurrentTabUrl, toShortAddress } from "../../../utils/utils";
 import {
+  removeChannel,
   setAuthenticated,
   setChannels,
   setUnauthenticated,
@@ -39,10 +40,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { Card, CardContent } from "../../ui/card";
 import { Input } from "../../ui/input";
 import { Separator } from "../../ui/separator";
-import { chattingHistory } from "../../ui/chatting";
+import { ChattingHistory } from "../../ui/chatting";
 import ProfileCard from "../../ui/profileCard";
 import { showToast } from "../../ui/toastMsg";
-import { ProfileMenu } from "../../ui/profile";
+import ProfileMenu from "../../ui/profile";
 import { SettingModal } from "../../settingModal";
 import { ProfileModal } from "../../profileModal";
 import SidebarChannelList from "../../channelModal";
@@ -50,6 +51,7 @@ import config from "../../../../config/config.json";
 
 const HomeSection = () => {
   const userdata = useSelector((state: RootState) => state.auth.user);
+  // const messages = useSelector((state: RootState) => state.message.messages);
   console.log("userdata: ", userdata);
   const joinedChannel = useSelector(
     (state: RootState) => state.auth.user?.channels
@@ -67,18 +69,24 @@ const HomeSection = () => {
   const defaultChannels: Channel[] = [
     {
       id: "1",
+      chainId: "ethereum",
+      symbol: "memecoin1",
       image: "/assets/image-11.png",
       name: "memecoin1",
       tokenAdd: "0x1D02a7E63E2f8575E76776BE7828926fADef6029",
     },
     {
       id: "2",
+      chainId: "ethereum",
+      symbol: "memecoin2",
       image: "/assets/image-12.png",
       name: "memecoin2",
       tokenAdd: "0x8283093bf0484c1F806976EA90f79318BDB9688a",
     },
     {
       id: "3",
+      chainId: "ethereum",
+      symbol: "memecoin3",
       image: "/assets/image-14.png",
       name: "memecoin3",
       tokenAdd: "0x12e6e01F7D56BeC3aC5bD7Fd4fC7c9154907b332",
@@ -95,6 +103,7 @@ const HomeSection = () => {
   const [msg, setMsg] = useState("");
   const [textToCopy, setTextToCopy] = useState("");
   const [tokenName, setTokenName] = useState("");
+  const [tokenSymbol, setTokenSymbol] = useState("");
   const [tokenImage, setTokenImage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [typingStatus, setTypingStatus] = useState(false);
@@ -106,6 +115,7 @@ const HomeSection = () => {
   const [joinStatus, setJoinStatus] = useState<boolean>(false);
   const [sidebarChannels, setSidebarChannels] =
     useState<Channel[]>(defaultChannels);
+  const [chainId, setChainId] = useState<string>("ethereum");
 
   const { authenticated, user, ready } = usePrivy();
 
@@ -129,7 +139,7 @@ const HomeSection = () => {
       tokenAdd: textToCopy,
       image: tokenImage,
       name: tokenName,
-      symbol: "tokenSymbol",
+      symbol: tokenSymbol,
     };
     newSocket.emit("join:room", data);
 
@@ -188,7 +198,7 @@ const HomeSection = () => {
       console.log("getting messages", res.data);
     };
     getMessage();
-  }, [textToCopy]);
+  }, [textToCopy, authenticated]);
 
   useEffect(() => {
     if (!ready && !authenticated && !user) return;
@@ -204,7 +214,7 @@ const HomeSection = () => {
             name: tokenName,
             image: tokenImage,
             tokenAdd: textToCopy,
-            symbol: "tokenSymbol",
+            symbol: tokenSymbol,
           },
         };
 
@@ -224,6 +234,46 @@ const HomeSection = () => {
     // navigate("/");
   }, [ready, authenticated, user, dispatch]);
 
+  useEffect(() => {
+    const fetchTokenInfo = async () => {
+      const tokenInfo = await getCurrentTabUrl();
+      console.log("tokenInfo: ", tokenInfo);
+      if (!tokenInfo) return;
+      const newChannel: Channel = {
+        id: "",
+        chainId: "ethereum",
+        image: tokenInfo.image,
+        name: tokenInfo.name,
+        symbol: tokenInfo.symbol,
+        tokenAdd: tokenInfo.address,
+      };
+      setSidebarChannels((prev) => [...prev, newChannel]);
+    };
+    fetchTokenInfo();
+  }, []);
+
+  const LoginWithTwitter = async () => {
+    try {
+      if (authenticated) return;
+
+      setOpenProfile(false);
+      await login();
+    } catch (err) {
+      console.log("login error: ", err);
+    }
+  };
+
+  const logoutuser = async () => {
+    try {
+      logout();
+      showToast("success", "Logged out successfully!");
+      dispatch(setUnauthenticated());
+      setOpenProfile(false);
+    } catch (err) {
+      console.log("Logout error: ", err);
+    }
+  };
+
   const MenuItem = ({ Icon, text, onClick }: MenuItemProps) => {
     return (
       <div
@@ -239,17 +289,6 @@ const HomeSection = () => {
   const handleEmojiSelect = (emoji: any) => {
     setMsg((prevMsg) => prevMsg + emoji.native);
     setShowPicker(false);
-  };
-
-  const logoutuser = async () => {
-    try {
-      logout();
-      showToast("success", "Logged out successfully!");
-      dispatch(setUnauthenticated());
-      setOpenProfile(false);
-    } catch (err) {
-      console.log("Logout error: ", err);
-    }
   };
 
   const handleCopy = async () => {
@@ -288,18 +327,8 @@ const HomeSection = () => {
   };
 
   const plusBtnHandle = () => {
+    if (!joinStatus) return;
     setPlusBtn(!plusBtn);
-  };
-
-  const LoginWithTwitter = async () => {
-    try {
-      if (authenticated) return;
-
-      setOpenProfile(false);
-      await login();
-    } catch (err) {
-      console.log("login error: ", err);
-    }
   };
 
   const startTyping = (room: string) => {
@@ -326,11 +355,22 @@ const HomeSection = () => {
   //   setUserProfile(!userProfile);
   // };
 
-  const channelClick = (name: string, image: string, tokenAdd: string) => {
+  const channelClick = (
+    name: string,
+    image: string,
+    tokenAdd: string,
+    symbol: string,
+    chainId: string
+  ) => {
+    if (!authenticated) {
+      showToast("warning", "Please Login First");
+      return;
+    }
     setTokenName(name);
     setTokenImage(image);
     setTextToCopy(tokenAdd);
-    setJoinStatus(false);
+    setTokenSymbol(symbol);
+    setChainId(chainId);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -359,10 +399,16 @@ const HomeSection = () => {
   };
 
   const handleJoinChannel = async () => {
-    const selected = {
+    if (!authenticated) {
+      showToast("warning", "Please Login First");
+      return;
+    }
+    const selected: Channel = {
       id: "",
+      chainId: "ethereum",
       image: "/assets/image-11.png",
       name: "memecoin1",
+      symbol: "memecoin1",
       tokenAdd: "0x1D02a7E63E2f8575E76776BE7828926fADef6029",
     };
 
@@ -372,7 +418,7 @@ const HomeSection = () => {
         tokenAdd: textToCopy,
         image: tokenImage,
         name: tokenName,
-        symbol: "tokenSymbol",
+        symbol: tokenSymbol,
       };
       socket.emit("join:room", data);
       console.log(`you joined ${textToCopy}`);
@@ -388,7 +434,8 @@ const HomeSection = () => {
       console.log(`you left ${textToCopy}`);
     }
 
-    setJoinStatus(false);
+    // setJoinStatus(false);
+    dispatch(removeChannel(textToCopy));
     showToast("success", "Left channel successfully!");
     setPlusBtn(false);
   };
@@ -426,13 +473,16 @@ const HomeSection = () => {
                       <SidebarChannelList
                         key={channel._id}
                         channel={channel}
-                        channelClick={() =>
+                        channelClick={() => {
                           channelClick(
                             channel.name,
                             channel.image,
-                            channel.tokenAdd
-                          )
-                        }
+                            channel.tokenAdd,
+                            channel.symbol,
+                            channel.chainId
+                          );
+                          setJoinStatus(true);
+                        }}
                       />
                     ))}
                 </div>
@@ -454,13 +504,16 @@ const HomeSection = () => {
                     <SidebarChannelList
                       key={channel.id}
                       channel={channel}
-                      channelClick={() =>
+                      channelClick={() => {
                         channelClick(
                           channel.name,
                           channel.image,
-                          channel.tokenAdd
-                        )
-                      }
+                          channel.tokenAdd,
+                          channel.symbol,
+                          channel.chainId
+                        );
+                        setJoinStatus(false);
+                      }}
                     />
                   ))}
                 </div>
@@ -482,7 +535,7 @@ const HomeSection = () => {
                       {tokenName}
                     </b>
                     <b className="text-white text-[13px] font-medium">
-                      {tokenName}
+                      {tokenSymbol}
                     </b>
                     <Pin
                       size={12}
@@ -509,26 +562,50 @@ const HomeSection = () => {
 
               <div className="ml-auto flex items-center gap-2">
                 <div className="flex items-center gap-2">
-                  <Avatar className="w-4 h-4">
-                    <AvatarImage src="/assets/image-5-1.png" alt="Photon" />
-                  </Avatar>
-                  <Avatar className="w-[23px] h-[21px]">
-                    <AvatarImage src="/assets/bullx-1.png" alt="Bullx" />
-                  </Avatar>
-                  <Avatar className="w-3 h-3">
-                    <AvatarImage
-                      src="/assets/clip-path-group.png"
-                      alt="axiom"
-                    />
-                  </Avatar>
-                  <Avatar className="w-[21px] h-[21px]">
-                    <AvatarImage src="/assets/image-13.png" alt="Icon" />
-                  </Avatar>
-                  <Avatar className="w-3 h-[13px]">
-                    <AvatarImage src="/assets/layer-1.png" alt="Dexscreener" />
-                  </Avatar>
+                  <a
+                    href="https://photon-sol.tinyastro.io/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Avatar className="w-4 h-4">
+                      <AvatarImage src="/assets/image-5-1.png" alt="Photon" />
+                    </Avatar>
+                  </a>
+                  <a
+                    href={`https://dexscreener.com/${chainId}/${textToCopy}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Avatar className="w-3 h-[13px]">
+                      <AvatarImage
+                        src="/assets/layer-1.png"
+                        alt="Dexscreener"
+                      />
+                    </Avatar>
+                  </a>
+                  <a
+                    href="https://axiom.trade/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Avatar className="w-3 h-3">
+                      <AvatarImage
+                        src="/assets/clip-path-group.png"
+                        alt="axiom"
+                      />
+                    </Avatar>
+                  </a>
+                  <a
+                    href="https://neo.bullx.io/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Avatar className="w-[23px] h-[21px]">
+                      <AvatarImage src="/assets/bullx-1.png" alt="Bullx" />
+                    </Avatar>
+                  </a>
                 </div>
-                <div className="relative group ml-2">
+                <div className="relative group">
                   <UserCircle
                     className="w-5 h-5 text-white cursor-pointer"
                     onClick={() => setOpenProfile(!openProfile)}
@@ -539,13 +616,14 @@ const HomeSection = () => {
                       logout={logoutuser}
                       authenticated={authenticated}
                       login={LoginWithTwitter}
+                      setVisibility={() => setOpenProfile(false)}
                     />
                   )}
                   {profileModal && (
                     <ProfileModal
                       isOpen={profileModal}
                       onClose={handleProfileModalClose}
-                      _id={userdata?.id || ""}
+                      _id={userdata?._id || ""}
                       displayName={userdata?.displayName || ""}
                       username={userdata?.userId || ""}
                       avatar={userdata?.avatar || ""}
@@ -572,7 +650,12 @@ const HomeSection = () => {
 
               {/* Twitter/Website tabs */}
               <div className="w-full h-[31px] bg-[#101114] border border-solid border-[#22242d] flex items-center justify-evenly">
-                <div className="flex items-center">
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="https://x.com"
+                  className="flex items-center"
+                >
                   <img
                     className="w-4 h-3.5"
                     alt="Twitter icon"
@@ -581,17 +664,22 @@ const HomeSection = () => {
                   <span className="ml-1 font-medium text-white text-[13px]">
                     Twitter
                   </span>
-                </div>
+                </a>
                 <Separator
                   orientation="vertical"
                   className="h-[30px] mx-4 bg-[#5B5E69]"
                 />
-                <div className="flex items-center">
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="https://dexscreener.com"
+                  className="flex items-center"
+                >
                   <ExternalLinkIcon className="w-4 h-4 text-white" />
                   <span className="ml-1 font-medium text-white text-[13px]">
                     Website
                   </span>
-                </div>
+                </a>
               </div>
 
               {/* Chat messages container */}
@@ -708,11 +796,15 @@ const HomeSection = () => {
                       promoterTag={true}
                     />
                   )}
-                  {messages.map((message: any) =>
-                    chattingHistory(message, () => {
-                      setUserProfile(!userProfile);
-                    })
-                  )}
+                  {messages.map((message: any) => (
+                    <ChattingHistory
+                      key={message._id}
+                      message={message}
+                      avatarClick={() => {
+                        setUserProfile(!userProfile);
+                      }}
+                    />
+                  ))}
                 </div>
               </div>
 
@@ -775,7 +867,10 @@ const HomeSection = () => {
                     <HandCoins className="w-5 h-5 text-[green] hidden sm:block cursor-pointer" />
                     <Smile
                       className="w-[18px] h-[18px] text-[#777a8c] cursor-pointer"
-                      onClick={() => setShowPicker((prev) => !prev)}
+                      onClick={() => {
+                        if (!joinStatus) return;
+                        setShowPicker((prev) => !prev);
+                      }}
                     />
                     {showPicker && (
                       <div

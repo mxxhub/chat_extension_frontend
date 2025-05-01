@@ -1,6 +1,24 @@
-export const ProfileMenu = (props: any) => {
+import { useEffect, useRef, useState } from "react";
+
+const ProfileMenu = (props: any) => {
+  const popupRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (popupRef.current && !popupRef.current.contains(e.target as Node)) {
+        console.log("clicked outside");
+        props.setVisibility();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
-    <div className="absolute right-0 mt-2 w-36 bg-[#101114] rounded-lg shadow-lg z-50">
+    <div
+      ref={popupRef}
+      className="absolute right-0 mt-2 w-36 bg-[#101114] rounded-lg shadow-lg z-50"
+    >
       {props.authenticated ? (
         <>
           <button
@@ -27,3 +45,5 @@ export const ProfileMenu = (props: any) => {
     </div>
   );
 };
+
+export default ProfileMenu;

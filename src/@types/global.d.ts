@@ -1,5 +1,5 @@
 declare interface User {
-  id?: string;
+  _id: string;
   userId: string;
   displayName: string;
   wallet: string;
@@ -27,9 +27,17 @@ declare interface AuthState {
   token: string | null;
 }
 
+declare interface MessageState {
+  messages: Message[];
+  loading: boolean;
+  error: string | null;
+}
+
 declare interface Channel {
   id: string;
+  chainId: string;
   image: string;
   name: string;
+  symbol: string;
   tokenAdd: string;
 }

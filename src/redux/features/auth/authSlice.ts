@@ -31,6 +31,17 @@ const authSlice = createSlice({
         state.user.channels = [...state.user.channels, action.payload];
       }
     },
+    removeChannel: (state, action: PayloadAction<string>) => {
+      if (state.user) {
+        const exist = state.user.channels.find(
+          (channel) => channel.tokenAdd == action.payload
+        );
+        if (!exist) return;
+        state.user.channels = state.user.channels.filter(
+          (channel) => channel.tokenAdd !== action.payload
+        );
+      }
+    },
     setUnauthenticated: (state) => {
       localStorage.removeItem("user");
       state.isAuthenticated = false;
@@ -42,7 +53,12 @@ const authSlice = createSlice({
   },
 });
 
-export const { setAuthenticated, setUser, setUnauthenticated, setChannels } =
-  authSlice.actions;
+export const {
+  setAuthenticated,
+  setUser,
+  setUnauthenticated,
+  setChannels,
+  removeChannel,
+} = authSlice.actions;
 
 export const authReducer = authSlice.reducer;

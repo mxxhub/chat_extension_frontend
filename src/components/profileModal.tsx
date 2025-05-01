@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Button } from "./ui/button";
@@ -37,18 +37,16 @@ export const ProfileModal = ({
   const [display, setDisplay] = useState<string>(displayName);
   const [biodata, setBiodata] = useState<string>(bio || "");
   const [walletAdd, setWalletAdd] = useState<string>(wallet || "");
-  const [userId, setUserId] = useState<string>(username);
-  const [dataId, setDataId] = useState<string>(_id);
-  const [avatarImg, setAvatarImg] = useState<string>(avatar);
-
+  const [image, setImage] = useState<string>(avatar || "");
+  const [userId, setUserId] = useState<string>(username || "");
   const server = config.server || "localhost:4000";
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const handleSave = async () => {
     try {
-      console.log(_id);
       const response = await axios.post(`${server}/auth/updateUser`, {
-        _id: dataId,
-        userId: userId,
+        _id: _id,
+        userId: username,
         displayName: display,
         wallet: walletAdd,
         bio: biodata,
@@ -56,7 +54,6 @@ export const ProfileModal = ({
       console.log("userdata updated: ", response);
       showToast("success", "User data updated successfully");
       setIsEditing(false);
-      console.log("response.data.user: ", response.data.user);
       dispatch(setUser(response.data.user));
     } catch (error) {
       console.error("Error updating user:", error);
@@ -64,7 +61,10 @@ export const ProfileModal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div
+      ref={modalRef}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+    >
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
 
       <div className="bg-gray-800 rounded-xl shadow-xl overflow-hidden w-full max-w-sm transform transition-all duration-300 ease-in-out animate-modal-in border border-gray-700">
@@ -89,7 +89,7 @@ export const ProfileModal = ({
         <div className="relative px-6 pb-6">
           <div className="absolute -top-14 left-7">
             <Avatar className="w-24 h-24">
-              <AvatarImage src={avatarImg} alt="Andy Ayrey" />
+              <AvatarImage src={image} alt="Andy Ayrey" />
               <AvatarFallback>AA</AvatarFallback>
             </Avatar>
           </div>
@@ -151,7 +151,6 @@ export const ProfileModal = ({
                   value={walletAdd}
                   onChange={(e) => setWalletAdd(e.target.value)}
                   placeholder="Enter your wallet address"
-                  disabled={true}
                 />
               </div>
 
