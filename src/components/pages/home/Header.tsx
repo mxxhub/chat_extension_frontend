@@ -7,7 +7,7 @@ import ProfileMenu from "../../ui/profile";
 import { ProfileModal } from "../../profileModal";
 
 type HeaderProps = {
-  handleProfileModalClose: () => void;
+  // handleProfileModalClose: () => void;
   logoutuser: () => void;
   LoginWithTwitter: () => void;
   authenticated: boolean;
@@ -20,7 +20,7 @@ type HeaderProps = {
 };
 
 const Header = ({
-  handleProfileModalClose,
+  // handleProfileModalClose,
   logoutuser,
   LoginWithTwitter,
   authenticated,
@@ -44,6 +44,11 @@ const Header = ({
     } catch (err) {
       console.log("Copy failed: ", err);
     }
+  };
+
+  const handleProfileModalClose = () => {
+    setProfileModal(false);
+    setOpenProfile(false);
   };
 
   return (
