@@ -10,27 +10,30 @@ const initialState: MessageState = {
   error: null,
 };
 
-export const deleteMessage = createAsyncThunk(
-  "message/deleteMessage",
-  async (data: { id: string; editor: string }, { rejectWithValue }) => {
-    try {
-      const response = await axios.post(`${server}/messages/deleteMessage`, {
-        id: data.id,
-        editor: data.editor,
-      });
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error);
-    }
-  }
-);
-
 const messageSlice = createSlice({
   name: "message",
   initialState,
   reducers: {
     setMessages: (state, action: PayloadAction<Message[]>) => {
       state.messages = action.payload;
+    },
+    deleteMessage: (state, action: PayloadAction<string>) => {
+      console.log("deleting message", action.payload);
+      const exist = state.messages.find(
+        (message) => message._id === action.payload
+      );
+      if (!exist) return;
+      state.messages = state.messages.filter(
+        (message) => message._id !== action.payload
+      );
+    },
+    updateMessage: (state, action: PayloadAction<Message>) => {
+      const index = state.messages.findIndex(
+        (message) => message._id === action.payload._id
+      );
+      if (index !== -1) {
+        state.messages[index].content = action.payload.content;
+      }
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
@@ -41,6 +44,12 @@ const messageSlice = createSlice({
   },
 });
 
-export const { setMessages, setLoading, setError } = messageSlice.actions;
+export const {
+  setMessages,
+  setLoading,
+  setError,
+  deleteMessage,
+  updateMessage,
+} = messageSlice.actions;
 
 export const messageReducer = messageSlice.reducer;

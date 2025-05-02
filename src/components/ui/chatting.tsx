@@ -1,21 +1,26 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { EllipsisVertical } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { ActionMenu } from "./actionMenu";
+import { useDispatch } from "react-redux";
 import axios from "axios";
+import { EllipsisVertical } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { ActionMenu } from "./actionMenu";
 import config from "../../../config/config.json";
-import ProfileCard from "./profileCard";
+import { deleteMessage } from "../../redux/features/message/messageSlice";
 
 interface ChattingHistoryProps {
   message: Message;
   avatarClick: () => void;
+  editMessage: (message: Message) => void;
 }
 
 export const ChattingHistory = ({
   message,
   avatarClick,
+  editMessage,
 }: ChattingHistoryProps) => {
+  const dispatch = useDispatch();
   const [showMenu, setShowMenu] = useState(false);
+  const [menuPosition, setMenuPosition] = useState<"top" | "bottom">("bottom");
   const menuRef = useRef<HTMLDivElement>(null);
 
   const server = config.server || "http://localhost:4000";
@@ -41,19 +46,38 @@ export const ChattingHistory = ({
   };
 
   const handleDelete = async () => {
-    console.log("message", message);
     const data = {
       id: message._id,
       room: message.room,
       editor: message.sender._id,
     };
-    await axios.post(`${server}/messages/deleteMessage`, data);
+    const deletedMessage = await axios.post(
+      `${server}/messages/deleteMessage`,
+      data
+    );
+    if (!deletedMessage) return;
+    dispatch(deleteMessage(deletedMessage.data?._id));
+    console.log("deletedMessage", deletedMessage);
   };
 
   const handleEdit = () => {
-    console.log("edit");
+    editMessage(message);
   };
-  console.log("message", message);
+
+  const toggleMenu = (e: React.MouseEvent) => {
+    const buttonRect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const menuHeight = 140;
+    const spaceBelow = window.innerHeight - buttonRect.bottom;
+    const spaceAbove = buttonRect.top;
+
+    if (spaceBelow < menuHeight && spaceAbove > menuHeight) {
+      setMenuPosition("top");
+    } else {
+      setMenuPosition("bottom");
+    }
+
+    setShowMenu((prev) => !prev);
+  };
 
   return (
     <div
@@ -85,13 +109,19 @@ export const ChattingHistory = ({
       <button
         aria-label="Options"
         className="absolute right-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer"
-        onClick={() => setShowMenu(!showMenu)}
+        onClick={toggleMenu}
       >
         <EllipsisVertical className="w-5 h-5 text-gray-500" />
       </button>
 
       {showMenu && (
-        <div ref={menuRef} className="absolute right-5 mt-2 z-10">
+        <div
+          ref={menuRef}
+          className={`absolute right-5 z-10 ${
+            menuPosition === "top" ? "bottom-full mb-2" : "mt-2"
+          }`}
+          onContextMenu={(e) => e.preventDefault()}
+        >
           <ActionMenu
             handleCopy={handleCopy}
             handleDelete={handleDelete}

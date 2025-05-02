@@ -29,7 +29,7 @@ export const ActionMenu = (props: any) => {
               key={index}
               className="w-full px-4 py-2 text-sm text-white hover:bg-[#23262b] text-left hover:rounded-lg hover:border-transparent flex items-center gap-2"
               onClick={() => {
-                each.onClick, setOptions(false);
+                each.onClick(), setOptions(false);
               }}
             >
               {each.icon}
