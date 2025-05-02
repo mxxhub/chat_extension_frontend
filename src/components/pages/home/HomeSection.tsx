@@ -48,6 +48,8 @@ import { SettingModal } from "../../settingModal";
 import { ProfileModal } from "../../profileModal";
 import SidebarChannelList from "../../channelModal";
 import config from "../../../../config/config.json";
+import Sidebar from "./Siderbar";
+import Header from "./Header";
 
 const HomeSection = () => {
   console.log("HomeSection");
@@ -304,10 +306,6 @@ const HomeSection = () => {
     }
   };
 
-  const searchButtonHandle = () => {
-    setSearchBtn(!searchBtn);
-  };
-
   const sendMsgHandle = (content: string, room: string) => {
     if (!authenticated) {
       showToast("warning", "Please Login First");
@@ -356,22 +354,16 @@ const HomeSection = () => {
   //   setUserProfile(!userProfile);
   // };
 
-  const channelClick = (
-    name: string,
-    image: string,
-    tokenAdd: string,
-    symbol: string,
-    chainId: string
-  ) => {
+  const channelClick = (channel: Channel) => {
     if (!authenticated) {
       showToast("warning", "Please Login First");
       return;
     }
-    setTokenName(name);
-    setTokenImage(image);
-    setTextToCopy(tokenAdd);
-    setTokenSymbol(symbol);
-    setChainId(chainId);
+    setTokenName(channel.name);
+    setTokenImage(channel.image);
+    setTextToCopy(channel.tokenAdd);
+    setTokenSymbol(channel.symbol);
+    setChainId(channel.chainId);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -446,199 +438,29 @@ const HomeSection = () => {
       <div className="overflow-hidden w-full max-w-[500px] min-w-[500px] h-screen">
         <div className="relative w-full h-full flex">
           {/* Sidebar */}
-          <div className="h-full block md:block md:relative bg-[#22242D] border-[#22242d]">
-            <div className="relative h-full w-[63px]">
-              <div className="border-r border-r-[#3f414e] justify-items-center py-3">
-                <MenuIcon
-                  className="w-7 h-7 text-white cursor-pointer"
-                  onClick={() => setMenu(true)}
-                />
-                {menu && (
-                  <SettingModal isOpen={menu} onClose={() => setMenu(false)} />
-                )}
-              </div>
-              <div className="h-full border-r border-r-[#3f414e] flex flex-col items-center overflow-y-scroll">
-                <div className="mt-4 relative">
-                  <div className="text-[#777a8c] text-[10px] ml-4">Pinned</div>
-                  <img
-                    className="w-[9px] h-[9px] absolute top-1 left-[3px]"
-                    alt="Pin"
-                    src="/assets/vector-5.svg"
-                  />
-                </div>
-
-                {/* Pinned channels */}
-                <div className="mt-2 flex flex-col items-center gap-2">
-                  {joinedChannel &&
-                    joinedChannel.map((channel: any) => (
-                      <SidebarChannelList
-                        key={channel._id}
-                        channel={channel}
-                        channelClick={() => {
-                          channelClick(
-                            channel.name,
-                            channel.image,
-                            channel.tokenAdd,
-                            channel.symbol,
-                            channel.chainId
-                          );
-                          setJoinStatus(true);
-                        }}
-                      />
-                    ))}
-                </div>
-
-                <div className="mt-4 flex items-center">
-                  <img
-                    className="w-2.5 h-2.5"
-                    alt="Trending"
-                    src="/assets/frame-10.svg"
-                  />
-                  <div className="text-[#777a8c] text-[10px] ml-1">
-                    Trending
-                  </div>
-                </div>
-
-                {/* Trending channels */}
-                <div className="mt-2 flex flex-col items-center gap-2">
-                  {sidebarChannels.map((channel) => (
-                    <SidebarChannelList
-                      key={channel.id}
-                      channel={channel}
-                      channelClick={() => {
-                        channelClick(
-                          channel.name,
-                          channel.image,
-                          channel.tokenAdd,
-                          channel.symbol,
-                          channel.chainId
-                        );
-                        setJoinStatus(false);
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+          {joinedChannel && (
+            <Sidebar
+              joinedChannels={joinedChannel}
+              sidebarChannels={sidebarChannels}
+              onChannelClick={channelClick}
+              setJoinStatus={setJoinStatus}
+            />
+          )}
           {/* Main chat container */}
           <div className="flex-1 flex flex-col h-full w-[437px]">
             {/* Header */}
-            <div className="h-[58px] bg-[#101114] border border-solid border-[#22242d] flex items-center px-4">
-              <div className="flex items-center gap-2 overflow-x-hidden w-[230px]">
-                <Avatar className="w-9 h-9">
-                  <AvatarImage src={tokenImage} alt="DB" />
-                  <AvatarFallback>DB</AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col">
-                  <div className="flex items-center space-x-2">
-                    <b className="text-white text-base font-bold">
-                      {tokenName}
-                    </b>
-                    <b className="text-white text-[13px] font-medium">
-                      {tokenSymbol}
-                    </b>
-                    <Pin
-                      size={12}
-                      className="text-[red] fill-[red] rotate-45"
-                    />
-                  </div>
-                  <div className="font-normal text-[#526fff] text-[13px] flex flex-row">
-                    <div>{toShortAddress(textToCopy)}</div>
-                    <button
-                      onClick={handleCopy}
-                      className="px-3 py-1 text-white mt-[-1vh]"
-                    >
-                      <span>
-                        {copied ? (
-                          <Check size={13} className="mt-1 bg-tranparent" />
-                        ) : (
-                          <Copy size={13} className="mt-1 bg-tranparent" />
-                        )}
-                      </span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="ml-auto flex items-center gap-2">
-                <div className="flex items-center gap-2">
-                  <a
-                    href="https://photon-sol.tinyastro.io/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Avatar className="w-4 h-4">
-                      <AvatarImage src="/assets/image-5-1.png" alt="Photon" />
-                    </Avatar>
-                  </a>
-                  <a
-                    href={`https://dexscreener.com/${chainId}/${textToCopy}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Avatar className="w-3 h-[13px]">
-                      <AvatarImage
-                        src="/assets/layer-1.png"
-                        alt="Dexscreener"
-                      />
-                    </Avatar>
-                  </a>
-                  <a
-                    href="https://axiom.trade/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Avatar className="w-3 h-3">
-                      <AvatarImage
-                        src="/assets/clip-path-group.png"
-                        alt="axiom"
-                      />
-                    </Avatar>
-                  </a>
-                  <a
-                    href="https://neo.bullx.io/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Avatar className="w-[23px] h-[21px]">
-                      <AvatarImage src="/assets/bullx-1.png" alt="Bullx" />
-                    </Avatar>
-                  </a>
-                </div>
-                <div className="relative group">
-                  <UserCircle
-                    className="w-5 h-5 text-white cursor-pointer"
-                    onClick={() => setOpenProfile(!openProfile)}
-                  />
-                  {openProfile && (
-                    <ProfileMenu
-                      myProfile={() => setProfileModal(true)}
-                      logout={logoutuser}
-                      authenticated={authenticated}
-                      login={LoginWithTwitter}
-                      setVisibility={() => setOpenProfile(false)}
-                    />
-                  )}
-                  {profileModal && (
-                    <ProfileModal
-                      isOpen={profileModal}
-                      onClose={handleProfileModalClose}
-                      _id={userdata?._id || ""}
-                      displayName={userdata?.displayName || ""}
-                      username={userdata?.userId || ""}
-                      avatar={userdata?.avatar || ""}
-                      bio={userdata?.bio || ""}
-                      wallet={userdata?.wallet || ""}
-                    />
-                  )}
-                </div>
-                <SearchIcon
-                  className="w-5 h-5 text-white cursor-pointer"
-                  onClick={searchButtonHandle}
-                />
-              </div>
-            </div>
+            <Header
+              LoginWithTwitter={LoginWithTwitter}
+              logoutuser={logoutuser}
+              authenticated={authenticated}
+              handleProfileModalClose={handleProfileModalClose}
+              userdata={userdata || null}
+              textToCopy={textToCopy}
+              tokenImage={tokenImage}
+              tokenName={tokenName}
+              tokenSymbol={tokenSymbol}
+              chainId={chainId}
+            />
             <div className="flex-1 flex flex-col overflow-y-auto">
               {/* Banner */}
               <div className="w-full">
