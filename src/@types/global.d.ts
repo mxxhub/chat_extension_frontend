@@ -41,3 +41,9 @@ declare interface Channel {
   symbol: string;
   tokenAdd: string;
 }
+
+declare interface MenuItemProps {
+  Icon: LucideIcon;
+  text: string;
+  onClick?: () => void;
+}

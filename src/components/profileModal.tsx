@@ -54,6 +54,7 @@ export const ProfileModal = ({
       console.log("userdata updated: ", response);
       showToast("success", "User data updated successfully");
       setIsEditing(false);
+      console.log("userdata updated: ", response.data.user);
       dispatch(setUser(response.data.user));
     } catch (error) {
       console.error("Error updating user:", error);
@@ -89,7 +90,7 @@ export const ProfileModal = ({
         <div className="relative px-6 pb-6">
           <div className="absolute -top-14 left-7">
             <Avatar className="w-24 h-24">
-              <AvatarImage src={image} alt="Andy Ayrey" />
+              <AvatarImage src={image} alt={display} />
               <AvatarFallback>AA</AvatarFallback>
             </Avatar>
           </div>
@@ -151,6 +152,7 @@ export const ProfileModal = ({
                   value={walletAdd}
                   onChange={(e) => setWalletAdd(e.target.value)}
                   placeholder="Enter your wallet address"
+                  disabled={true}
                 />
               </div>
 
