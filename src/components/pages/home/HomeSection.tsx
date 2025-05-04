@@ -598,18 +598,6 @@ const HomeSection = () => {
                         </Avatar>
                       </a>
                       <a
-                        href={`https://dexscreener.com/${chainId}/${textToCopy}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Avatar className="w-3 h-[13px]">
-                          <AvatarImage
-                            src="/assets/layer-1.png"
-                            alt="Dexscreener"
-                          />
-                        </Avatar>
-                      </a>
-                      <a
                         href="https://axiom.trade/"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -630,6 +618,18 @@ const HomeSection = () => {
                           <AvatarImage src="/assets/bullx-1.png" alt="Bullx" />
                         </Avatar>
                       </a>
+                      <a
+                        href={`https://dexscreener.com/${chainId}/${textToCopy}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Avatar className="w-3 h-[13px]">
+                          <AvatarImage
+                            src="/assets/layer-1.png"
+                            alt="Dexscreener"
+                          />
+                        </Avatar>
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -641,8 +641,8 @@ const HomeSection = () => {
               <div className="ml-auto flex items-center gap-2">
                 {/* <div className="relative group">
                   <UserCircle
-                    className="w-5 h-5 text-white cursor-pointer"
-                    onClick={() => setOpenProfile(!openProfile)}
+                  className="w-5 h-5 text-white cursor-pointer"
+                  onClick={() => setOpenProfile(!openProfile)}
                   />
                   {openProfile && (
                     <ProfileMenu
