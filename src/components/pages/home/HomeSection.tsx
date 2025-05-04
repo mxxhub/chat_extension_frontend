@@ -27,6 +27,7 @@ import {
   ImagePlus,
   TicketCheck,
   LogOut,
+  EllipsisVertical,
 } from "lucide-react";
 import { getCurrentTabUrl, toShortAddress } from "../../../utils/utils";
 import {
@@ -44,7 +45,7 @@ import { ChattingHistory } from "../../ui/chatting";
 import ProfileCard from "../../ui/profileCard";
 import { showToast } from "../../ui/toastMsg";
 import ProfileMenu from "../../ui/profile";
-import { SettingModal } from "../../settingModal";
+import SettingModal from "../../settingModal";
 import { ProfileModal } from "../../profileModal";
 import SidebarChannelList from "../../channelModal";
 import config from "../../../../config/config.json";
@@ -468,7 +469,10 @@ const HomeSection = () => {
   };
 
   return (
-    <div className="bg-transparent flex flex-row justify-center w-full border-r border-r-[#3f414e]">
+    <div
+      className={`bg-transparent flex flex-row justify-center w-full border-r border-r-[#3f414e]`}
+    >
+      {menu && <SettingModal isOpen={menu} onClose={() => setMenu(false)} />}
       <div className="overflow-hidden w-full max-w-[500px] min-w-[500px] h-screen">
         <div className="relative w-full h-full flex">
           {/* Sidebar */}
@@ -479,9 +483,6 @@ const HomeSection = () => {
                   className="w-7 h-7 text-white cursor-pointer"
                   onClick={() => setMenu(true)}
                 />
-                {menu && (
-                  <SettingModal isOpen={menu} onClose={() => setMenu(false)} />
-                )}
               </div>
               <div className="h-full border-r border-r-[#3f414e] flex flex-col items-center overflow-y-scroll">
                 <div className="mt-4 relative">
@@ -550,8 +551,8 @@ const HomeSection = () => {
           {/* Main chat container */}
           <div className="flex-1 flex flex-col h-full w-[437px]">
             {/* Header */}
-            <div className="h-[58px] bg-[#101114] border border-solid border-[#22242d] flex items-center px-4">
-              <div className="flex items-center gap-2 overflow-x-hidden w-[230px]">
+            <div className="h-[58px] bg-[#101114] border border-solid border-[#22242d] flex items-center px-4 gap-3">
+              <div className="flex items-center gap-2 overflow-x-hidden w-auto">
                 <Avatar className="w-9 h-9">
                   <AvatarImage src={tokenImage} alt="DB" />
                   <AvatarFallback>DB</AvatarFallback>
@@ -583,56 +584,62 @@ const HomeSection = () => {
                         )}
                       </span>
                     </button>
+                    <div className="flex items-center gap-2 ml-2">
+                      <a
+                        href="https://photon-sol.tinyastro.io/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Avatar className="w-4 h-4">
+                          <AvatarImage
+                            src="/assets/image-5-1.png"
+                            alt="Photon"
+                          />
+                        </Avatar>
+                      </a>
+                      <a
+                        href={`https://dexscreener.com/${chainId}/${textToCopy}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Avatar className="w-3 h-[13px]">
+                          <AvatarImage
+                            src="/assets/layer-1.png"
+                            alt="Dexscreener"
+                          />
+                        </Avatar>
+                      </a>
+                      <a
+                        href="https://axiom.trade/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Avatar className="w-3 h-3">
+                          <AvatarImage
+                            src="/assets/clip-path-group.png"
+                            alt="axiom"
+                          />
+                        </Avatar>
+                      </a>
+                      <a
+                        href="https://neo.bullx.io/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Avatar className="w-[23px] h-[21px]">
+                          <AvatarImage src="/assets/bullx-1.png" alt="Bullx" />
+                        </Avatar>
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
-
+              <div className="flex items-center flex-col ml-6">
+                <span className="text-gray-500 text-xs">Mkt Cap</span>
+                <span className="text-green-500 text-sm">$11M</span>
+              </div>
               <div className="ml-auto flex items-center gap-2">
-                <div className="flex items-center gap-2">
-                  <a
-                    href="https://photon-sol.tinyastro.io/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Avatar className="w-4 h-4">
-                      <AvatarImage src="/assets/image-5-1.png" alt="Photon" />
-                    </Avatar>
-                  </a>
-                  <a
-                    href={`https://dexscreener.com/${chainId}/${textToCopy}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Avatar className="w-3 h-[13px]">
-                      <AvatarImage
-                        src="/assets/layer-1.png"
-                        alt="Dexscreener"
-                      />
-                    </Avatar>
-                  </a>
-                  <a
-                    href="https://axiom.trade/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Avatar className="w-3 h-3">
-                      <AvatarImage
-                        src="/assets/clip-path-group.png"
-                        alt="axiom"
-                      />
-                    </Avatar>
-                  </a>
-                  <a
-                    href="https://neo.bullx.io/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Avatar className="w-[23px] h-[21px]">
-                      <AvatarImage src="/assets/bullx-1.png" alt="Bullx" />
-                    </Avatar>
-                  </a>
-                </div>
-                <div className="relative group">
+                {/* <div className="relative group">
                   <UserCircle
                     className="w-5 h-5 text-white cursor-pointer"
                     onClick={() => setOpenProfile(!openProfile)}
@@ -658,11 +665,12 @@ const HomeSection = () => {
                       wallet={userdata?.wallet || ""}
                     />
                   )}
-                </div>
+                </div> */}
                 <SearchIcon
                   className="w-5 h-5 text-white cursor-pointer"
                   onClick={searchButtonHandle}
                 />
+                <EllipsisVertical className="text-white cursor-pointer w-5 h-5" />
               </div>
             </div>
             <div className="flex-1 flex flex-col overflow-y-auto">
