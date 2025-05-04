@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Settings,
   Copy,
@@ -24,8 +24,21 @@ const SettingModal = ({ isOpen, onClose }: SettingModalProps) => {
   if (!isOpen) return null;
   const [timeframe, setTimeframe] = useState("Daily");
 
+  const mainRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (mainRef.current && !mainRef.current.contains(e.target as Node)) {
+        onClose();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
     <div
+      ref={mainRef}
       className={`flex flex-col h-screen bg-black text-white w-[calc(500px*0.8)] overflow-y-auto justify-self-center z-10 ${
         isOpen ? "translate-x-full shadow" : "translate-x-0"
       } transition-transform transform duration-300`}
