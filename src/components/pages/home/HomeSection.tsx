@@ -469,11 +469,9 @@ const HomeSection = () => {
   };
 
   return (
-    <div
-      className={`bg-transparent flex flex-row justify-center w-full border-r border-r-[#3f414e]`}
-    >
+    <div className=" relative bg-transparent flex flex-row justify-center w-full border-r border-r-[#3f414e]">
       {menu && <SettingModal isOpen={menu} onClose={() => setMenu(false)} />}
-      <div className="overflow-hidden w-full max-w-[500px] min-w-[500px] h-screen">
+      <div className="overflow-hidden w-full min-w-[500px] h-screen">
         <div className="relative w-full h-full flex">
           {/* Sidebar */}
           <div className="h-full block md:block md:relative bg-[#22242D] border-[#22242d]">
@@ -551,8 +549,8 @@ const HomeSection = () => {
           {/* Main chat container */}
           <div className="flex-1 flex flex-col h-full w-[437px]">
             {/* Header */}
-            <div className="h-[58px] bg-[#101114] border border-solid border-[#22242d] flex items-center px-4 gap-3">
-              <div className="flex items-center gap-2 overflow-x-hidden w-auto">
+            <div className="flex items-center justify-between h-[58px] bg-[#101114] border border-solid border-[#22242d]">
+              <div className="flex items-center gap-2 overflow-x-hidden">
                 <Avatar className="w-9 h-9">
                   <AvatarImage src={tokenImage} alt="DB" />
                   <AvatarFallback>DB</AvatarFallback>
@@ -638,7 +636,7 @@ const HomeSection = () => {
                 <span className="text-gray-500 text-xs">Mkt Cap</span>
                 <span className="text-green-500 text-sm">$11M</span>
               </div>
-              <div className="ml-auto flex items-center gap-2">
+              <div className="flex items-center gap-2">
                 {/* <div className="relative group">
                   <UserCircle
                   className="w-5 h-5 text-white cursor-pointer"

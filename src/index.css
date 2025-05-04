@@ -21,5 +21,9 @@ code {
 }
 
 .shadow {
-  box-shadow: rgba(0, 0, 0, 0.6) 100px 0px 0px 0px;
+  box-shadow: rgba(0, 0, 0, 0.6) 0px 0px 0px 0px;
+}
+
+.my-transition {
+  transition: left 3s ease;
 }
