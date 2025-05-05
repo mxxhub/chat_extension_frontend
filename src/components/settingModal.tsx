@@ -59,7 +59,7 @@ const SettingModal = ({ isOpen, onClose }: SettingModalProps) => {
       ></div>
       <div
         ref={mainRef}
-        className={`fixed left-0 top-0 flex flex-col h-full bg-black text-white w-full xs:w-4/5 sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-2/5 overflow-y-auto z-50 transform transition-all duration-300 ${
+        className={`fixed left-0 top-0 flex flex-col h-full bg-black text-white w-full xs:w-4/5 sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-2/5 overflow-y-auto z-50 transform transition-all duration-200 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
