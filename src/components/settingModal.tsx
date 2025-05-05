@@ -21,7 +21,6 @@ interface SettingModalProps {
 }
 
 const SettingModal = ({ isOpen, onClose }: SettingModalProps) => {
-  if (!isOpen) return null;
   const [timeframe, setTimeframe] = useState("Daily");
 
   const mainRef = useRef<HTMLDivElement>(null);
@@ -32,20 +31,40 @@ const SettingModal = ({ isOpen, onClose }: SettingModalProps) => {
         onClose();
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+
+    const handleEscapeKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleEscapeKey);
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscapeKey);
+      document.body.style.overflow = "auto";
+    };
+  }, [isOpen, onClose]);
 
   return (
-    <div className="">
+    <>
+      <div
+        className={`fixed inset-0 z-40 transition-opacity duration-300 ease-in-out bg-black ${
+          isOpen ? "opacity-50" : "opacity-0 pointer-events-none"
+        }`}
+      ></div>
       <div
         ref={mainRef}
-        className={`absolute flex -left-full flex-col h-full bg-black text-white w-4/5 overflow-y-auto z-10 my-transition ${
-          isOpen ? "left-0 shadow" : ""
+        className={`fixed left-0 top-0 flex flex-col h-full bg-black text-white w-full xs:w-4/5 sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-2/5 overflow-y-auto z-50 transform transition-all duration-300 ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* Header */}
-        <header className="w-full bg-black border-yellow-500">
+        <header className="w-full bg-black border-yellow-500 relative">
           <button
             className="absolute top-4 left-4 z-10"
             onClick={onClose}
@@ -65,24 +84,23 @@ const SettingModal = ({ isOpen, onClose }: SettingModalProps) => {
             <img
               src="/assets/image-19.png"
               alt="avatar"
-              className="absolute w-16 h-16 rounded-full border-none -top-11 left-6"
+              className="absolute w-12 h-12 sm:w-16 sm:h-16 rounded-full border-none -top-8 sm:-top-11 left-4 sm:left-6"
             />
           </div>
-          <div className="flex flex-col px-4 py-3 mt-2 border-b border-gray-800">
+          <div className="flex flex-col px-3 sm:px-4 py-2 sm:py-3 mt-2 border-b border-gray-800">
             <div className="flex items-center justify-between">
-              <span className="font-bold text-xl">JS</span>
+              <span className="font-bold text-lg sm:text-xl">JS</span>
               <span>
                 <Settings
-                  className="w-5 h-5 text-gray-400 cursor-pointer ml-auto"
+                  className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 cursor-pointer ml-auto"
                   onClick={onClose}
                 />
               </span>
             </div>
             <div className="flex items-center">
-              <span>ShockedJS</span>
-
+              <span className="text-sm sm:text-base">ShockedJS</span>
               <img
-                className="w-4 h-3.5 ml-2"
+                className="w-3 h-3 sm:w-4 sm:h-3.5 ml-2"
                 alt="Twitter icon"
                 src="/assets/vector.svg"
               />
@@ -91,81 +109,85 @@ const SettingModal = ({ isOpen, onClose }: SettingModalProps) => {
         </header>
 
         {/* Wallet Section */}
-        <div className="px-4 py-3 border-b border-gray-800">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-400">Holdings</span>
+        <div className="px-3 sm:px-4 py-2 sm:py-3 border-b border-gray-800">
+          <div className="flex items-center justify-between mb-1 sm:mb-2">
+            <span className="text-gray-400 text-sm sm:text-base">Holdings</span>
             <div className="flex items-center text-xs">
               <span className="mr-1">
                 <Copy className="w-3 h-3 ml-1" />
               </span>
-              <span className="text-gray-500 mr-2">6m5s...9rAF</span>
+              <span className="text-gray-500 mr-2 text-xs sm:text-xs">
+                6m5s...9rAF
+              </span>
             </div>
           </div>
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-bold mb-3">$1,516,912</h3>
-            <button className="bg-gray-800 text-white text-xs px-4 py-1 rounded-xl">
+            <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3">
+              $1,516,912
+            </h3>
+            <button className="bg-gray-800 text-white text-xs px-3 sm:px-4 py-1 rounded-xl">
               Export Wallet
             </button>
           </div>
           {/* Assets List */}
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             {/* SOL */}
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <div className="w-6 h-6 rounded-full bg-blue-500 mr-2 flex items-center justify-center text-xs">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-blue-500 mr-2 flex items-center justify-center text-xs">
                   ≡
                 </div>
-                <span>1.4k Sol</span>
+                <span className="text-sm sm:text-base">1.4k Sol</span>
               </div>
-              <span>$176,854</span>
+              <span className="text-sm sm:text-base">$176,854</span>
             </div>
 
             {/* USDC */}
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <div className="w-6 h-6 rounded-full bg-blue-600 mr-2 flex items-center justify-center text-xs">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-blue-600 mr-2 flex items-center justify-center text-xs">
                   $
                 </div>
-                <span>1.05m USDC</span>
+                <span className="text-sm sm:text-base">1.05m USDC</span>
               </div>
-              <span>$1,046,489</span>
+              <span className="text-sm sm:text-base">$1,046,489</span>
             </div>
 
             {/* YZY */}
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <div className="w-6 h-6 rounded-full bg-gray-700 mr-2 flex items-center justify-center text-xs">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gray-700 mr-2 flex items-center justify-center text-xs">
                   Y
                 </div>
-                <span>20m YZY</span>
+                <span className="text-sm sm:text-base">20m YZY</span>
               </div>
-              <span>$240,882</span>
+              <span className="text-sm sm:text-base">$240,882</span>
             </div>
 
             {/* DB */}
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <div className="w-6 h-6 rounded-full bg-yellow-600 mr-2 flex items-center justify-center text-xs">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-yellow-600 mr-2 flex items-center justify-center text-xs">
                   ₿
                 </div>
-                <span>16m DB</span>
+                <span className="text-sm sm:text-base">16m DB</span>
               </div>
-              <span>$22,527</span>
+              <span className="text-sm sm:text-base">$22,527</span>
             </div>
           </div>
         </div>
 
         {/* PNL Section */}
-        <div className="px-4 py-3 border-b border-gray-800">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-gray-400">PNL</span>
-            <div className="flex text-xs">
+        <div className="px-3 sm:px-4 py-2 sm:py-3 border-b border-gray-800">
+          <div className="flex items-center justify-between mb-2 sm:mb-3">
+            <span className="text-gray-400 text-sm sm:text-base">PNL</span>
+            <div className="flex text-xs overflow-x-auto">
               {["Daily", "Weekly", "Monthly", "All"].map((period) => (
                 <button
                   key={period}
-                  className={`px-2 py-1 ${
+                  className={`px-1 sm:px-2 py-1 ${
                     timeframe === period ? "text-blue-500" : "text-white"
-                  }`}
+                  } text-xs sm:text-sm whitespace-nowrap`}
                   onClick={() => setTimeframe(period)}
                 >
                   {period}
@@ -174,16 +196,16 @@ const SettingModal = ({ isOpen, onClose }: SettingModalProps) => {
             </div>
           </div>
 
-          <div className="mb-3 flex items-center justify-between">
-            <span className="text-green-500 text-lg font-bold">
+          <div className="mb-2 sm:mb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <span className="text-green-500 text-base sm:text-lg font-bold mb-2 sm:mb-0">
               +2,313 Sol ($428,699)
             </span>
-            <button className="bg-green-400 text-black text-sm px-4 rounded-full">
+            <button className="bg-green-400 text-black text-xs sm:text-sm px-3 sm:px-4 py-1 rounded-full w-fit">
               Share PNL
             </button>
           </div>
 
-          <div className="flex justify-between text-sm">
+          <div className="flex justify-between text-xs sm:text-sm">
             <div>
               <span className="text-gray-400">Winning Trades:</span>{" "}
               <span className="text-green-500">1,829</span>
@@ -196,35 +218,39 @@ const SettingModal = ({ isOpen, onClose }: SettingModalProps) => {
         </div>
 
         {/* Rewards Section */}
-        <div className="px-4 py-3 border-b border-gray-800">
-          <div className="flex items-center mb-2">
-            <h3 className="font-bold">Rewards</h3>
+        <div className="px-3 sm:px-4 py-2 sm:py-3 border-b border-gray-800">
+          <div className="flex items-center mb-1 sm:mb-2">
+            <h3 className="font-bold text-sm sm:text-base">Rewards</h3>
           </div>
-          <div className="mb-4">
-            <span className="text-xl font-bold">55,454 Points</span>
+          <div className="mb-2 sm:mb-4">
+            <span className="text-lg sm:text-xl font-bold">55,454 Points</span>
           </div>
         </div>
-        <div className="flex flex-col px-4 py-3 border-b border-gray-800">
-          <div className="flex items-center h-10">
+        <div className="flex flex-col px-3 sm:px-4 py-2 sm:py-3 border-b border-gray-800">
+          <div className="flex items-center h-8 sm:h-10">
             <span>
-              <HandCoins className="w-5 h-5 text-blue-400 mr-2" />
+              <HandCoins className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400 mr-2" />
             </span>
-            <span className="font-medium">Contribution</span>
+            <span className="font-medium text-sm sm:text-base">
+              Contribution
+            </span>
           </div>
-          <div className="text-gray-500 text-center w-full">COMING SOON</div>
+          <div className="text-gray-500 text-center w-full text-sm sm:text-base">
+            COMING SOON
+          </div>
         </div>
         {/* Quests */}
-        <div className="px-4 py-3 border-b border-gray-800">
+        <div className="px-3 sm:px-4 py-2 sm:py-3 border-b border-gray-800">
           <div className="flex flex-col">
             <div className="flex items-center mb-2">
-              <NotepadText className="w-5 h-5 text-blue-400 mr-2" />
-              <span className="font-medium">Quests</span>
+              <NotepadText className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400 mr-2" />
+              <span className="font-medium text-sm sm:text-base">Quests</span>
             </div>
 
-            <div className="space-y-2 text-sm">
+            <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm">
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <div className="w-4 h-4 rounded-full border border-gray-500 mr-2"></div>
+                  <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-gray-500 mr-2"></div>
                   <span>Contribute - Coming soon</span>
                 </div>
                 <span className="text-gray-400">+10,000 Points</span>
@@ -232,7 +258,7 @@ const SettingModal = ({ isOpen, onClose }: SettingModalProps) => {
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <div className="w-4 h-4 rounded-full border border-gray-500 mr-2"></div>
+                  <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-gray-500 mr-2"></div>
                   <span>Refer a friend</span>
                 </div>
                 <span className="text-gray-400">+1,000 Points</span>
@@ -240,7 +266,7 @@ const SettingModal = ({ isOpen, onClose }: SettingModalProps) => {
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <div className="w-4 h-4 rounded-full border border-gray-500 mr-2"></div>
+                  <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-gray-500 mr-2"></div>
                   <span>Like and RT Tweet</span>
                 </div>
                 <span className="text-gray-400">+1,000 Points</span>
@@ -250,42 +276,44 @@ const SettingModal = ({ isOpen, onClose }: SettingModalProps) => {
         </div>
 
         {/* Referrals Section */}
-        <div className="px-4 py-3 border-b border-gray-800">
-          <div className="flex items-center mb-3">
-            <UserPen className="w-5 h-5 text-blue-400 mr-2" />
-            <span className="font-medium">Referrals</span>
+        <div className="px-3 sm:px-4 py-2 sm:py-3 border-b border-gray-800">
+          <div className="flex items-center mb-2 sm:mb-3">
+            <UserPen className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400 mr-2" />
+            <span className="font-medium text-sm sm:text-base">Referrals</span>
             <div className="ml-auto flex items-center text-xs text-gray-400">
-              <span>Code: Shocked</span>
-              <Link className="w-4 h-4 ml-1" />
+              <span className="text-xs">Code: Shocked</span>
+              <Link className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />
             </div>
           </div>
 
-          <div className="text-sm text-gray-400 mb-2">Referred total: 13</div>
+          <div className="text-xs sm:text-sm text-gray-400 mb-1 sm:mb-2">
+            Referred total: 13
+          </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1 sm:space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <div className="w-6 h-6 rounded-full bg-red-500 mr-2 flex items-center justify-center text-xs">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-red-500 mr-2 flex items-center justify-center text-xs">
                   A
                 </div>
-                <span>Ansem</span>
+                <span className="text-sm sm:text-base">Ansem</span>
               </div>
               <span className="text-xs text-gray-400">May 3rd 2025</span>
             </div>
 
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <div className="w-6 h-6 rounded-full bg-green-500 mr-2 flex items-center justify-center text-xs">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-green-500 mr-2 flex items-center justify-center text-xs">
                   P
                 </div>
-                <span>POE</span>
+                <span className="text-sm sm:text-base">POE</span>
               </div>
               <span className="text-xs text-gray-400">May 1st 2025</span>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

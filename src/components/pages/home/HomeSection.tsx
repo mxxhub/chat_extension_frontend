@@ -469,12 +469,12 @@ const HomeSection = () => {
   };
 
   return (
-    <div className=" relative bg-transparent flex flex-row justify-center w-full border-r border-r-[#3f414e]">
-      {menu && <SettingModal isOpen={menu} onClose={() => setMenu(false)} />}
-      <div className="overflow-hidden w-full min-w-[500px] h-screen">
+    <div className="relative bg-transparent flex flex-row justify-center w-full border-r border-r-[#3f414e]">
+      <SettingModal isOpen={menu} onClose={() => setMenu(false)} />
+      <div className="overflow-hidden w-full min-w-0 sm:min-w-[500px] h-screen">
         <div className="relative w-full h-full flex">
           {/* Sidebar */}
-          <div className="h-full block md:block md:relative bg-[#22242D] border-[#22242d]">
+          <div className="h-full sm:block md:block md:relative bg-[#22242D] border-[#22242d]">
             <div className="relative h-full w-[63px]">
               <div className="border-r border-r-[#3f414e] justify-items-center py-3">
                 <MenuIcon
@@ -482,7 +482,7 @@ const HomeSection = () => {
                   onClick={() => setMenu(true)}
                 />
               </div>
-              <div className="h-full border-r border-r-[#3f414e] flex flex-col items-center overflow-y-scroll">
+              <div className="h-full border-r border-r-[#3f414e] flex flex-col items-center overflow-y-auto">
                 <div className="mt-4 relative">
                   <div className="text-[#777a8c] text-[10px] ml-4">Pinned</div>
                   <img
@@ -547,20 +547,20 @@ const HomeSection = () => {
             </div>
           </div>
           {/* Main chat container */}
-          <div className="flex-1 flex flex-col h-full w-[437px]">
+          <div className="flex-1 flex flex-col h-full w-full max-w-full">
             {/* Header */}
-            <div className="flex items-center justify-between h-[58px] bg-[#101114] border border-solid border-[#22242d]">
-              <div className="flex items-center gap-2 overflow-x-hidden">
-                <Avatar className="w-9 h-9">
+            <div className="flex items-center justify-between h-[58px] bg-[#101114] border border-solid border-[#22242d] px-4">
+              <div className="flex items-center gap-1 overflow-x-hidden">
+                <Avatar className="w-7 h-7 mr-3">
                   <AvatarImage src={tokenImage} alt="DB" />
                   <AvatarFallback>DB</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
-                  <div className="flex items-center space-x-2">
-                    <b className="text-white text-base font-bold">
+                  <div className="flex items-center space-x-1">
+                    <b className="text-white text-sm font-bold truncate max-w-[100px]">
                       {tokenName}
                     </b>
-                    <b className="text-white text-[13px] font-medium">
+                    <b className="text-white text-xs font-medium">
                       {tokenSymbol}
                     </b>
                     <Pin
@@ -568,27 +568,29 @@ const HomeSection = () => {
                       className="text-[red] fill-[red] rotate-45"
                     />
                   </div>
-                  <div className="font-normal text-[#526fff] text-[13px] flex flex-row">
-                    <div>{toShortAddress(textToCopy)}</div>
+                  <div className="font-normal text-[#526fff] text-xs flex flex-row items-center">
+                    <div className="truncate max-w-[80px]">
+                      {toShortAddress(textToCopy)}
+                    </div>
                     <button
                       onClick={handleCopy}
-                      className="px-3 py-1 text-white mt-[-1vh]"
+                      className="px-1 py-1 text-white mt-[-1vh]"
                     >
                       <span>
                         {copied ? (
-                          <Check size={13} className="mt-1 bg-tranparent" />
+                          <Check size={13} className="mt-1 bg-transparent" />
                         ) : (
-                          <Copy size={13} className="mt-1 bg-tranparent" />
+                          <Copy size={13} className="mt-1 bg-transparent" />
                         )}
                       </span>
                     </button>
-                    <div className="flex items-center gap-2 ml-2">
+                    <div className="flex items-center gap-1 ml-1 overflow-x-auto">
                       <a
                         href="https://photon-sol.tinyastro.io/"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        <Avatar className="w-4 h-4">
+                        <Avatar className="w-3 h-3">
                           <AvatarImage
                             src="/assets/image-5-1.png"
                             alt="Photon"
@@ -632,11 +634,11 @@ const HomeSection = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center flex-col ml-6">
+              <div className="flex items-center flex-col ml-6 text-center">
                 <span className="text-gray-500 text-xs">Mkt Cap</span>
                 <span className="text-green-500 text-sm">$11M</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 ml-auto">
                 {/* <div className="relative group">
                   <UserCircle
                   className="w-5 h-5 text-white cursor-pointer"
@@ -675,7 +677,7 @@ const HomeSection = () => {
               {/* Banner */}
               <div className="w-full">
                 <img
-                  className="w-full max-h-[129px] object-cover"
+                  className="w-full max-h-[80px] sm:max-h-[129px] object-cover"
                   alt="Banner"
                   src="/assets/image-1.png"
                 />
@@ -690,17 +692,17 @@ const HomeSection = () => {
                   className="flex items-center"
                 >
                   <img
-                    className="w-4 h-3.5"
+                    className="w-3 h-3 sm:w-4 sm:h-3.5"
                     alt="Twitter icon"
                     src="/assets/vector.svg"
                   />
-                  <span className="ml-1 font-medium text-white text-[13px]">
+                  <span className="ml-1 font-medium text-white text-xs sm:text-[13px]">
                     Twitter
                   </span>
                 </a>
                 <Separator
                   orientation="vertical"
-                  className="h-[30px] mx-4 bg-[#5B5E69]"
+                  className="h-[30px] mx-2 sm:mx-4 bg-[#5B5E69]"
                 />
                 <a
                   target="_blank"
@@ -708,8 +710,8 @@ const HomeSection = () => {
                   href="https://dexscreener.com"
                   className="flex items-center"
                 >
-                  <ExternalLinkIcon className="w-4 h-4 text-white" />
-                  <span className="ml-1 font-medium text-white text-[13px]">
+                  <ExternalLinkIcon className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
+                  <span className="ml-1 font-medium text-white text-xs sm:text-[13px]">
                     Website
                   </span>
                 </a>
@@ -718,35 +720,35 @@ const HomeSection = () => {
               {/* Chat messages container */}
               <div
                 ref={scrollRef}
-                className="flex-1 overflow-y-scroll bg-[#191a21] p-4 w-full"
+                className="flex-1 overflow-y-auto bg-[#191a21] p-2 sm:p-4 w-full"
               >
                 {/* Twitter Raid section */}
-                <div className="mt-4">
+                <div className="mt-2 sm:mt-4">
                   <div className="flex items-center mb-2">
                     <img
-                      className="w-[13px] h-[11px]"
+                      className="w-[11px] h-[9px] sm:w-[13px] sm:h-[11px]"
                       alt="Twitter icon"
                       src="/assets/vector.svg"
                     />
-                    <span className="ml-2 font-bold text-white text-[13px]">
+                    <span className="ml-2 font-bold text-white text-xs sm:text-[13px]">
                       Twitter Raid
                     </span>
                   </div>
 
                   {xRaid && (
-                    <div className="w-5/6 bg-transparent z-10 items-center justify-center backdrop-blur-2xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-2xl p-5">
+                    <div className="w-5/6 bg-transparent z-10 items-center justify-center backdrop-blur-2xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-2xl p-3 sm:p-5">
                       <div className="text-white text-center mb-2">
                         Start Twitter Raid
                       </div>
                       <button
                         aria-label="Close"
-                        className="absolute top-4 right-4 text-white hover:text-gray-300"
+                        className="absolute top-2 right-2 sm:top-4 sm:right-4 text-white hover:text-gray-300"
                         onClick={() => setXRaid(false)}
                       >
-                        <X className="w-5 h-5" />
+                        <X className="w-4 h-4 sm:w-5 sm:h-5" />
                       </button>
                       <Input
-                        className="w-full self-center placeholder:text-center text-white"
+                        className="w-full self-center placeholder:text-center text-white text-sm"
                         placeholder="Enter Tweet Link"
                         onChange={(e) => setTweetLink(e.target.value)}
                         value={tweetLink}
@@ -755,9 +757,9 @@ const HomeSection = () => {
                   )}
 
                   <Card className="w-full max-w-full bg-[#15202b] rounded-lg border-none">
-                    <CardContent className="p-4">
+                    <CardContent className="p-2 sm:p-4">
                       <div className="flex items-start">
-                        <Avatar className="w-8 h-8">
+                        <Avatar className="w-6 h-6 sm:w-8 sm:h-8">
                           <AvatarImage
                             src="/assets/image-28.png"
                             alt="Andy Ayrey"
@@ -765,52 +767,52 @@ const HomeSection = () => {
                           <AvatarFallback>AA</AvatarFallback>
                         </Avatar>
                         <div className="ml-2 flex-1">
-                          <div className="font-normal text-white text-[13px]">
+                          <div className="font-normal text-white text-xs sm:text-[13px]">
                             Andy Ayrey
                             <img
-                              className="inline-block w-3.5 h-3.5 ml-1"
+                              className="inline-block w-3 h-3 sm:w-3.5 sm:h-3.5 ml-1"
                               alt="Verified"
                               src="/assets/image-10.png"
                             />
                             <br />
                             <span className="text-[#5a5d69]">@AndyAyrey</span>
                           </div>
-                          <div className="mt-4 font-normal text-white text-[13px]">
+                          <div className="mt-2 sm:mt-4 font-normal text-white text-xs sm:text-[13px]">
                             timeline cleanse
                           </div>
                         </div>
                         <img
-                          className="w-[137px] h-[126px] ml-auto"
+                          className="w-[100px] h-[90px] sm:w-[137px] sm:h-[126px] ml-auto object-cover"
                           alt="Tweet image"
                           src="/assets/image-27.png"
                         />
                       </div>
 
                       {/* Tweet engagement metrics */}
-                      <div className="flex items-center justify-evenly mt-8">
+                      <div className="flex items-center justify-evenly mt-4 sm:mt-8">
                         <div className="flex items-center">
-                          <HeartIcon className="w-4 h-4 text-[red] fill-[red]" />
-                          <span className="ml-2 font-normal text-white text-[13px]">
+                          <HeartIcon className="w-3 h-3 sm:w-4 sm:h-4 text-[red] fill-[red]" />
+                          <span className="ml-1 sm:ml-2 font-normal text-white text-xs sm:text-[13px]">
                             597
                           </span>
                         </div>
                         <Separator
                           orientation="vertical"
-                          className="h-[23px] bg-[#5B5E69]"
+                          className="h-[20px] sm:h-[23px] bg-[#5B5E69]"
                         />
                         <div className="flex items-center">
-                          <MessageCircleIcon className="w-4 h-3.5 text-white" />
-                          <span className="ml-2 font-normal text-white text-[13px]">
+                          <MessageCircleIcon className="w-3 h-3 sm:w-4 sm:h-3.5 text-white" />
+                          <span className="ml-1 sm:ml-2 font-normal text-white text-xs sm:text-[13px]">
                             64
                           </span>
                         </div>
                         <Separator
                           orientation="vertical"
-                          className="h-[23px] bg-[#5B5E69]"
+                          className="h-[20px] sm:h-[23px] bg-[#5B5E69]"
                         />
                         <div className="flex items-center">
-                          <RepeatIcon className="w-4 h-3.5 text-white" />
-                          <span className="ml-2 font-normal text-white text-[13px]">
+                          <RepeatIcon className="w-3 h-3 sm:w-4 sm:h-3.5 text-white" />
+                          <span className="ml-1 sm:ml-2 font-normal text-white text-xs sm:text-[13px]">
                             199
                           </span>
                         </div>
@@ -819,7 +821,7 @@ const HomeSection = () => {
                   </Card>
                 </div>
                 {/* Chat messages */}
-                <div className="space-y-4 w-full break-all relative">
+                <div className="space-y-3 sm:space-y-4 w-full break-all relative">
                   {userProfile && (
                     <ProfileCard
                       name={userdata?.displayName || ""}
@@ -846,18 +848,18 @@ const HomeSection = () => {
               {/* Message input */}
               <div className="max-w-full bg-[#191A21] p-2">
                 {typingStatus && (
-                  <div className="text-white bg-transparent backdrop-blur-sm ml-1">{`${userdata?.displayName} is typing...`}</div>
+                  <div className="text-white text-xs sm:text-sm bg-transparent backdrop-blur-sm ml-1">{`${userdata?.displayName} is typing...`}</div>
                 )}
 
-                <div className="relative w-full h-[45px] bg-[100%_100%] flex items-center px-3 rounded-md border border-solid border-[#22242d]">
+                <div className="relative w-full h-[40px] sm:h-[45px] bg-[100%_100%] flex items-center px-2 sm:px-3 rounded-md border border-solid border-[#22242d]">
                   <CirclePlus
-                    className="w-5 h-5 text-[#777a8c] cursor-pointer"
+                    className="w-4 h-4 sm:w-5 sm:h-5 text-[#777a8c] cursor-pointer"
                     onClick={plusBtnHandle}
                   />
                   {plusBtn && (
                     <div
                       ref={popupRef}
-                      className="absolute bottom-full mb-2 left-0 w-48 bg-[#22242D] rounded-md shadow-lg py-1 z-50"
+                      className="absolute bottom-full mb-2 left-0 w-36 sm:w-48 bg-[#22242D] rounded-md shadow-lg py-1 z-50 text-xs sm:text-sm"
                     >
                       <MenuItem
                         Icon={ImagePlus}
@@ -880,7 +882,7 @@ const HomeSection = () => {
                   )}
                   {joinStatus ? (
                     <Input
-                      className="border-none bg-transparent text-[#dbd6d6] text-sm h-full focus:outline-none focus:ring-0 focus:border-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                      className="border-none bg-transparent text-[#dbd6d6] text-xs sm:text-sm h-full focus:outline-none focus:ring-0 focus:border-none focus-visible:ring-0 focus-visible:ring-offset-0"
                       placeholder={
                         editState ? "Edit message..." : "Write a message..."
                       }
@@ -896,16 +898,16 @@ const HomeSection = () => {
                     />
                   ) : (
                     <button
-                      className="text-white flex-auto text-sm"
+                      className="text-white flex-auto text-xs sm:text-sm"
                       onClick={() => handleJoinChannel()}
                     >
                       Join Channel
                     </button>
                   )}
-                  <div className="flex items-center gap-2 ml-auto">
-                    <HandCoins className="w-5 h-5 text-[green] hidden sm:block cursor-pointer" />
+                  <div className="flex items-center gap-1 sm:gap-2 ml-auto">
+                    <HandCoins className="w-4 h-4 sm:w-5 sm:h-5 text-[green] sm:block cursor-pointer" />
                     <Smile
-                      className="w-[18px] h-[18px] text-[#777a8c] cursor-pointer"
+                      className="w-[16px] h-[16px] sm:w-[18px] sm:h-[18px] text-[#777a8c] cursor-pointer"
                       onClick={() => {
                         if (!joinStatus) return;
                         setShowPicker((prev) => !prev);
@@ -914,7 +916,7 @@ const HomeSection = () => {
                     {showPicker && (
                       <div
                         ref={popupRef}
-                        className="absolute z-20 right-9 bottom-5 w-30"
+                        className="absolute z-20 right-2 sm:right-9 bottom-12 sm:bottom-5 w-30 scale-75 sm:scale-100 origin-bottom-right"
                       >
                         <Picker
                           data={data}
