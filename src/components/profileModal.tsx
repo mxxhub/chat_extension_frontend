@@ -39,7 +39,7 @@ export const ProfileModal = ({
   const [walletAdd, setWalletAdd] = useState<string>(wallet || "");
   const [image, setImage] = useState<string>(avatar || "");
   const [userId, setUserId] = useState<string>(username || "");
-  const server = config.server || "localhost:4000";
+  const server = config.server || "144.172.94.181:4000";
   const modalRef = useRef<HTMLDivElement>(null);
   console.log(setImage, setUserId);
   const handleSave = async () => {
@@ -69,10 +69,17 @@ export const ProfileModal = ({
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
 
       <div className="bg-gray-800 rounded-xl shadow-xl overflow-hidden w-full max-w-sm transform transition-all duration-300 ease-in-out animate-modal-in border border-gray-700">
-        <div className="relative h-32 bg-gradient-to-r from-blue-600 to-blue-800">
+        <div className="relative h-32 bg-gradient-to-r">
+          <div className="relative w-full">
+            <img
+              src="/assets/settings_header.png"
+              alt="settings-profile"
+              className="w-full h-full"
+            />
+          </div>
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-1 rounded-full bg-black/30 text-white hover:bg-black/40 transition-colors duration-200"
+            className="absolute z-100 top-4 right-4 p-1 rounded-full bg-black/30 text-white hover:bg-black/40 transition-colors duration-200"
             aria-label="Close modal"
           >
             <X size={18} />
@@ -80,7 +87,7 @@ export const ProfileModal = ({
 
           <button
             onClick={() => setIsEditing(!isEditing)}
-            className="absolute top-4 right-14 p-1 rounded-full bg-black/30 text-white hover:bg-black/40 transition-colors duration-200"
+            className="absolute z-100 top-4 right-14 p-1 rounded-full bg-black/30 text-white hover:bg-black/40 transition-colors duration-200"
             aria-label="Edit profile"
           >
             <Edit size={18} />

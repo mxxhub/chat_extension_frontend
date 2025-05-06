@@ -1,5 +1,5 @@
 {
-  "server": "http://localhost:4000",
+  "server": "http://144.172.94.181:4000",
   "jwtSecret": "secret",
   "privyId": "cm9k8w2gv00jzjr0nldhn54sd"
 }

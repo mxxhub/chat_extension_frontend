@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 // import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import io from "socket.io-client";
-import { usePrivy } from "@privy-io/react-auth";
-// import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
+// import { usePrivy } from "@privy-io/react-auth";
+import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
 import {
@@ -35,7 +35,7 @@ import {
   removeChannel,
   setAuthenticated,
   setChannels,
-  // setUnauthenticated,
+  setUnauthenticated,
 } from "../../../redux/features/auth/authSlice";
 import { RootState } from "../../../redux/store";
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
@@ -45,9 +45,7 @@ import { Separator } from "../../ui/separator";
 import { ChattingHistory } from "../../ui/chatting";
 import ProfileCard from "../../ui/profileCard";
 import { showToast } from "../../ui/toastMsg";
-// import ProfileMenu from "../../ui/profile";
 import SettingModal from "../../settingModal";
-// import { ProfileModal } from "../../profileModal";
 import SidebarChannelList from "../../channelModal";
 import config from "../../../../config/config.json";
 import {
@@ -56,6 +54,7 @@ import {
   updateMessage,
 } from "../../../redux/features/message/messageSlice";
 import SearchModal from "../../searchModal";
+import ProfileMenu from "../../ui/profile";
 
 const HomeSection = () => {
   const userdata = useSelector((state: RootState) => state.auth.user);
@@ -67,8 +66,8 @@ const HomeSection = () => {
   );
   const dispatch = useDispatch();
   // const navigate = useNavigate();
-  // const { login } = useLogin();
-  // const { logout } = useLogout();
+  const { login } = useLogin();
+  const { logout } = useLogout();
 
   const typingTimeout = useRef<NodeJS.Timeout | null>(null);
   const popupRef = useRef<HTMLDivElement | null>(null);
@@ -104,8 +103,7 @@ const HomeSection = () => {
 
   const [userProfile, setUserProfile] = useState(false);
   const [menu, setMenu] = useState(false);
-  // const [profileModal, setProfileModal] = useState(false);
-  // const [openProfile, setOpenProfile] = useState(false);
+  const [openProfile, setOpenProfile] = useState(false);
   const [plusBtn, setPlusBtn] = useState(false);
   const [copied, setCopied] = useState(false);
   const [msg, setMsg] = useState("");
@@ -145,8 +143,10 @@ const HomeSection = () => {
     onClick?: () => void;
   }
 
+  console.log("token: ", token);
   useEffect(() => {
     if (!token) return;
+    console.log("server: ", server);
 
     const newSocket = io(server, {
       auth: { token: token },
@@ -220,7 +220,14 @@ const HomeSection = () => {
   }, [textToCopy, authenticated]);
 
   useEffect(() => {
-    if (!ready && !authenticated && !user) return;
+    if (socket) {
+      socket.emit("join:room", textToCopy);
+      console.log(`you joined ${textToCopy}`);
+    }
+  }, [socket, tokenName, tokenImage, tokenSymbol]);
+
+  useEffect(() => {
+    // if (!ready && !authenticated && !user) return;
 
     const saveUser = async () => {
       try {
@@ -271,27 +278,27 @@ const HomeSection = () => {
     fetchTokenInfo();
   }, []);
 
-  // const LoginWithTwitter = async () => {
-  //   try {
-  //     if (authenticated) return;
+  const LoginWithTwitter = async () => {
+    try {
+      if (authenticated) return;
 
-  //     setOpenProfile(false);
-  //     await login();
-  //   } catch (err) {
-  //     console.log("login error: ", err);
-  //   }
-  // };
+      setOpenProfile(false);
+      await login();
+    } catch (err) {
+      console.log("login error: ", err);
+    }
+  };
 
-  // const logoutuser = async () => {
-  //   try {
-  //     logout();
-  //     showToast("success", "Logged out successfully!");
-  //     dispatch(setUnauthenticated());
-  //     setOpenProfile(false);
-  //   } catch (err) {
-  //     console.log("Logout error: ", err);
-  //   }
-  // };
+  const logoutuser = async () => {
+    try {
+      logout();
+      showToast("success", "Logged out successfully!");
+      dispatch(setUnauthenticated());
+      setOpenProfile(false);
+    } catch (err) {
+      console.log("Logout error: ", err);
+    }
+  };
 
   const MenuItem = ({ Icon, text, onClick }: MenuItemProps) => {
     return (
@@ -327,10 +334,10 @@ const HomeSection = () => {
   };
 
   const sendMsgHandle = async (content: string, room: string) => {
-    if (!authenticated) {
-      showToast("warning", "Please Login First");
-      return;
-    }
+    // if (!authenticated) {
+    //   showToast("warning", "Please Login First");
+    //   return;
+    // }
     const timestamp = new Date()
       .toLocaleTimeString("en-US", {
         hour: "numeric",
@@ -367,11 +374,6 @@ const HomeSection = () => {
     }
   };
 
-  // const handleProfileModalClose = () => {
-  //   setProfileModal(false);
-  //   setOpenProfile(false);
-  // };
-
   // const clickAvatar = () => {
   //   setUserProfile(!userProfile);
   // };
@@ -383,10 +385,10 @@ const HomeSection = () => {
     symbol: string,
     chainId: string
   ) => {
-    if (!authenticated) {
-      showToast("warning", "Please Login First");
-      return;
-    }
+    // if (!authenticated) {
+    //   showToast("warning", "Please Login First");
+    //   return;
+    // }
     setTokenName(name);
     setTokenImage(image);
     setTextToCopy(tokenAdd);
@@ -421,10 +423,10 @@ const HomeSection = () => {
   };
 
   const handleJoinChannel = async () => {
-    if (!authenticated) {
-      showToast("warning", "Please Login First");
-      return;
-    }
+    // if (!authenticated) {
+    //   showToast("warning", "Please Login First");
+    //   return;
+    // }
     const selected: Channel = {
       id: "",
       chainId: "ethereum",
@@ -697,45 +699,32 @@ const HomeSection = () => {
                 <span className={`${color.highlightsColor} text-sm`}>$11M</span>
               </div>
               <div className="flex items-center gap-1 ml-auto">
-                {/* <div className="relative group">
-                  <UserCircle
-                  className="w-5 h-5 text-white cursor-pointer"
-                  onClick={() => setOpenProfile(!openProfile)}
+                <SearchIcon
+                  className={`w-5 h-5 ${color.buttonColor} cursor-pointer`}
+                  onClick={searchButtonHandle}
+                />
+                <div className="relative group">
+                  <EllipsisVertical
+                    className="text-white cursor-pointer w-5 h-5"
+                    onClick={() => setOpenProfile(!openProfile)}
                   />
                   {openProfile && (
                     <ProfileMenu
-                      myProfile={() => setProfileModal(true)}
                       logout={logoutuser}
                       authenticated={authenticated}
                       login={LoginWithTwitter}
                       setVisibility={() => setOpenProfile(false)}
                     />
                   )}
-                  {profileModal && (
-                    <ProfileModal
-                      isOpen={profileModal}
-                      onClose={handleProfileModalClose}
-                      _id={userdata?._id || ""}
-                      displayName={userdata?.displayName || ""}
-                      username={userdata?.userId || ""}
-                      avatar={userdata?.avatar || ""}
-                      bio={userdata?.bio || ""}
-                      wallet={userdata?.wallet || ""}
-                    />
-                  )}
-                </div> */}
-                <SearchIcon
-                  className={`w-5 h-5 ${color.buttonColor} cursor-pointer`}
-                  onClick={searchButtonHandle}
-                />
-                <EllipsisVertical className="text-white cursor-pointer w-5 h-5" />
+                </div>
               </div>
             </div>
             <div className="flex-1 flex flex-col overflow-y-auto">
               {/* Banner */}
               <div className="w-full">
                 <img
-                  className="w-full max-h-[80px] sm:max-h-[129px] object-cover"
+                  // className="w-full max-h-[80px] sm:max-h-[129px] object-cover"
+                  className="w-full object-cover max-h-[200px]"
                   alt="Banner"
                   src="/assets/image-1.png"
                 />

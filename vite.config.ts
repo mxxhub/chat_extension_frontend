@@ -15,9 +15,23 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, "index.html"),
+        background: resolve(__dirname, "background.ts"),
+      },
+      output: {
+        entryFileNames: (chunk) => {
+          console.log(chunk);
+          return chunk.name === "background" ? "background.js" : "[name].js";
+        },
       },
     },
     outDir: "dist",
     emptyOutDir: true,
   },
 });
+
+// import { defineConfig } from "vite";
+// import react from "@vitejs/plugin-react";
+
+// export default defineConfig({
+//   plugins: [react()],
+// });
