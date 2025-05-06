@@ -18,15 +18,16 @@ import "../index.css";
 interface SettingModalProps {
   isOpen: boolean;
   onClose: () => void;
+  color: Colors;
 }
 
-const SettingModal = ({ isOpen, onClose }: SettingModalProps) => {
+const SettingModal = ({ isOpen, onClose, color }: SettingModalProps) => {
   const [timeframe, setTimeframe] = useState("Daily");
-
   const mainRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
+      console.log("clicked", e.target as Node);
       if (mainRef.current && !mainRef.current.contains(e.target as Node)) {
         onClose();
       }
@@ -53,18 +54,22 @@ const SettingModal = ({ isOpen, onClose }: SettingModalProps) => {
   return (
     <>
       <div
-        className={`fixed inset-0 z-40 transition-opacity duration-300 ease-in-out bg-black ${
-          isOpen ? "opacity-50" : "opacity-0 pointer-events-none"
-        }`}
+        className={`fixed inset-0 z-40 transition-opacity duration-300 ease-in-out ${
+          color.chatBackground
+        } ${isOpen ? "opacity-50" : "opacity-0 pointer-events-none"}`}
       ></div>
       <div
         ref={mainRef}
-        className={`fixed left-0 top-0 flex flex-col h-full bg-black text-white w-full xs:w-4/5 sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-2/5 overflow-y-auto z-50 transform transition-all duration-200 ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
+        className={`fixed left-0 top-0 flex flex-col h-full ${
+          color.chatBackground
+        } text-white w-full xs:w-4/5 sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-2/5 overflow-y-auto z-50 transform transition-all duration-300 opacity-0 ${
+          isOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"
         }`}
       >
         {/* Header */}
-        <header className="w-full bg-black border-yellow-500 relative">
+        <header
+          className={`w-full ${color.chatBackground} border-yellow-500 relative`}
+        >
           <button
             className="absolute top-4 left-4 z-10"
             onClick={onClose}
@@ -186,7 +191,9 @@ const SettingModal = ({ isOpen, onClose }: SettingModalProps) => {
                 <button
                   key={period}
                   className={`px-1 sm:px-2 py-1 ${
-                    timeframe === period ? "text-blue-500" : "text-white"
+                    timeframe === period
+                      ? `${color.highlightsColor}`
+                      : "text-white"
                   } text-xs sm:text-sm whitespace-nowrap`}
                   onClick={() => setTimeframe(period)}
                 >
@@ -226,89 +233,107 @@ const SettingModal = ({ isOpen, onClose }: SettingModalProps) => {
             <span className="text-lg sm:text-xl font-bold">55,454 Points</span>
           </div>
         </div>
-        <div className="flex flex-col px-3 sm:px-4 py-2 sm:py-3 border-b border-gray-800">
-          <div className="flex items-center h-8 sm:h-10">
-            <span>
-              <HandCoins className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400 mr-2" />
-            </span>
-            <span className="font-medium text-sm sm:text-base">
-              Contribution
-            </span>
-          </div>
-          <div className="text-gray-500 text-center w-full text-sm sm:text-base">
-            COMING SOON
+        <div className="p-4 border-b border-gray-800">
+          <div
+            className={`flex flex-col px-3 sm:px-4 py-2 sm:py-3 ${color.settingsColor} rounded-md`}
+          >
+            <div className="flex items-center h-8 sm:h-10">
+              <span>
+                <HandCoins
+                  className={`w-4 h-4 sm:w-5 sm:h-5 ${color.highlightsColor} mr-2`}
+                />
+              </span>
+              <span className="font-medium text-sm sm:text-base">
+                Contribution
+              </span>
+            </div>
+            <div className="text-gray-500 text-center w-full text-sm sm:text-base">
+              COMING SOON
+            </div>
           </div>
         </div>
         {/* Quests */}
-        <div className="px-3 sm:px-4 py-2 sm:py-3 border-b border-gray-800">
-          <div className="flex flex-col">
-            <div className="flex items-center mb-2">
-              <NotepadText className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400 mr-2" />
-              <span className="font-medium text-sm sm:text-base">Quests</span>
-            </div>
-
-            <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-gray-500 mr-2"></div>
-                  <span>Contribute - Coming soon</span>
-                </div>
-                <span className="text-gray-400">+10,000 Points</span>
+        <div className="p-4 border-b border-gray-800">
+          <div
+            className={`px-3 sm:px-4 py-2 sm:py-3 ${color.settingsColor} rounded-md`}
+          >
+            <div className="flex flex-col">
+              <div className="flex items-center mb-2">
+                <NotepadText
+                  className={`w-4 h-4 sm:w-5 sm:h-5 mr-2 ${color.highlightsColor}`}
+                />
+                <span className="font-medium text-sm sm:text-base">Quests</span>
               </div>
 
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-gray-500 mr-2"></div>
-                  <span>Refer a friend</span>
+              <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-gray-500 mr-2"></div>
+                    <span>Contribute - Coming soon</span>
+                  </div>
+                  <span className="text-gray-400">+10,000 Points</span>
                 </div>
-                <span className="text-gray-400">+1,000 Points</span>
-              </div>
 
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-gray-500 mr-2"></div>
-                  <span>Like and RT Tweet</span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-gray-500 mr-2"></div>
+                    <span>Refer a friend</span>
+                  </div>
+                  <span className="text-gray-400">+1,000 Points</span>
                 </div>
-                <span className="text-gray-400">+1,000 Points</span>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-gray-500 mr-2"></div>
+                    <span>Like and RT Tweet</span>
+                  </div>
+                  <span className="text-gray-400">+1,000 Points</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Referrals Section */}
-        <div className="px-3 sm:px-4 py-2 sm:py-3 border-b border-gray-800">
-          <div className="flex items-center mb-2 sm:mb-3">
-            <UserPen className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400 mr-2" />
-            <span className="font-medium text-sm sm:text-base">Referrals</span>
-            <div className="ml-auto flex items-center text-xs text-gray-400">
-              <span className="text-xs">Code: Shocked</span>
-              <Link className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />
-            </div>
-          </div>
-
-          <div className="text-xs sm:text-sm text-gray-400 mb-1 sm:mb-2">
-            Referred total: 13
-          </div>
-
-          <div className="space-y-1 sm:space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-red-500 mr-2 flex items-center justify-center text-xs">
-                  A
-                </div>
-                <span className="text-sm sm:text-base">Ansem</span>
+        <div className="p-4 border-b border-gray-800">
+          <div
+            className={`px-3 sm:px-4 py-2 sm:py-3 ${color.settingsColor} rounded-md`}
+          >
+            <div className="flex items-center mb-2 sm:mb-3">
+              <UserPen className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400 mr-2" />
+              <span className="font-medium text-sm sm:text-base">
+                Referrals
+              </span>
+              <div className="ml-auto flex items-center text-xs text-gray-400">
+                <span className="text-xs">Code: Shocked</span>
+                <Link className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />
               </div>
-              <span className="text-xs text-gray-400">May 3rd 2025</span>
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-green-500 mr-2 flex items-center justify-center text-xs">
-                  P
+            <div className="text-xs sm:text-sm text-gray-400 mb-1 sm:mb-2">
+              Referred total: 13
+            </div>
+
+            <div className="space-y-1 sm:space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-red-500 mr-2 flex items-center justify-center text-xs">
+                    A
+                  </div>
+                  <span className="text-sm sm:text-base">Ansem</span>
                 </div>
-                <span className="text-sm sm:text-base">POE</span>
+                <span className="text-xs text-gray-400">May 3rd 2025</span>
               </div>
-              <span className="text-xs text-gray-400">May 1st 2025</span>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-green-500 mr-2 flex items-center justify-center text-xs">
+                    P
+                  </div>
+                  <span className="text-sm sm:text-base">POE</span>
+                </div>
+                <span className="text-xs text-gray-400">May 1st 2025</span>
+              </div>
             </div>
           </div>
         </div>

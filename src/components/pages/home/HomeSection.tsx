@@ -50,9 +50,11 @@ import { ProfileModal } from "../../profileModal";
 import SidebarChannelList from "../../channelModal";
 import config from "../../../../config/config.json";
 import {
+  addMessage,
   setMessages,
   updateMessage,
 } from "../../../redux/features/message/messageSlice";
+import SearchModal from "../../searchModal";
 
 const HomeSection = () => {
   const userdata = useSelector((state: RootState) => state.auth.user);
@@ -105,7 +107,6 @@ const HomeSection = () => {
   const [openProfile, setOpenProfile] = useState(false);
   const [plusBtn, setPlusBtn] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [searchBtn, setSearchBtn] = useState(true);
   const [msg, setMsg] = useState("");
   const [textToCopy, setTextToCopy] = useState("");
   const [tokenName, setTokenName] = useState("");
@@ -124,6 +125,15 @@ const HomeSection = () => {
   const [chainId, setChainId] = useState<string>("ethereum");
   const [editState, setEditState] = useState<boolean>(false);
   const [editedMessage, setEditedMessage] = useState<Message | null>(null);
+  const [color, setColor] = useState<Colors>({
+    chatBackground: "bg-[#15171A]",
+    mainColor: "bg-[#0D0D10]",
+    outlineColor: "border-[#1E2025]",
+    buttonColor: "text-[#98989B]",
+    highlightsColor: "text-[#459C6E]",
+    settingsColor: "bg-[#1E1E21]",
+  });
+  const [searchModal, setSearchModal] = useState(false);
 
   const { authenticated, user, ready } = usePrivy();
 
@@ -156,8 +166,7 @@ const HomeSection = () => {
     });
 
     newSocket.on("message:received", (receivedMsg) => {
-      console.log("Received new message", receivedMsg);
-      dispatch(setMessages([...messages, receivedMsg]));
+      dispatch(addMessage(receivedMsg));
     });
 
     newSocket.on("user:typing", (data) => {
@@ -312,7 +321,7 @@ const HomeSection = () => {
   };
 
   const searchButtonHandle = () => {
-    setSearchBtn(!searchBtn);
+    setSearchModal(!searchModal);
   };
 
   const sendMsgHandle = async (content: string, room: string) => {
@@ -404,6 +413,7 @@ const HomeSection = () => {
   };
 
   const handleStartRaid = () => {
+    console.log("starting raid");
     setXRaid(!xRaid);
     setPlusBtn(false);
   };
@@ -469,12 +479,21 @@ const HomeSection = () => {
   };
 
   return (
-    <div className="relative bg-transparent flex flex-row justify-center w-full border-r border-r-[#3f414e]">
-      <SettingModal isOpen={menu} onClose={() => setMenu(false)} />
+    <div
+      className={`relative bg-transparent flex flex-row justify-center w-full`}
+    >
+      <SettingModal
+        isOpen={menu}
+        onClose={() => setMenu(false)}
+        color={color}
+      />
+
       <div className="overflow-hidden w-full min-w-0 sm:min-w-[500px] h-screen">
         <div className="relative w-full h-full flex">
           {/* Sidebar */}
-          <div className="h-full sm:block md:block md:relative bg-[#22242D] border-[#22242d]">
+          <div
+            className={`h-full sm:block md:block md:relative ${color.mainColor} ${color.outlineColor}`}
+          >
             <div className="relative h-full w-[63px]">
               <div className="border-r border-r-[#3f414e] justify-items-center py-3">
                 <MenuIcon
@@ -549,11 +568,13 @@ const HomeSection = () => {
           {/* Main chat container */}
           <div className="flex-1 flex flex-col h-full w-full max-w-full">
             {/* Header */}
-            <div className="flex items-center justify-between h-[58px] bg-[#101114] border border-solid border-[#22242d] px-4">
+            <div
+              className={`flex items-center justify-between h-[58px] ${color.mainColor} ${color.outlineColor}] px-4`}
+            >
               <div className="flex items-center gap-1 overflow-x-hidden">
                 <Avatar className="w-7 h-7 mr-3">
                   <AvatarImage src={tokenImage} alt="DB" />
-                  <AvatarFallback>DB</AvatarFallback>
+                  <AvatarFallback>{tokenSymbol}</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
                   <div className="flex items-center space-x-1">
@@ -568,7 +589,9 @@ const HomeSection = () => {
                       className="text-[red] fill-[red] rotate-45"
                     />
                   </div>
-                  <div className="font-normal text-[#526fff] text-xs flex flex-row items-center">
+                  <div
+                    className={`font-normal ${color.highlightsColor} text-xs flex flex-row items-center`}
+                  >
                     <div className="truncate max-w-[80px]">
                       {toShortAddress(textToCopy)}
                     </div>
@@ -585,58 +608,91 @@ const HomeSection = () => {
                       </span>
                     </button>
                     <div className="flex items-center gap-1 ml-1 overflow-x-auto">
-                      <a
+                      {/* <a
                         href="https://photon-sol.tinyastro.io/"
                         target="_blank"
                         rel="noopener noreferrer"
+                      > */}
+                      <Avatar
+                        className="w-3 h-3"
+                        onClick={() =>
+                          setColor({
+                            chatBackground: "bg-[#26272F]",
+                            mainColor: "bg-[#22232C]",
+                            outlineColor: "border-[#31323B]",
+                            buttonColor: "text-[#B5B7DA]",
+                            highlightsColor: "text-[#8E9DFF]",
+                            settingsColor: "bg-[#2D2F37]",
+                          })
+                        }
                       >
-                        <Avatar className="w-3 h-3">
-                          <AvatarImage
-                            src="/assets/image-5-1.png"
-                            alt="Photon"
-                          />
-                        </Avatar>
-                      </a>
+                        <AvatarImage src="/assets/image-5-1.png" alt="Photon" />
+                      </Avatar>
+                      {/* </a>
                       <a
                         href="https://axiom.trade/"
                         target="_blank"
                         rel="noopener noreferrer"
+                      > */}
+                      <Avatar
+                        className="w-3 h-3"
+                        onClick={() =>
+                          setColor({
+                            chatBackground: "bg-[#141519]",
+                            mainColor: "bg-[#101114]",
+                            outlineColor: "border-[#22242D]",
+                            buttonColor: "text-[#777A8C]",
+                            highlightsColor: "text-[#526FFF]",
+                            settingsColor: "bg-[#191A21]",
+                          })
+                        }
                       >
-                        <Avatar className="w-3 h-3">
-                          <AvatarImage
-                            src="/assets/clip-path-group.png"
-                            alt="axiom"
-                          />
-                        </Avatar>
-                      </a>
+                        <AvatarImage
+                          src="/assets/clip-path-group.png"
+                          alt="axiom"
+                        />
+                      </Avatar>
+                      {/* </a>
                       <a
                         href="https://neo.bullx.io/"
                         target="_blank"
                         rel="noopener noreferrer"
+                      > */}
+                      <Avatar
+                        className="w-[23px] h-[21px]"
+                        onClick={() =>
+                          setColor({
+                            chatBackground: "bg-[#15171A]",
+                            mainColor: "bg-[#0D0D10]",
+                            outlineColor: "border-[#1E2025]",
+                            buttonColor: "text-[#98989B]",
+                            highlightsColor: "text-[#459C6E]",
+                            settingsColor: "bg-[#1E1E21]",
+                          })
+                        }
                       >
-                        <Avatar className="w-[23px] h-[21px]">
-                          <AvatarImage src="/assets/bullx-1.png" alt="Bullx" />
-                        </Avatar>
-                      </a>
+                        <AvatarImage src="/assets/bullx-1.png" alt="Bullx" />
+                      </Avatar>
+                      {/* </a>
                       <a
                         href={`https://dexscreener.com/${chainId}/${textToCopy}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                      >
-                        <Avatar className="w-3 h-[13px]">
-                          <AvatarImage
-                            src="/assets/layer-1.png"
-                            alt="Dexscreener"
-                          />
-                        </Avatar>
-                      </a>
+                      > */}
+                      <Avatar className="w-3 h-[13px]">
+                        <AvatarImage
+                          src="/assets/layer-1.png"
+                          alt="Dexscreener"
+                        />
+                      </Avatar>
+                      {/* </a> */}
                     </div>
                   </div>
                 </div>
               </div>
               <div className="flex items-center flex-col ml-6 text-center">
                 <span className="text-gray-500 text-xs">Mkt Cap</span>
-                <span className="text-green-500 text-sm">$11M</span>
+                <span className={`${color.highlightsColor} text-sm`}>$11M</span>
               </div>
               <div className="flex items-center gap-1 ml-auto">
                 {/* <div className="relative group">
@@ -667,7 +723,7 @@ const HomeSection = () => {
                   )}
                 </div> */}
                 <SearchIcon
-                  className="w-5 h-5 text-white cursor-pointer"
+                  className={`w-5 h-5 ${color.buttonColor} cursor-pointer`}
                   onClick={searchButtonHandle}
                 />
                 <EllipsisVertical className="text-white cursor-pointer w-5 h-5" />
@@ -684,7 +740,9 @@ const HomeSection = () => {
               </div>
 
               {/* Twitter/Website tabs */}
-              <div className="w-full h-[31px] bg-[#101114] border border-solid border-[#22242d] flex items-center justify-evenly">
+              <div
+                className={`w-full h-[31px] ${color.mainColor} flex items-center justify-evenly`}
+              >
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
@@ -720,10 +778,10 @@ const HomeSection = () => {
               {/* Chat messages container */}
               <div
                 ref={scrollRef}
-                className="flex-1 overflow-y-auto bg-[#191a21] p-2 sm:p-4 w-full"
+                className={`flex-1 overflow-y-auto ${color.chatBackground} p-2 sm:p-4 w-full`}
               >
                 {/* Twitter Raid section */}
-                <div className="mt-2 sm:mt-4">
+                {/* <div className="mt-2 sm:mt-4">
                   <div className="flex items-center mb-2">
                     <img
                       className="w-[11px] h-[9px] sm:w-[13px] sm:h-[11px]"
@@ -788,7 +846,6 @@ const HomeSection = () => {
                         />
                       </div>
 
-                      {/* Tweet engagement metrics */}
                       <div className="flex items-center justify-evenly mt-4 sm:mt-8">
                         <div className="flex items-center">
                           <HeartIcon className="w-3 h-3 sm:w-4 sm:h-4 text-[red] fill-[red]" />
@@ -819,7 +876,7 @@ const HomeSection = () => {
                       </div>
                     </CardContent>
                   </Card>
-                </div>
+                </div> */}
                 {/* Chat messages */}
                 <div className="space-y-3 sm:space-y-4 w-full break-all relative">
                   {userProfile && (
@@ -846,40 +903,40 @@ const HomeSection = () => {
               </div>
 
               {/* Message input */}
-              <div className="max-w-full bg-[#191A21] p-2">
+              <div className={`max-w-full ${color.settingsColor} p-2`}>
                 {typingStatus && (
                   <div className="text-white text-xs sm:text-sm bg-transparent backdrop-blur-sm ml-1">{`${userdata?.displayName} is typing...`}</div>
                 )}
 
-                <div className="relative w-full h-[40px] sm:h-[45px] bg-[100%_100%] flex items-center px-2 sm:px-3 rounded-md border border-solid border-[#22242d]">
+                <div className="relative w-full h-[40px] sm:h-[45px] bg-[100%_100%] flex items-center px-2 sm:px-3 rounded-md  border-[#22242d]">
                   <CirclePlus
                     className="w-4 h-4 sm:w-5 sm:h-5 text-[#777a8c] cursor-pointer"
                     onClick={plusBtnHandle}
                   />
-                  {plusBtn && (
-                    <div
-                      ref={popupRef}
-                      className="absolute bottom-full mb-2 left-0 w-36 sm:w-48 bg-[#22242D] rounded-md shadow-lg py-1 z-50 text-xs sm:text-sm"
-                    >
-                      <MenuItem
-                        Icon={ImagePlus}
-                        text="Add Image"
-                        onClick={handleFileChange}
-                      />
-                      <MenuItem
-                        Icon={Play}
-                        text="Start Raid"
-                        onClick={handleStartRaid}
-                      />
-                      <MenuItem Icon={ThumbsUp} text="Top Holders" />
-                      <MenuItem Icon={TicketCheck} text="Bundle Checker" />
-                      <MenuItem
-                        Icon={LogOut}
-                        text="Leave Channel"
-                        onClick={handleLeaveChannel}
-                      />
-                    </div>
-                  )}
+                  <div
+                    ref={popupRef}
+                    className={`absolute bottom-full mb-2 left-0 w-36 sm:w-48 bg-[#22242D] rounded-md shadow-lg py-1 z-50 text-xs sm:text-sm opacity-0 ${
+                      plusBtn
+                        ? "opacity-100 pointer-events-auto"
+                        : "pointer-events-none"
+                    } transition-opacity duration-300`}
+                  >
+                    <MenuItem
+                      Icon={ImagePlus}
+                      text="Add Image"
+                      onClick={handleFileChange}
+                    />
+                    <MenuItem
+                      Icon={Play}
+                      text="Start Raid"
+                      onClick={handleStartRaid}
+                    />
+                    <MenuItem
+                      Icon={LogOut}
+                      text="Leave Channel"
+                      onClick={handleLeaveChannel}
+                    />
+                  </div>
                   {joinStatus ? (
                     <Input
                       className="border-none bg-transparent text-[#dbd6d6] text-xs sm:text-sm h-full focus:outline-none focus:ring-0 focus:border-none focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -898,7 +955,7 @@ const HomeSection = () => {
                     />
                   ) : (
                     <button
-                      className="text-white flex-auto text-xs sm:text-sm"
+                      className="text-white text-xs sm:text-sm w-full"
                       onClick={() => handleJoinChannel()}
                     >
                       Join Channel
@@ -913,18 +970,20 @@ const HomeSection = () => {
                         setShowPicker((prev) => !prev);
                       }}
                     />
-                    {showPicker && (
-                      <div
-                        ref={popupRef}
-                        className="absolute z-20 right-2 sm:right-9 bottom-12 sm:bottom-5 w-30 scale-75 sm:scale-100 origin-bottom-right"
-                      >
-                        <Picker
-                          data={data}
-                          onEmojiSelect={handleEmojiSelect}
-                          theme="dark"
-                        />
-                      </div>
-                    )}
+                    <div
+                      ref={popupRef}
+                      className={`absolute z-20 right-2 sm:right-9 bottom-12 sm:bottom-5 w-30 scale-75 sm:scale-100 origin-bottom-right opacity-0 ${
+                        showPicker
+                          ? "opacity-100 pointer-events-auto"
+                          : "pointer-events-none"
+                      } transition-opacity duration-300`}
+                    >
+                      <Picker
+                        data={data}
+                        onEmojiSelect={handleEmojiSelect}
+                        theme="dark"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -932,6 +991,11 @@ const HomeSection = () => {
           </div>
         </div>
       </div>
+      <SearchModal
+        isOpen={searchModal}
+        onClose={() => setSearchModal(false)}
+        color={color}
+      />
     </div>
   );
 };
