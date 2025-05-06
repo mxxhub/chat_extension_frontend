@@ -47,3 +47,25 @@ declare interface MenuItemProps {
   text: string;
   onClick?: () => void;
 }
+
+declare interface Colors {
+  chatBackground: string;
+  mainColor: string;
+  outlineColor: string;
+  buttonColor: string;
+  highlightsColor: string;
+  settingsColor: string;
+}
+
+declare interface Token {
+  id: string;
+  name: string;
+  shortName: string;
+  imageUrl: string;
+  marketCap: string;
+  daysSince?: number;
+  monthsSince?: number;
+  category: "history" | "trending";
+  hasTwitter?: boolean;
+  hasWebsite?: boolean;
+}
