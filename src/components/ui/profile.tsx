@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 const ProfileMenu = (props: any) => {
   const popupRef = useRef<HTMLDivElement | null>(null);

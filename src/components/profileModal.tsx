@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Button } from "./ui/button";
@@ -41,7 +41,7 @@ export const ProfileModal = ({
   const [userId, setUserId] = useState<string>(username || "");
   const server = config.server || "localhost:4000";
   const modalRef = useRef<HTMLDivElement>(null);
-
+  console.log(setImage, setUserId);
   const handleSave = async () => {
     try {
       const response = await axios.post(`${server}/auth/updateUser`, {

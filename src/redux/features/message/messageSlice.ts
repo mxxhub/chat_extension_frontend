@@ -1,8 +1,8 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
-import config from "../../../../config/config.json";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+// import axios from "axios";
+// import config from "../../../../config/config.json";
 
-const server = config.server || "localhost:4000";
+// const server = config.server || "localhost:4000";
 
 const initialState: MessageState = {
   messages: [],

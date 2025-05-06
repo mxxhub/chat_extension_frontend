@@ -2,17 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import {
   Settings,
   Copy,
-  ExternalLink,
-  Clipboard,
-  Zap,
-  ChevronRight,
   HandCoins,
   Link,
   UserPen,
   NotepadText,
   X,
 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import "../index.css";
 
 interface SettingModalProps {

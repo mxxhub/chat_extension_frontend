@@ -3,29 +3,30 @@ import { useDispatch, useSelector } from "react-redux";
 // import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import io from "socket.io-client";
-import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
+import { usePrivy } from "@privy-io/react-auth";
+// import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
 import {
   LucideIcon,
-  X,
+  // X,
   ExternalLinkIcon,
-  HeartIcon,
+  // HeartIcon,
   MenuIcon,
-  MessageCircleIcon,
-  RepeatIcon,
+  // MessageCircleIcon,
+  // RepeatIcon,
   SearchIcon,
   Smile,
   Copy,
   Check,
   CirclePlus,
-  UserCircle,
+  // UserCircle,
   Pin,
   HandCoins,
   Play,
-  ThumbsUp,
+  // ThumbsUp,
   ImagePlus,
-  TicketCheck,
+  // TicketCheck,
   LogOut,
   EllipsisVertical,
 } from "lucide-react";
@@ -34,19 +35,19 @@ import {
   removeChannel,
   setAuthenticated,
   setChannels,
-  setUnauthenticated,
+  // setUnauthenticated,
 } from "../../../redux/features/auth/authSlice";
 import { RootState } from "../../../redux/store";
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
-import { Card, CardContent } from "../../ui/card";
+// import { Card, CardContent } from "../../ui/card";
 import { Input } from "../../ui/input";
 import { Separator } from "../../ui/separator";
 import { ChattingHistory } from "../../ui/chatting";
 import ProfileCard from "../../ui/profileCard";
 import { showToast } from "../../ui/toastMsg";
-import ProfileMenu from "../../ui/profile";
+// import ProfileMenu from "../../ui/profile";
 import SettingModal from "../../settingModal";
-import { ProfileModal } from "../../profileModal";
+// import { ProfileModal } from "../../profileModal";
 import SidebarChannelList from "../../channelModal";
 import config from "../../../../config/config.json";
 import {
@@ -66,8 +67,8 @@ const HomeSection = () => {
   );
   const dispatch = useDispatch();
   // const navigate = useNavigate();
-  const { login } = useLogin();
-  const { logout } = useLogout();
+  // const { login } = useLogin();
+  // const { logout } = useLogout();
 
   const typingTimeout = useRef<NodeJS.Timeout | null>(null);
   const popupRef = useRef<HTMLDivElement | null>(null);
@@ -103,8 +104,8 @@ const HomeSection = () => {
 
   const [userProfile, setUserProfile] = useState(false);
   const [menu, setMenu] = useState(false);
-  const [profileModal, setProfileModal] = useState(false);
-  const [openProfile, setOpenProfile] = useState(false);
+  // const [profileModal, setProfileModal] = useState(false);
+  // const [openProfile, setOpenProfile] = useState(false);
   const [plusBtn, setPlusBtn] = useState(false);
   const [copied, setCopied] = useState(false);
   const [msg, setMsg] = useState("");
@@ -118,11 +119,12 @@ const HomeSection = () => {
   const [token, setToken] = useState<string>("");
   const [socket, setSocket] = useState<any>(null);
   const [xRaid, setXRaid] = useState<boolean>(false);
-  const [tweetLink, setTweetLink] = useState<string>("");
+  // const [tweetLink, setTweetLink] = useState<string>("");
   const [joinStatus, setJoinStatus] = useState<boolean>(false);
   const [sidebarChannels, setSidebarChannels] =
     useState<Channel[]>(defaultChannels);
   const [chainId, setChainId] = useState<string>("ethereum");
+  console.log(chainId);
   const [editState, setEditState] = useState<boolean>(false);
   const [editedMessage, setEditedMessage] = useState<Message | null>(null);
   const [color, setColor] = useState<Colors>({
@@ -269,27 +271,27 @@ const HomeSection = () => {
     fetchTokenInfo();
   }, []);
 
-  const LoginWithTwitter = async () => {
-    try {
-      if (authenticated) return;
+  // const LoginWithTwitter = async () => {
+  //   try {
+  //     if (authenticated) return;
 
-      setOpenProfile(false);
-      await login();
-    } catch (err) {
-      console.log("login error: ", err);
-    }
-  };
+  //     setOpenProfile(false);
+  //     await login();
+  //   } catch (err) {
+  //     console.log("login error: ", err);
+  //   }
+  // };
 
-  const logoutuser = async () => {
-    try {
-      logout();
-      showToast("success", "Logged out successfully!");
-      dispatch(setUnauthenticated());
-      setOpenProfile(false);
-    } catch (err) {
-      console.log("Logout error: ", err);
-    }
-  };
+  // const logoutuser = async () => {
+  //   try {
+  //     logout();
+  //     showToast("success", "Logged out successfully!");
+  //     dispatch(setUnauthenticated());
+  //     setOpenProfile(false);
+  //   } catch (err) {
+  //     console.log("Logout error: ", err);
+  //   }
+  // };
 
   const MenuItem = ({ Icon, text, onClick }: MenuItemProps) => {
     return (
@@ -365,10 +367,10 @@ const HomeSection = () => {
     }
   };
 
-  const handleProfileModalClose = () => {
-    setProfileModal(false);
-    setOpenProfile(false);
-  };
+  // const handleProfileModalClose = () => {
+  //   setProfileModal(false);
+  //   setOpenProfile(false);
+  // };
 
   // const clickAvatar = () => {
   //   setUserProfile(!userProfile);

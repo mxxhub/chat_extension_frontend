@@ -7,6 +7,7 @@ chrome.runtime.onInstalled.addListener(() => {
 
 // Get current tab url
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log(sender);
   console.log("Message received", request);
   if (request.type === "GET_CURRENT_TAB_URL") {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
