@@ -50,7 +50,7 @@ export const getCurrentTabUrl = async () => {
       return {
         name: tokenInfo.pair?.baseToken?.name,
         image: tokenInfo.pair?.info?.imageUrl,
-        banner: tokenInfo.pair?.info?.openGraph,
+        banner: tokenInfo.pair?.info?.header,
         address: address,
         symbol: tokenInfo.pair?.baseToken?.symbol,
         chainId: chain,

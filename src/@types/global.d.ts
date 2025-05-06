@@ -40,6 +40,7 @@ declare interface Channel {
   name: string;
   symbol: string;
   tokenAdd: string;
+  banner: string;
 }
 
 declare interface MenuItemProps {

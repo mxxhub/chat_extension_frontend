@@ -74,32 +74,6 @@ const HomeSection = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const server = config.server || "localhost:4000";
-  const defaultChannels: Channel[] = [
-    {
-      id: "1",
-      chainId: "ethereum",
-      symbol: "memecoin1",
-      image: "/assets/image-11.png",
-      name: "memecoin1",
-      tokenAdd: "0x1D02a7E63E2f8575E76776BE7828926fADef6029",
-    },
-    {
-      id: "2",
-      chainId: "ethereum",
-      symbol: "memecoin2",
-      image: "/assets/image-12.png",
-      name: "memecoin2",
-      tokenAdd: "0x8283093bf0484c1F806976EA90f79318BDB9688a",
-    },
-    {
-      id: "3",
-      chainId: "ethereum",
-      symbol: "memecoin3",
-      image: "/assets/image-14.png",
-      name: "memecoin3",
-      tokenAdd: "0x12e6e01F7D56BeC3aC5bD7Fd4fC7c9154907b332",
-    },
-  ];
 
   const [userProfile, setUserProfile] = useState(false);
   const [menu, setMenu] = useState(false);
@@ -111,6 +85,7 @@ const HomeSection = () => {
   const [tokenName, setTokenName] = useState("");
   const [tokenSymbol, setTokenSymbol] = useState("");
   const [tokenImage, setTokenImage] = useState("");
+  const [banner, setBanner] = useState("");
   // const [messages, setMessages] = useState<Message[]>([]);
   const [typingStatus, setTypingStatus] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
@@ -119,8 +94,7 @@ const HomeSection = () => {
   const [xRaid, setXRaid] = useState<boolean>(false);
   // const [tweetLink, setTweetLink] = useState<string>("");
   const [joinStatus, setJoinStatus] = useState<boolean>(false);
-  const [sidebarChannels, setSidebarChannels] =
-    useState<Channel[]>(defaultChannels);
+  const [sidebarChannels, setSidebarChannels] = useState<Channel[]>([]);
   const [chainId, setChainId] = useState<string>("ethereum");
   console.log(chainId);
   const [editState, setEditState] = useState<boolean>(false);
@@ -267,13 +241,21 @@ const HomeSection = () => {
 
       if (!tokenInfo) return;
 
+      await setTokenImage(tokenInfo.image);
+      await setTokenName(tokenInfo.name);
+      await setTokenSymbol(tokenInfo.symbol);
+      await setChainId(tokenInfo.chainId);
+      await setTextToCopy(tokenInfo.address);
+      await setBanner(tokenInfo.banner);
+
       const newChannel: Channel = {
         id: "",
-        chainId: "ethereum",
+        chainId: tokenInfo.chainId,
         image: tokenInfo.image,
         name: tokenInfo.name,
         symbol: tokenInfo.symbol,
         tokenAdd: tokenInfo.address,
+        banner: tokenInfo.banner,
       };
 
       // Check if this token is already in the list to avoid duplicates
@@ -414,7 +396,8 @@ const HomeSection = () => {
     image: string,
     tokenAdd: string,
     symbol: string,
-    chainId: string
+    chainId: string,
+    channelBanner: string
   ) => {
     // if (!authenticated) {
     //   showToast("warning", "Please Login First");
@@ -425,6 +408,7 @@ const HomeSection = () => {
     setTextToCopy(tokenAdd);
     setTokenSymbol(symbol);
     setChainId(chainId);
+    setBanner(channelBanner);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -465,6 +449,7 @@ const HomeSection = () => {
       name: "memecoin1",
       symbol: "memecoin1",
       tokenAdd: "0x1D02a7E63E2f8575E76776BE7828926fADef6029",
+      banner: "",
     };
 
     if (socket) {
@@ -559,7 +544,8 @@ const HomeSection = () => {
                             channel.image,
                             channel.tokenAdd,
                             channel.symbol,
-                            channel.chainId
+                            channel.chainId,
+                            channel.banner
                           );
                           setJoinStatus(true);
                         }}
@@ -580,7 +566,7 @@ const HomeSection = () => {
 
                 {/* Trending channels */}
                 <div className="mt-2 flex flex-col items-center gap-2">
-                  {sidebarChannels.map((channel) => (
+                  {sidebarChannels.map((channel: Channel) => (
                     <SidebarChannelList
                       key={channel.id}
                       channel={channel}
@@ -590,7 +576,8 @@ const HomeSection = () => {
                           channel.image,
                           channel.tokenAdd,
                           channel.symbol,
-                          channel.chainId
+                          channel.chainId,
+                          channel.banner
                         );
                         setJoinStatus(false);
                       }}
@@ -757,7 +744,7 @@ const HomeSection = () => {
                   // className="w-full max-h-[80px] sm:max-h-[129px] object-cover"
                   className="w-full object-cover max-h-[200px]"
                   alt="Banner"
-                  src="/assets/image-1.png"
+                  src={banner}
                 />
               </div>
 
