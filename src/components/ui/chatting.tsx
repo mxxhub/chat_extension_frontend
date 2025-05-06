@@ -23,7 +23,7 @@ export const ChattingHistory = ({
   const [menuPosition, setMenuPosition] = useState<"top" | "bottom">("bottom");
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const server = config.server || "http://localhost:4000";
+  const server = config.server || "http://144.172.94.181:4000";
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {

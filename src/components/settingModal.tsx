@@ -9,6 +9,9 @@ import {
   X,
 } from "lucide-react";
 import "../index.css";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import { ProfileModal } from "./profileModal";
 
 interface SettingModalProps {
   isOpen: boolean;
@@ -17,12 +20,13 @@ interface SettingModalProps {
 }
 
 const SettingModal = ({ isOpen, onClose, color }: SettingModalProps) => {
-  const [timeframe, setTimeframe] = useState("Daily");
+  const userdata = useSelector((state: RootState) => state.auth.user);
   const mainRef = useRef<HTMLDivElement>(null);
+  const [timeframe, setTimeframe] = useState("Daily");
+  const [profileModal, setProfileModal] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      console.log("clicked", e.target as Node);
       if (mainRef.current && !mainRef.current.contains(e.target as Node)) {
         onClose();
       }
@@ -45,6 +49,10 @@ const SettingModal = ({ isOpen, onClose, color }: SettingModalProps) => {
       document.body.style.overflow = "auto";
     };
   }, [isOpen, onClose]);
+
+  const handleProfileModalClose = () => {
+    setProfileModal(false);
+  };
 
   return (
     <>
@@ -70,7 +78,7 @@ const SettingModal = ({ isOpen, onClose, color }: SettingModalProps) => {
             onClick={onClose}
             title="Close"
           >
-            <X className="w-5 h-5 text-white" />
+            <X className="w-5 h-5 text-white z-10" />
           </button>
           <div className="relative w-full overflow-hidden">
             <img
@@ -79,7 +87,6 @@ const SettingModal = ({ isOpen, onClose, color }: SettingModalProps) => {
               className="w-full h-full object-cover"
             />
           </div>
-
           <div className="relative bg-[#121212]">
             <img
               src="/assets/image-19.png"
@@ -93,8 +100,21 @@ const SettingModal = ({ isOpen, onClose, color }: SettingModalProps) => {
               <span>
                 <Settings
                   className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 cursor-pointer ml-auto"
-                  onClick={onClose}
+                  onClick={() => setProfileModal(true)}
                 />
+
+                {profileModal && (
+                  <ProfileModal
+                    isOpen={profileModal}
+                    onClose={handleProfileModalClose}
+                    _id={userdata?._id || ""}
+                    displayName={userdata?.displayName || ""}
+                    username={userdata?.userId || ""}
+                    avatar={userdata?.avatar || ""}
+                    bio={userdata?.bio || ""}
+                    wallet={userdata?.wallet || ""}
+                  />
+                )}
               </span>
             </div>
             <div className="flex items-center">

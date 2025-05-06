@@ -22,12 +22,6 @@ const ProfileMenu = (props: any) => {
       {props.authenticated ? (
         <>
           <button
-            onClick={props.myProfile}
-            className="block w-full px-4 py-2 text-sm text-white hover:bg-[#1e2025] text-left hover:rounded-lg hover:border-transparent"
-          >
-            Profile
-          </button>
-          <button
             onClick={props.logout}
             className="block w-full px-4 py-2 text-sm text-white hover:bg-[#1e2025] hover:rounded-lg text-left hover:border-transparent"
           >
