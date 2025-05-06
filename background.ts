@@ -22,3 +22,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
   }
 });
+
+chrome.action.onClicked.addListener(async (tab) => {
+  if (!tab.id) return;
+  await chrome.sidePanel.setOptions({
+    tabId: tab.id,
+    path: "index.html",
+    enabled: true,
+  });
+
+  await chrome.sidePanel.open({
+    tabId: tab.id,
+  });
+});
