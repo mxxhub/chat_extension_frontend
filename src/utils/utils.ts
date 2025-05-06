@@ -8,31 +8,57 @@ export const toShortAddress = (text: string) => {
 };
 
 export const getTokenInfo = async (tokenAddress: string, chainId: string) => {
-  const response = await axios.get(
-    `https://api.coingecko.com/api/v3/coins/${chainId}/contract/${tokenAddress}`
-  );
-  console.log("Token Info: ", response.data);
-  return response.data;
+  console.log("Getting token info for: ", tokenAddress, "on chain: ", chainId);
+  try {
+    const response = await axios.get(
+      `https://api.dexscreener.io/latest/dex/pairs/${chainId}/${tokenAddress}`
+    );
+    console.log("Token Info: ", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching token info:", error);
+    return null;
+  }
 };
 
 export const getCurrentTabUrl = async () => {
-  const url = await chrome.runtime.sendMessage({ type: "GET_CURRENT_TAB_URL" });
-  if (!url) return null;
-  const parts = url.split("/");
-  const chain = parts[4];
-  const address = parts[5];
-  if (!chain || !address) return null;
-  if (address.startsWith("0x")) {
-    const tokenInfo = await getTokenInfo(address, chain);
-    if (!tokenInfo) return null;
-    // Fix this part regarding to fetching token info.
-    return {
-      name: tokenInfo.name,
-      image: tokenInfo.image.large,
-      address: tokenInfo.address,
-      symbol: tokenInfo.symbol,
-      chainId: tokenInfo.chainId,
-    };
+  try {
+    const url = await chrome.runtime.sendMessage({
+      type: "GET_CURRENT_TAB_URL",
+    });
+    if (!url || !url.url) return null;
+
+    console.log("URL: ", url.url);
+    const parts = url.url.split("/");
+    console.log("Parts: ", parts);
+
+    const chain = parts[3];
+    const address = parts[4];
+    console.log("Chain: ", chain, "Address: ", address);
+
+    if (!chain || !address) return null;
+
+    if (address.startsWith("0x")) {
+      console.log("Address is a contract address");
+      // Note: I removed the alert() as it wasn't clear why it was there
+
+      const tokenInfo = await getTokenInfo(address, chain);
+      if (!tokenInfo || !tokenInfo.pair) return null;
+
+      console.log("Token Info: ", tokenInfo);
+
+      return {
+        name: tokenInfo.pair?.baseToken?.name,
+        image: tokenInfo.pair?.info?.imageUrl,
+        banner: tokenInfo.pair?.info?.openGraph,
+        address: address,
+        symbol: tokenInfo.pair?.baseToken?.symbol,
+        chainId: chain,
+      };
+    }
+    return null;
+  } catch (error) {
+    console.error("Error in getCurrentTabUrl:", error);
+    return null;
   }
-  return null;
 };

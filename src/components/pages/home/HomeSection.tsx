@@ -260,11 +260,13 @@ const HomeSection = () => {
     // navigate("/");
   }, [ready, authenticated, user, dispatch]);
 
-  useEffect(() => {
-    const fetchTokenInfo = async () => {
+  const fetchTokenInfo = async () => {
+    try {
       const tokenInfo = await getCurrentTabUrl();
       console.log("tokenInfo: ", tokenInfo);
+
       if (!tokenInfo) return;
+
       const newChannel: Channel = {
         id: "",
         chainId: "ethereum",
@@ -273,9 +275,38 @@ const HomeSection = () => {
         symbol: tokenInfo.symbol,
         tokenAdd: tokenInfo.address,
       };
-      setSidebarChannels((prev) => [...prev, newChannel]);
-    };
+
+      // Check if this token is already in the list to avoid duplicates
+      setSidebarChannels((prev) => {
+        const exists = prev.some(
+          (channel) => channel.tokenAdd === tokenInfo.address
+        );
+        if (exists) return prev;
+        return [...prev, newChannel];
+      });
+    } catch (error) {
+      console.error("Error fetching token info:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchTokenInfo();
+
+    // Set up listener for URL changes
+    const handleTabUrlChange = (message: any) => {
+      if (message.type === "TAB_URL_UPDATED") {
+        console.log("URL changed to:", message.url);
+        fetchTokenInfo();
+      }
+    };
+
+    // Add listener
+    chrome.runtime.onMessage.addListener(handleTabUrlChange);
+
+    // Cleanup listener when component unmounts
+    return () => {
+      chrome.runtime.onMessage.removeListener(handleTabUrlChange);
+    };
   }, []);
 
   const LoginWithTwitter = async () => {
