@@ -9,7 +9,7 @@
 //   const [messages, setMessages] = useState([]);
 //   const [typingStatus, setTypingStatus] = useState(false);
 //   const typingTimeout = useRef(null);
-//   const server = config.server || "144.172.94.181:4000";
+//   const server = config.server || "localhost:4000";
 
 //   // Socket connection effect
 //   useEffect(() => {

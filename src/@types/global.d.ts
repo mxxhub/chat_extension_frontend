@@ -34,13 +34,16 @@ declare interface MessageState {
 }
 
 declare interface Channel {
-  id: string;
+  id: number;
   chainId: string;
-  image: string;
   name: string;
   symbol: string;
   tokenAdd: string;
+  image: string;
   banner: string;
+  twitter?: string;
+  website?: string;
+  marketCap?: string;
 }
 
 declare interface MenuItemProps {
