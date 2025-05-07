@@ -23,6 +23,7 @@ interface SettingModalProps {
 
 const SettingModal = ({ isOpen, onClose, color }: SettingModalProps) => {
   const userdata = useSelector((state: RootState) => state.auth.user);
+  console.log(userdata);
   const mainRef = useRef<HTMLDivElement>(null);
   const [timeframe, setTimeframe] = useState("Daily");
   const [profileModal, setProfileModal] = useState(false);

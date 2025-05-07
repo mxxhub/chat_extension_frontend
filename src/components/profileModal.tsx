@@ -52,10 +52,10 @@ export const ProfileModal = ({
         bio: biodata,
       });
       console.log("userdata updated: ", response);
-      showToast("success", "User data updated successfully");
-      setIsEditing(false);
-      console.log("userdata updated: ", response.data.user);
       dispatch(setUser(response.data.user));
+      setIsEditing(false);
+      showToast("success", "User data updated successfully");
+      console.log("userdata updated: ", response.data.user);
     } catch (error) {
       console.error("Error updating user:", error);
     }
