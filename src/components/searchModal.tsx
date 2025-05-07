@@ -54,84 +54,7 @@ const SearchModal = ({
       shortName: "Housecoin",
       imageUrl: "/assets/image-12.png",
       marketCap: "$59.12M",
-      monthsSince: 1,
-      category: "trending",
-      hasTwitter: true,
-      hasWebsite: true,
-    },
-    {
-      id: "gork",
-      name: "gork",
-      shortName: "New XAI gork",
-      imageUrl: "/assets/image-13.png",
-      marketCap: "$46.25M",
-      daysSince: 5,
-      category: "trending",
-      hasTwitter: true,
-    },
-    {
-      id: "chillhouse",
-      name: "CHILLHOUSE",
-      shortName: "Chill House",
-      imageUrl: "/assets/image-14.png",
-      marketCap: "$4.57M",
-      daysSince: 6,
-      category: "trending",
-      hasTwitter: true,
-    },
-    {
-      id: "troll",
-      name: "TROLL",
-      shortName: "TROLL",
-      imageUrl: "/assets/image-6.png",
-      marketCap: "$25.93M",
-      daysSince: 15,
-      category: "trending",
-      hasTwitter: true,
-      hasWebsite: true,
-    },
-    {
-      id: "neet",
-      name: "neet",
-      shortName: "NotInEmploymentEduc...",
-      imageUrl: "/assets/image-7.png",
-      marketCap: "$10.87M",
-      daysSince: 9,
-      category: "trending",
-      hasTwitter: true,
-    },
-    {
-      id: "fartcoin",
-      name: "Fartcoin",
-      shortName: "Fartcoin",
-      imageUrl: "/assets/image-11.png",
-      marketCap: "$1.09B",
-      monthsSince: 6,
-      category: "trending",
-      hasTwitter: true,
-      hasWebsite: true,
-    },
-    {
-      id: "trencher",
-      name: "TRENCHER",
-      shortName: "trencher",
-      imageUrl: "/assets/image-9.png",
-      marketCap: "$8.89M",
-      daysSince: 12,
-      category: "trending",
-      hasTwitter: true,
-      hasWebsite: true,
-    },
-    {
-      id: "boopa",
-      name: "Boopa",
-      shortName: "Boopa",
-      imageUrl: "/assets/image-10.png",
-      marketCap: "$4.61M",
-      daysSince: 4,
-      category: "trending",
-      hasTwitter: true,
-      hasWebsite: true,
+      category: "history",
     },
   ];
   const [tokens, setTokens] = useState<Token[]>(defaultTokens);
@@ -256,19 +179,19 @@ const SearchModal = ({
                   className="flex items-center justify-between px-2 sm:px-4 py-2 sm:py-3"
                 >
                   <div className="flex items-center">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-md overflow-hidden mr-2 sm:mr-3">
+                    <div className="w-12 h-12 sm:w-12 rounded-md overflow-hidden mr-2 sm:mr-3">
                       <img
                         src={channel.image}
                         alt={channel.name}
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <div>
+                    <div className="flex flex-col gap-2">
                       <div className="flex items-center">
                         <span className="font-medium text-sm sm:text-base">
                           {channel.name}
                         </span>
-                        <span className="text-xs text-gray-400 ml-1 hidden xs:inline">
+                        <span className="text-xs text-gray-400 ml-1">
                           {channel.symbol}
                         </span>
                       </div>
@@ -280,7 +203,7 @@ const SearchModal = ({
                         {channel.twitter && (
                           <a href={channel.twitter} target="_blank">
                             <img
-                              className="w-2 h-2 sm:w-3 sm:h-3 ml-2"
+                              className="w-3 h-3 sm:w-3 sm:h-3"
                               alt="Twitter icon"
                               src="/assets/vector.svg"
                             />
@@ -288,14 +211,14 @@ const SearchModal = ({
                         )}
                         {channel.website && (
                           <a href={channel.website} target="_blank">
-                            <Globe size={12} className="ml-2" />
+                            <Globe size={14} className="ml-2" />
                           </a>
                         )}
                       </div>
                     </div>
                   </div>
                   <div className="text-right">
-                    <span className="font-medium text-xs sm:text-sm">
+                    <span className="font-medium text-sm sm:text-sm">
                       {formatMarketCap(Number(channel.marketCap))}
                       {"  "}
                       <small className="text-gray-400">MC</small>
