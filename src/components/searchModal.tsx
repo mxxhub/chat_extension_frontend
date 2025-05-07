@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Search, X, Globe } from "lucide-react";
+import { formatMarketCap } from "../utils/utils";
 
 interface Token {
   id: string;
@@ -18,9 +19,15 @@ interface SearchModalProps {
   isOpen: boolean;
   onClose: () => void;
   color: Colors;
+  sidebarChannels: Channel[];
 }
 
-const SearchModal = ({ isOpen, onClose, color }: SearchModalProps) => {
+const SearchModal = ({
+  isOpen,
+  onClose,
+  color,
+  sidebarChannels,
+}: SearchModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const [searchText, setSearchText] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -243,57 +250,59 @@ const SearchModal = ({ isOpen, onClose, color }: SearchModalProps) => {
               <h2 className="text-gray-400 text-xs sm:text-sm">Trending</h2>
             </div>
             <div className="flex flex-col">
-              {tokens
-                .filter((token) => token.category === "trending")
-                .map((token) => (
-                  <div
-                    key={token.id}
-                    className="flex items-center justify-between px-2 sm:px-4 py-2 sm:py-3"
-                  >
-                    <div className="flex items-center">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-md overflow-hidden mr-2 sm:mr-3">
-                        <img
-                          src={token.imageUrl}
-                          alt={token.name}
-                          className="w-full h-full object-cover"
-                        />
+              {sidebarChannels.map((channel) => (
+                <div
+                  key={channel.id}
+                  className="flex items-center justify-between px-2 sm:px-4 py-2 sm:py-3"
+                >
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-md overflow-hidden mr-2 sm:mr-3">
+                      <img
+                        src={channel.image}
+                        alt={channel.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div>
+                      <div className="flex items-center">
+                        <span className="font-medium text-sm sm:text-base">
+                          {channel.name}
+                        </span>
+                        <span className="text-xs text-gray-400 ml-1 hidden xs:inline">
+                          {channel.symbol}
+                        </span>
                       </div>
-                      <div>
-                        <div className="flex items-center">
-                          <span className="font-medium text-sm sm:text-base">
-                            {token.name}
-                          </span>
-                          <span className="text-xs text-gray-400 ml-1 hidden xs:inline">
-                            {token.shortName}
-                          </span>
-                        </div>
-                        <div className="flex items-center text-xs text-gray-400">
-                          {token.daysSince && <span>{token.daysSince}d</span>}
-                          {token.monthsSince && (
-                            <span>{token.monthsSince}mo</span>
-                          )}
-                          {token.hasTwitter && (
+                      <div className="flex items-center text-xs text-gray-400">
+                        {/* {channel.daysSince && <span>{token.daysSince}d</span>}
+                        {channel.monthsSince && (
+                          <span>{channel.monthsSince}mo</span>
+                        )} */}
+                        {channel.twitter && (
+                          <a href={channel.twitter} target="_blank">
                             <img
                               className="w-2 h-2 sm:w-3 sm:h-3 ml-2"
                               alt="Twitter icon"
                               src="/assets/vector.svg"
                             />
-                          )}
-                          {token.hasWebsite && (
+                          </a>
+                        )}
+                        {channel.website && (
+                          <a href={channel.website} target="_blank">
                             <Globe size={12} className="ml-2" />
-                          )}
-                        </div>
+                          </a>
+                        )}
                       </div>
                     </div>
-                    <div className="text-right">
-                      <span className="font-medium text-xs sm:text-sm">
-                        {token.marketCap}
-                        {"  "}
-                        <small className="text-gray-400">MC</small>
-                      </span>
-                    </div>
                   </div>
-                ))}
+                  <div className="text-right">
+                    <span className="font-medium text-xs sm:text-sm">
+                      {formatMarketCap(Number(channel.marketCap))}
+                      {"  "}
+                      <small className="text-gray-400">MC</small>
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

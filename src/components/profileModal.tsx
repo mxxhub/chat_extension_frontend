@@ -39,7 +39,7 @@ export const ProfileModal = ({
   const [walletAdd, setWalletAdd] = useState<string>(wallet || "");
   const [image, setImage] = useState<string>(avatar || "");
   const [userId, setUserId] = useState<string>(username || "");
-  const server = config.server || "144.172.94.181:4000";
+  const server = config.server || "localhost:4000";
   const modalRef = useRef<HTMLDivElement>(null);
   console.log(setImage, setUserId);
   const handleSave = async () => {

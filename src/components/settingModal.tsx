@@ -7,11 +7,13 @@ import {
   UserPen,
   NotepadText,
   X,
+  Check,
 } from "lucide-react";
 import "../index.css";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { ProfileModal } from "./profileModal";
+import { toShortAddress } from "../utils/utils";
 
 interface SettingModalProps {
   isOpen: boolean;
@@ -24,6 +26,7 @@ const SettingModal = ({ isOpen, onClose, color }: SettingModalProps) => {
   const mainRef = useRef<HTMLDivElement>(null);
   const [timeframe, setTimeframe] = useState("Daily");
   const [profileModal, setProfileModal] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -52,6 +55,18 @@ const SettingModal = ({ isOpen, onClose, color }: SettingModalProps) => {
 
   const handleProfileModalClose = () => {
     setProfileModal(false);
+  };
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(userdata?.wallet || "");
+      setCopied(true);
+      setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+    } catch (err) {
+      console.log("Copy failed: ", err);
+    }
   };
 
   return (
@@ -89,14 +104,16 @@ const SettingModal = ({ isOpen, onClose, color }: SettingModalProps) => {
           </div>
           <div className="relative bg-[#121212]">
             <img
-              src="/assets/image-19.png"
+              src={userdata?.avatar || ""}
               alt="avatar"
-              className="absolute w-12 h-12 sm:w-16 sm:h-16 rounded-full border-none -top-8 sm:-top-11 left-4 sm:left-6"
+              className="absolute w-16 h-16 sm:w-18 sm:h-18 rounded-full border-none -top-10 sm:-top-12 left-4 sm:left-6"
             />
           </div>
           <div className="flex flex-col px-3 sm:px-4 py-2 sm:py-3 mt-2 border-b border-gray-800">
             <div className="flex items-center justify-between">
-              <span className="font-bold text-lg sm:text-xl">JS</span>
+              <span className="font-bold text-lg sm:text-xl">
+                {userdata?.displayName}
+              </span>
               <span>
                 <Settings
                   className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 cursor-pointer ml-auto"
@@ -118,12 +135,14 @@ const SettingModal = ({ isOpen, onClose, color }: SettingModalProps) => {
               </span>
             </div>
             <div className="flex items-center">
-              <span className="text-sm sm:text-base">ShockedJS</span>
-              <img
-                className="w-3 h-3 sm:w-4 sm:h-3.5 ml-2"
-                alt="Twitter icon"
-                src="/assets/vector.svg"
-              />
+              <span className="text-sm sm:text-base">{userdata?.userId}</span>
+              <a href={`https://x.com/${userdata?.userId}`}>
+                <img
+                  className="w-3 h-3 sm:w-4 sm:h-3.5 ml-2 cursor-pointer"
+                  alt="Twitter icon"
+                  src="/assets/vector.svg"
+                />
+              </a>
             </div>
           </div>
         </header>
@@ -134,10 +153,21 @@ const SettingModal = ({ isOpen, onClose, color }: SettingModalProps) => {
             <span className="text-gray-400 text-sm sm:text-base">Holdings</span>
             <div className="flex items-center text-xs">
               <span className="mr-1">
-                <Copy className="w-3 h-3 ml-1" />
+                <button
+                  onClick={handleCopy}
+                  className="w-3 h-3 ml-1 text-white"
+                >
+                  <span>
+                    {copied ? (
+                      <Check size={13} className="mr-2 bg-transparent" />
+                    ) : (
+                      <Copy size={13} className="mr-2 bg-transparent" />
+                    )}
+                  </span>
+                </button>
               </span>
               <span className="text-gray-500 mr-2 text-xs sm:text-xs">
-                6m5s...9rAF
+                {toShortAddress(userdata?.wallet || "")}
               </span>
             </div>
           </div>
