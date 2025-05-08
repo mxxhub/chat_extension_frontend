@@ -89,7 +89,9 @@ const HomeSection = () => {
   const [tokenName, setTokenName] = useState("");
   const [tokenSymbol, setTokenSymbol] = useState("");
   const [tokenImage, setTokenImage] = useState("");
-  const [banner, setBanner] = useState("");
+  const [banner, setBanner] = useState(
+    "https://dd.dexscreener.com/ds-data/tokens/ethereum/0x4d4c3751f492c35a7a029052aad02cdfc6d5e342/header.png?key=675d58"
+  );
   const [marketCap, setMarketCap] = useState("");
   const [twitter, setTwitter] = useState("");
   const [website, setWebsite] = useState("");

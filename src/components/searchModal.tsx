@@ -31,6 +31,9 @@ const SearchModal = ({
   const modalRef = useRef<HTMLDivElement>(null);
   const [searchText, setSearchText] = useState("");
   const [isFocused, setIsFocused] = useState(false);
+  const searchChannels = sidebarChannels.filter(
+    (channel) => channel.tokenAdd === searchText
+  );
   const defaultTokens: Token[] = [
     {
       id: "hosico",
@@ -173,7 +176,7 @@ const SearchModal = ({
               <h2 className="text-gray-400 text-xs sm:text-sm">Trending</h2>
             </div>
             <div className="flex flex-col">
-              {sidebarChannels.map((channel) => (
+              {searchChannels.map((channel) => (
                 <div
                   key={channel.id}
                   className="flex items-center justify-between px-2 sm:px-4 py-2 sm:py-3"
