@@ -7,6 +7,18 @@ export const toShortAddress = (text: string) => {
   return `${first}...${last}`;
 };
 
+export const formatMarketCap = (marketCap: number) => {
+  if (marketCap >= 1_000_000000) {
+    return `${(marketCap / 1000_000_000).toFixed(2)}B`;
+  } else if (marketCap >= 1000_000) {
+    return `${(marketCap / 1000_000).toFixed(2)}M`;
+  } else if (marketCap >= 1000) {
+    return `${(marketCap / 1000).toFixed(2)}K`;
+  } else {
+    return marketCap.toString();
+  }
+};
+
 export const getTokenInfo = async (tokenAddress: string, chainId: string) => {
   console.log("Getting token info for: ", tokenAddress, "on chain: ", chainId);
   try {
@@ -38,24 +50,30 @@ export const getCurrentTabUrl = async () => {
 
     if (!chain || !address) return null;
 
-    if (address.startsWith("0x")) {
-      console.log("Address is a contract address");
-      // Note: I removed the alert() as it wasn't clear why it was there
+    // if (address.startsWith("0x")) {
+    console.log("Address is a contract address");
 
-      const tokenInfo = await getTokenInfo(address, chain);
-      if (!tokenInfo || !tokenInfo.pair) return null;
+    const tokenInfo = await getTokenInfo(address, chain);
+    if (!tokenInfo || !tokenInfo.pair) return null;
 
-      console.log("Token Info: ", tokenInfo);
+    console.log("Token Info: ", tokenInfo);
 
-      return {
-        name: tokenInfo.pair?.baseToken?.name,
-        image: tokenInfo.pair?.info?.imageUrl,
-        banner: tokenInfo.pair?.info?.header,
-        address: address,
-        symbol: tokenInfo.pair?.baseToken?.symbol,
-        chainId: chain,
-      };
-    }
+    return {
+      name: tokenInfo.pair?.baseToken?.name,
+      image: tokenInfo.pair?.info?.imageUrl,
+      banner: tokenInfo.pair?.info?.header,
+      address: address,
+      symbol: tokenInfo.pair?.baseToken?.symbol,
+      chainId: chain,
+      marketCap: tokenInfo.pair?.marketCap,
+      twitter: tokenInfo.pair?.info?.socials?.find(
+        (each: any) => each.type === "twitter"
+      )?.url,
+      website: tokenInfo.pair?.info?.websites?.find(
+        (each: any) => each.label === "Website"
+      )?.url,
+    };
+    // }
     return null;
   } catch (error) {
     console.error("Error in getCurrentTabUrl:", error);

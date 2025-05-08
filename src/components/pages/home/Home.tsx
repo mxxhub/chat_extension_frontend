@@ -69,7 +69,7 @@
 //   const popupRef = useRef<HTMLDivElement | null>(null);
 //   const scrollRef = useRef<HTMLDivElement>(null);
 
-//   const server = config.server || "144.172.94.181:4000";
+//   const server = config.server || "localhost:4000";
 //   const defaultChannels: Channel[] = [
 //     {
 //       id: "1",

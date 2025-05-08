@@ -30,7 +30,11 @@ import {
   LogOut,
   EllipsisVertical,
 } from "lucide-react";
-import { getCurrentTabUrl, toShortAddress } from "../../../utils/utils";
+import {
+  formatMarketCap,
+  getCurrentTabUrl,
+  toShortAddress,
+} from "../../../utils/utils";
 import {
   removeChannel,
   setAuthenticated,
@@ -86,6 +90,9 @@ const HomeSection = () => {
   const [tokenSymbol, setTokenSymbol] = useState("");
   const [tokenImage, setTokenImage] = useState("");
   const [banner, setBanner] = useState("");
+  const [marketCap, setMarketCap] = useState("");
+  const [twitter, setTwitter] = useState("");
+  const [website, setWebsite] = useState("");
   // const [messages, setMessages] = useState<Message[]>([]);
   const [typingStatus, setTypingStatus] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
@@ -194,6 +201,8 @@ const HomeSection = () => {
   }, [textToCopy, authenticated]);
 
   useEffect(() => {
+    const exists = joinedChannel?.find((each) => each.tokenAdd === textToCopy);
+    if (!exists) return;
     if (socket) {
       socket.emit("join:room", textToCopy);
       console.log(`you joined ${textToCopy}`);
@@ -211,10 +220,15 @@ const HomeSection = () => {
           wallet: user?.wallet?.address || "0x1294724982",
           avatar: user?.twitter?.profilePictureUrl || "/assets/image-5-1.png",
           channel: {
+            chainId: chainId,
             name: tokenName,
-            image: tokenImage,
-            tokenAdd: textToCopy,
             symbol: tokenSymbol,
+            tokenAdd: textToCopy,
+            image: tokenImage,
+            banner: banner,
+            twitter: twitter,
+            website: website,
+            marketCap: marketCap,
           },
         };
 
@@ -237,7 +251,6 @@ const HomeSection = () => {
   const fetchTokenInfo = async () => {
     try {
       const tokenInfo = await getCurrentTabUrl();
-      console.log("tokenInfo: ", tokenInfo);
 
       if (!tokenInfo) return;
 
@@ -247,18 +260,23 @@ const HomeSection = () => {
       await setChainId(tokenInfo.chainId);
       await setTextToCopy(tokenInfo.address);
       await setBanner(tokenInfo.banner);
+      await setMarketCap(tokenInfo.marketCap);
+      await setTwitter(tokenInfo.twitter);
+      await setWebsite(tokenInfo.website);
 
       const newChannel: Channel = {
-        id: "",
+        id: sidebarChannels.length + 1,
         chainId: tokenInfo.chainId,
         image: tokenInfo.image,
         name: tokenInfo.name,
         symbol: tokenInfo.symbol,
         tokenAdd: tokenInfo.address,
         banner: tokenInfo.banner,
+        twitter: tokenInfo.twitter,
+        website: tokenInfo.website,
+        marketCap: tokenInfo.marketCap,
       };
 
-      // Check if this token is already in the list to avoid duplicates
       setSidebarChannels((prev) => {
         const exists = prev.some(
           (channel) => channel.tokenAdd === tokenInfo.address
@@ -274,7 +292,6 @@ const HomeSection = () => {
   useEffect(() => {
     fetchTokenInfo();
 
-    // Set up listener for URL changes
     const handleTabUrlChange = (message: any) => {
       if (message.type === "TAB_URL_UPDATED") {
         console.log("URL changed to:", message.url);
@@ -282,10 +299,8 @@ const HomeSection = () => {
       }
     };
 
-    // Add listener
     chrome.runtime.onMessage.addListener(handleTabUrlChange);
 
-    // Cleanup listener when component unmounts
     return () => {
       chrome.runtime.onMessage.removeListener(handleTabUrlChange);
     };
@@ -392,23 +407,29 @@ const HomeSection = () => {
   // };
 
   const channelClick = (
-    name: string,
-    image: string,
-    tokenAdd: string,
-    symbol: string,
     chainId: string,
-    channelBanner: string
+    name: string,
+    symbol: string,
+    tokenAdd: string,
+    image: string,
+    channelBanner: string,
+    twitter: string,
+    website: string,
+    marketCap: string
   ) => {
     // if (!authenticated) {
     //   showToast("warning", "Please Login First");
     //   return;
     // }
-    setTokenName(name);
-    setTokenImage(image);
-    setTextToCopy(tokenAdd);
-    setTokenSymbol(symbol);
     setChainId(chainId);
+    setTokenName(name);
+    setTokenSymbol(symbol);
+    setTextToCopy(tokenAdd);
+    setTokenImage(image);
     setBanner(channelBanner);
+    setTwitter(twitter);
+    setWebsite(website);
+    setMarketCap(marketCap);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -442,28 +463,44 @@ const HomeSection = () => {
     //   showToast("warning", "Please Login First");
     //   return;
     // }
-    const selected: Channel = {
-      id: "",
-      chainId: "ethereum",
-      image: "/assets/image-11.png",
-      name: "memecoin1",
-      symbol: "memecoin1",
-      tokenAdd: "0x1D02a7E63E2f8575E76776BE7828926fADef6029",
-      banner: "",
-    };
+    const selected = sidebarChannels.find(
+      (channel) => channel.tokenAdd == textToCopy
+    );
+    if (!selected) return;
+    console.log(selected);
+    // const selected: Channel = {
+    //   id: "",
+    //   chainId: "ethereum",
+    //   image: "/assets/image-11.png",
+    //   name: "memecoin1",
+    //   symbol: "memecoin1",
+    //   tokenAdd: "0x1D02a7E63E2f8575E76776BE7828926fADef6029",
+    //   banner: "",
+    //   twitter: "",
+    //   website: "",
+    //   marketCap: "",
+    // };
 
     if (socket) {
       const data = {
-        userId: user?.twitter?.username || "ShockedJS",
-        tokenAdd: textToCopy,
-        image: tokenImage,
-        name: tokenName,
-        symbol: tokenSymbol,
+        chainId: selected.chainId,
+        name: selected.name,
+        symbol: selected.symbol,
+        tokenAdd: selected.tokenAdd,
+        image: selected.image,
+        banner: selected.banner || "",
+        twitter: selected.twitter || "",
+        website: selected.website || "",
+        marketCap: selected.marketCap || "",
       };
       socket.emit("join:room", data);
       console.log(`you joined ${textToCopy}`);
     }
     dispatch(setChannels(selected));
+    const filteredChannels = sidebarChannels.filter(
+      (channel) => channel.tokenAdd !== textToCopy
+    );
+    setSidebarChannels(filteredChannels);
     showToast("success", "Joined channel successfully!");
     setJoinStatus(true);
   };
@@ -521,9 +558,9 @@ const HomeSection = () => {
                   onClick={() => setMenu(true)}
                 />
               </div>
-              <div className="h-full border-r border-r-[#3f414e] flex flex-col items-center overflow-y-auto">
+              <div className="h-full border-r border-r-[#3f414e] flex flex-col items-center">
                 <div className="mt-4 relative">
-                  <div className="text-[#777a8c] text-[10px] ml-4">Pinned</div>
+                  <div className="text-[#777a8c] text-[10px] ml-4">Joined</div>
                   <img
                     className="w-[9px] h-[9px] absolute top-1 left-[3px]"
                     alt="Pin"
@@ -532,7 +569,7 @@ const HomeSection = () => {
                 </div>
 
                 {/* Pinned channels */}
-                <div className="mt-2 flex flex-col items-center gap-2">
+                <div className="mt-2 flex flex-col items-center gap-2 max-h-[180px] overflow-y-scroll">
                   {joinedChannel &&
                     joinedChannel.map((channel: any) => (
                       <SidebarChannelList
@@ -540,12 +577,15 @@ const HomeSection = () => {
                         channel={channel}
                         channelClick={() => {
                           channelClick(
-                            channel.name,
-                            channel.image,
-                            channel.tokenAdd,
-                            channel.symbol,
                             channel.chainId,
-                            channel.banner
+                            channel.name,
+                            channel.symbol,
+                            channel.tokenAdd,
+                            channel.image,
+                            channel.banner,
+                            channel.twitter || "",
+                            channel.website || "",
+                            channel.marketCap || ""
                           );
                           setJoinStatus(true);
                         }}
@@ -565,19 +605,22 @@ const HomeSection = () => {
                 </div>
 
                 {/* Trending channels */}
-                <div className="mt-2 flex flex-col items-center gap-2">
+                <div className="mt-2 flex flex-col items-center gap-2 overflow-y-scroll">
                   {sidebarChannels.map((channel: Channel) => (
                     <SidebarChannelList
                       key={channel.id}
                       channel={channel}
                       channelClick={() => {
                         channelClick(
-                          channel.name,
-                          channel.image,
-                          channel.tokenAdd,
-                          channel.symbol,
                           channel.chainId,
-                          channel.banner
+                          channel.name,
+                          channel.symbol,
+                          channel.tokenAdd,
+                          channel.image,
+                          channel.banner,
+                          channel.twitter || "",
+                          channel.website || "",
+                          channel.marketCap || ""
                         );
                         setJoinStatus(false);
                       }}
@@ -614,18 +657,15 @@ const HomeSection = () => {
                   <div
                     className={`font-normal ${color.highlightsColor} text-xs flex flex-row items-center`}
                   >
-                    <div className="truncate max-w-[80px]">
+                    <div className="truncate max-w-[62px] w-[62px]">
                       {toShortAddress(textToCopy)}
                     </div>
-                    <button
-                      onClick={handleCopy}
-                      className="px-1 py-1 text-white mt-[-1vh]"
-                    >
+                    <button onClick={handleCopy} className="text-white">
                       <span>
                         {copied ? (
-                          <Check size={13} className="mt-1 bg-transparent" />
+                          <Check size={13} className="mr-1 bg-transparent" />
                         ) : (
-                          <Copy size={13} className="mt-1 bg-transparent" />
+                          <Copy size={13} className="mr-1 bg-transparent" />
                         )}
                       </span>
                     </button>
@@ -714,7 +754,9 @@ const HomeSection = () => {
               </div>
               <div className="flex items-center flex-col ml-6 text-center">
                 <span className="text-gray-500 text-xs">Mkt Cap</span>
-                <span className={`${color.highlightsColor} text-sm`}>$11M</span>
+                <span className={`${color.highlightsColor} text-sm`}>
+                  {formatMarketCap(Number(marketCap))}
+                </span>
               </div>
               <div className="flex items-center gap-1 ml-auto">
                 <SearchIcon
@@ -752,36 +794,44 @@ const HomeSection = () => {
               <div
                 className={`w-full h-[31px] ${color.mainColor} flex items-center justify-evenly`}
               >
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://x.com"
-                  className="flex items-center"
-                >
-                  <img
-                    className="w-3 h-3 sm:w-4 sm:h-3.5"
-                    alt="Twitter icon"
-                    src="/assets/vector.svg"
+                {twitter && (
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={twitter}
+                    className="flex items-center"
+                  >
+                    <img
+                      className="w-3 h-3 sm:w-4 sm:h-3.5"
+                      alt="Twitter icon"
+                      src="/assets/vector.svg"
+                    />
+                    <span className="ml-1 font-medium text-white text-xs sm:text-[13px]">
+                      Twitter
+                    </span>
+                  </a>
+                )}
+                {website && twitter && (
+                  <Separator
+                    orientation="vertical"
+                    className="h-[30px] bg-[#5B5E69]"
                   />
-                  <span className="ml-1 font-medium text-white text-xs sm:text-[13px]">
-                    Twitter
-                  </span>
-                </a>
-                <Separator
-                  orientation="vertical"
-                  className="h-[30px] mx-2 sm:mx-4 bg-[#5B5E69]"
-                />
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://dexscreener.com"
-                  className="flex items-center"
-                >
-                  <ExternalLinkIcon className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
-                  <span className="ml-1 font-medium text-white text-xs sm:text-[13px]">
-                    Website
-                  </span>
-                </a>
+                )}
+                {website && (
+                  <>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={website}
+                      className="flex items-center"
+                    >
+                      <ExternalLinkIcon className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
+                      <span className="ml-1 font-medium text-white text-xs sm:text-[13px]">
+                        Website
+                      </span>
+                    </a>
+                  </>
+                )}
               </div>
 
               {/* Chat messages container */}
@@ -922,30 +972,28 @@ const HomeSection = () => {
                     className="w-4 h-4 sm:w-5 sm:h-5 text-[#777a8c] cursor-pointer"
                     onClick={plusBtnHandle}
                   />
-                  <div
-                    ref={popupRef}
-                    className={`absolute bottom-full mb-2 left-0 w-36 sm:w-48 bg-[#22242D] rounded-md shadow-lg py-1 z-50 text-xs sm:text-sm opacity-0 ${
-                      plusBtn
-                        ? "opacity-100 pointer-events-auto"
-                        : "pointer-events-none"
-                    } transition-opacity duration-300`}
-                  >
-                    <MenuItem
-                      Icon={ImagePlus}
-                      text="Add Image"
-                      onClick={handleFileChange}
-                    />
-                    <MenuItem
-                      Icon={Play}
-                      text="Start Raid"
-                      onClick={handleStartRaid}
-                    />
-                    <MenuItem
-                      Icon={LogOut}
-                      text="Leave Channel"
-                      onClick={handleLeaveChannel}
-                    />
-                  </div>
+                  {plusBtn && (
+                    <div
+                      ref={popupRef}
+                      className={`absolute bottom-full mb-2 left-0 w-36 sm:w-48 bg-[#22242D] rounded-md shadow-lg py-1 z-50 text-xs sm:text-sm`}
+                    >
+                      <MenuItem
+                        Icon={ImagePlus}
+                        text="Add Image"
+                        onClick={handleFileChange}
+                      />
+                      <MenuItem
+                        Icon={Play}
+                        text="Start Raid"
+                        onClick={handleStartRaid}
+                      />
+                      <MenuItem
+                        Icon={LogOut}
+                        text="Leave Channel"
+                        onClick={handleLeaveChannel}
+                      />
+                    </div>
+                  )}
                   {joinStatus ? (
                     <Input
                       className="border-none bg-transparent text-[#dbd6d6] text-xs sm:text-sm h-full focus:outline-none focus:ring-0 focus:border-none focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -1004,6 +1052,7 @@ const HomeSection = () => {
         isOpen={searchModal}
         onClose={() => setSearchModal(false)}
         color={color}
+        sidebarChannels={sidebarChannels}
       />
     </div>
   );
